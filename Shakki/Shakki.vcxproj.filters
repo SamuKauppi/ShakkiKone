@@ -24,6 +24,9 @@
     <ClCompile Include="move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="chess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameState.h">

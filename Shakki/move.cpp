@@ -1,26 +1,29 @@
+#include <math.h>
 #include "move.h"
+
 static int char_to_int_pos(const char& c)
 {
 	switch (c)
 	{
 	case 'h':
-		return 0;
-	case 'g':
-		return 1;
-	case 'f':
-		return 2;
-	case 'e':
-		return 3;
-	case 'd':
-		return 4;
-	case 'c':
-		return 5;
-	case 'b':
-		return 6;
-	case 'a':
 		return 7;
+	case 'g':
+		return 6;
+	case 'f':
+		return 5;
+	case 'e':
+		return 4;
+	case 'd':
+		return 3;
+	case 'c':
+		return 2;
+	case 'b':
+		return 1;
+	case 'a':
+		return 0;
 	default:
-		return (c - '0') - 1;
+		int reverse_int = abs((c - '0') - 8);
+		return reverse_int;
 	}
 }
 
