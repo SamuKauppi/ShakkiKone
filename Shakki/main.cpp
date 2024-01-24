@@ -20,14 +20,23 @@ int main()
 	vector<Move> rook_moves;
 	vector<Move> bishop_moves;
 	vector<Move> queen_moves;
+	vector<Move> knight_moves;
+	vector<Move> king_moves;
+
 	state.get_officer_moves(3, 4, WHITE, rook_moves);
 	state.get_bishop_moves(3, 4, WHITE, bishop_moves);
 	
-	state.get_officer_moves(3, 4, WHITE, queen_moves);
+	state.get_rook_moves(3, 4, WHITE, queen_moves);
 	state.get_bishop_moves(3, 4, WHITE, queen_moves);
 
+	state.get_knight_moves(3, 4, WHITE, knight_moves);
+
+	state.get_king_moves(3, 4, WHITE, king_moves);
+
 	cout << rook_moves.size() << "\n";
-	cout << bishop_moves.size() << "\n";
+	cout << bishop_moves.size() << "\n";	
+	cout << knight_moves.size() << "\n";
+	cout << king_moves.size() << "\n";
 	cout << queen_moves.size();
 
 	return 0;

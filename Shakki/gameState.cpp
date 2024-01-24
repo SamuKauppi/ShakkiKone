@@ -102,6 +102,10 @@ void GameState::get_king_moves(int row, int column, int player, vector<Move>& mo
 	get_raw_moves_in_dir(row, column, 1, 0, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 0, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 0, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 1, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 1, -1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
 }
 
 void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int delta_column, 
@@ -154,7 +158,6 @@ void GameState::print_board() const
 
 	for (int i = 0; i < 8; i++)
 	{
-
 		cout << 8 - i << " "; // Print rank (row) labels
 		for (int j = 0; j < 8; j++)
 		{
