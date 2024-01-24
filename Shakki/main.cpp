@@ -13,13 +13,22 @@ int main()
 	Move stringMove("h2h6");
 	state.make_move(stringMove);
 
-	Move rookMove("h1h4");
+	Move rookMove("h1e5");
 	state.make_move(rookMove);
 
 	state.print_board();
-	vector<Move> moves;
-	state.get_rook_moves(4, 7, WHITE, 4, moves);
-	cout << moves.size();
+	vector<Move> rook_moves;
+	vector<Move> bishop_moves;
+	vector<Move> queen_moves;
+	state.get_officer_moves(3, 4, WHITE, rook_moves);
+	state.get_bishop_moves(3, 4, WHITE, bishop_moves);
+	
+	state.get_officer_moves(3, 4, WHITE, queen_moves);
+	state.get_bishop_moves(3, 4, WHITE, queen_moves);
+
+	cout << rook_moves.size() << "\n";
+	cout << bishop_moves.size() << "\n";
+	cout << queen_moves.size();
 
 	return 0;
 }

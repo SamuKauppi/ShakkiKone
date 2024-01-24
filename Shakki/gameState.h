@@ -21,6 +21,8 @@ public:
 	/// </summary>
 	void print_board() const;
 
+
+	void get_officer_moves(int row, int column, int player, vector<Move>& moves) const;
 	/// <summary>
 	/// Determine raw move for rook
 	/// </summary>
@@ -28,7 +30,29 @@ public:
 	/// <param name="column"></param>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_rook_moves(int row, int column, int player, int directions,vector<Move>& moves);
+	void get_rook_moves(int row, int column, int player, vector<Move>& moves) const;
+	void get_bishop_moves(int row, int column, int player, vector<Move>& moves) const;
+	void get_knight_moves(int row, int column, int player, vector<Move>& moves) const;
+	void get_king_moves(int row, int column, int player, vector<Move>& moves) const;
+
+
+	/// <summary>
+	/// Return all possible movements in direction
+	/// </summary>
+	/// <param name="row">			Starting row		</param>
+	/// <param name="column">		Starting column		</param>
+	/// <param name="delta_row">	Row change			</param>
+	/// <param name="delta_column">	Column change		</param>
+	/// <param name="player">		Player enum			</param>
+	/// <param name="max_steps">	Max move distance	</param>
+	/// <param name="moves">		Filled with moves	</param>
+	void get_raw_moves_in_dir(int row, 
+		int column, 
+		int delta_row, 
+		int delta_column, 
+		int player,
+		int max_steps, 
+		vector<Move>& moves) const;
 
 private:
 	// Game board

@@ -35,56 +35,113 @@ void GameState::make_move(const Move& m)
 
 	// Update piece at end pos
 	_board[m._end_pos[0]][m._end_pos[1]] = piece;
+
+	cout << m._end_pos[0] << " " << m._end_pos[1] << "\n";
+
+	_turn_player = 1 - _turn_player;
 }
 
-
-/// <summary>
-/// Get the raw moves of the rook
-/// </summary>
-/// <param name="row"></param>
-/// <param name="column"></param>
-/// <param name="player"></param>
-/// <param name="directions"></param>
-/// <param name="moves"></param>
-void GameState::get_rook_moves(int row, int column, int player, int directions, vector<Move>& moves)
+void GameState::get_officer_moves(int row, int column, int player, vector<Move>& moves) const
 {
-	for (int i = 0; i < directions; i++)
+	int piece = _board[row][column];
+
+	if (piece == wR || piece == bR)
 	{
-		int current_row = row;
-		int current_column = column;
-		int direction = i % 2 == 0 ? 1 : -1;
+		get_rook_moves(row, column, player, moves);
+	}
+	else if (piece == wB || piece == bB)
+	{
+		get_bishop_moves(row, column, player, moves);
+	}
+	else if (piece == wQ || piece == bQ)
+	{
+		get_rook_moves(row, column, player, moves);
+		get_bishop_moves(row, column, player, moves);
+	}
+	else if (piece == wN || piece == bN)
+	{
+		get_knight_moves(row, column, player, moves);
+	}
+	else if (piece == wK || piece == bK)
+	{
+		get_king_moves(row, column, player, moves);
+	}
+}
 
-		while (true)
+void GameState::get_rook_moves(int row, int column, int player, vector<Move>& moves) const
+{
+	get_raw_moves_in_dir(row, column, -1, 0, player, 7, moves);
+	get_raw_moves_in_dir(row, column, 1, 0, player, 7, moves);
+	get_raw_moves_in_dir(row, column, 0, -1, player, 7, moves);
+	get_raw_moves_in_dir(row, column, 0, 1, player, 7, moves);
+}
+
+void GameState::get_bishop_moves(int row, int column, int player, vector<Move>& moves) const
+{
+	get_raw_moves_in_dir(row, column, -1, 1, player, 7, moves);
+	get_raw_moves_in_dir(row, column, 1, 1, player, 7, moves);
+	get_raw_moves_in_dir(row, column, 1, -1, player, 7, moves);
+	get_raw_moves_in_dir(row, column, -1, 1, player, 7, moves);
+}
+
+void GameState::get_knight_moves(int row, int column, int player, vector<Move>& moves) const
+{
+	get_raw_moves_in_dir(row, column, 2, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 2, -1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -2, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -2, -1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 1, 2, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 1, -2, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, 2, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, -2, player, 1, moves);
+}
+
+void GameState::get_king_moves(int row, int column, int player, vector<Move>& moves) const
+{
+	get_raw_moves_in_dir(row, column, -1, 0, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 1, 0, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 0, -1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 0, 1, player, 1, moves);
+}
+
+void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int delta_column, 
+	int player, int max_steps, vector<Move>& moves) const
+{
+	// Initilize varibales
+	int current_row = row;
+	int current_column = column;
+	int steps = 0;
+
+	while (steps < max_steps)
+	{
+		// Make delta move
+		current_row += delta_row;
+		current_column += delta_column;
+
+		// Is out of board
+		if (current_row < 0 ||
+			current_row > 7 ||
+			current_column < 0 ||
+			current_column > 7)
+			break;
+
+		// Is empty spot
+		if (_board[current_row][current_column] == NA)
 		{
-			if (current_row < 0 ||
-				current_row > size(_board) - 1 ||
-				current_column < 0 ||
-				current_column > size(_board) - 1)
-				break;
-
-			if (i + 1 % 2 == 0)
-			{
-				current_row += direction;
-			}
-			else
-			{
-				current_column += direction;
-			}
-
-			if (_board[current_row][current_column] == NA)
-			{
-				moves.push_back(Move(row, column, current_row, current_column));
-				continue;
-			}
-
-			if (get_piece_color(_board[current_row][current_column]) == player)
-			{
-				break;
-			}
-
 			moves.push_back(Move(row, column, current_row, current_column));
+			steps++;
+			continue;
+		}
+
+		// Is same team as player
+		if (get_piece_color(_board[current_row][current_column]) == player)
+		{
 			break;
 		}
+
+		// Can eat
+		moves.push_back(Move(row, column, current_row, current_column));
+		break;
 	}
 }
 
