@@ -3,9 +3,8 @@
 #include "gameState.h"
 #include "move.h"
 
-
 // Piece indecies mapped to array
-const string piece_names[] = { "wR", "wN", "wB", "wQ", "wK", "wP", "bR", "bN", "bB", "bQ", "bK", "bP", "  " };
+const string piece_names[] = { "R", "N", "B", "Q", "K", "P", "r", "n", "b", "q", "k", "p", " " };
 
 /// <summary>
 /// Empties gameboard
@@ -154,7 +153,7 @@ void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int del
 /// </summary>
 void GameState::print_board() const
 {
-	cout << "     a    b    c    d    e    f    g    h\n"; // Print file (column) labels
+	cout << "    a   b   c   d   e   f   g   h\n"; // Print file (column) labels
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -167,6 +166,6 @@ void GameState::print_board() const
 
 	}
 
-	cout << "     a    b    c    d    e    f    g    h\n"; // Print file (column) labels
+	cout << "    a   b   c   d   e   f   g   h\n"; // Print file (column) labels
 }
 
