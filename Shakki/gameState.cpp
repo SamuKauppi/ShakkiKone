@@ -35,8 +35,6 @@ void GameState::make_move(const Move& m)
 	// Update piece at end pos
 	_board[m._end_pos[0]][m._end_pos[1]] = piece;
 
-	cout << m._end_pos[0] << " " << m._end_pos[1] << "\n";
-
 	_turn_player = 1 - _turn_player;
 }
 
