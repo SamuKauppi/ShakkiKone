@@ -5,6 +5,10 @@
 class GameState
 {
 public:
+	// turn player
+	int TurnPlayer = WHITE;
+
+
 	/// <summary>
 	/// Empties board
 	/// </summary>
@@ -22,7 +26,9 @@ public:
 	void print_board() const;
 
 
-	void get_officer_moves(int row, int column, int player, vector<Move>& moves) const;
+	void get_all_moves(int player, vector<Move>& moves) const;
+
+	void get_piece_moves(int row, int column, int player, int piece, vector<Move>& moves) const;
 	/// <summary>
 	/// Determine raw move for rook
 	/// </summary>
@@ -34,7 +40,6 @@ public:
 	void get_bishop_moves(int row, int column, int player, vector<Move>& moves) const;
 	void get_knight_moves(int row, int column, int player, vector<Move>& moves) const;
 	void get_king_moves(int row, int column, int player, vector<Move>& moves) const;
-
 	void get_pawn_moves(int row, int column, int player, vector<Move>& moves) const;
 
 
@@ -80,7 +85,5 @@ private:
 		{wR, wN, wB, wQ, wK, wB, wN, wR},
 	};
 
-	// turn player
-	int _turn_player = WHITE;
 
 };

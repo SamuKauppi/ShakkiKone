@@ -1,6 +1,11 @@
 #include <math.h>
 #include "move.h"
 
+/// <summary>
+/// Converts a chess coordinate char to board index int
+/// </summary>
+/// <param name="c"></param>
+/// <returns></returns>
 static int char_to_int_pos(const char& c)
 {
 	switch (c)
@@ -27,9 +32,40 @@ static int char_to_int_pos(const char& c)
 	}
 }
 
+/// <summary>
+/// Converts a board index int to chess coordinate char
+/// </summary>
+/// <param name="pos"></param>
+/// <returns></returns>
+static char int_pos_to_char(const int& pos)
+{
+	switch (pos)
+	{
+	case 7:
+		return 'h';
+	case 6:
+		return 'g';
+	case 5:
+		return 'f';
+	case 4:
+		return 'e';
+	case 3:
+		return 'd';
+	case 2:
+		return 'c';
+	case 1:
+		return 'b';
+	case 0:
+		return 'a';
+	default:
+		return static_cast<char>(('8' - pos) + '0');
+	}
+}
+
+
 Move::Move(const string& m)
 {
-	for (int i = 0; i < m.length(); i++)
+	for (int i = 0; i < 4; i++)
 	{
 		int pos_int = char_to_int_pos(m[i]);
 
@@ -44,4 +80,47 @@ Move::Move(const string& m)
 			_end_pos.insert(_end_pos.begin(), pos_int);
 		}
 	}
+}
+
+string Move::get_move_name() const
+{
+	if (_move_name != "")
+	{
+		return _move_name;
+	}
+
+	string move = "";
+
+	for (int i = 0; i < 4; i++)
+	{
+		int temp;
+		if (i > 1)
+		{
+			temp = _start_pos[i - 2];
+		}
+		else
+		{
+			temp = _end_pos[i];
+		}
+
+		char m;
+		if (i % 2 != 0)
+		{
+			m = int_pos_to_char(temp);
+			move.insert(0, 1, m);
+		}
+		else
+		{
+			temp = abs(temp - 8);
+			move.insert(0, to_string(temp));
+		}
+	}
+
+	if (_piece_promotion != NA)
+	{
+		move += _piece_promotion;
+	}
+
+	_move_name = "";
+	return move;
 }
