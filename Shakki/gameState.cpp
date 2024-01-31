@@ -38,6 +38,24 @@ void GameState::make_move(const Move& m)
 	_turn_player = 1 - _turn_player;
 }
 
+void GameState::create_promotion_moves(
+	int row,
+	int column,
+	int delta_row,
+	int delta_column,
+	int player,
+	vector<Move>& moves) const
+{
+	int player_offset = player == BLACK ? 6 : 0;
+	for (int i = 0; i < 4; i++)
+	{
+		int piece = i + player_offset;
+		Move m = Move(row, column, delta_row, delta_column);
+		m._piece_promotion = piece;
+		moves.push_back(m);
+	}
+}
+
 void GameState::get_officer_moves(int row, int column, int player, vector<Move>& moves) const
 {
 	int piece = _board[row][column];
@@ -63,6 +81,29 @@ void GameState::get_officer_moves(int row, int column, int player, vector<Move>&
 	{
 		get_king_moves(row, column, player, moves);
 	}
+}
+
+void GameState::get_pawn_moves(int row, int column, int player, vector<Move>& moves) const
+{
+	// Direction based on player
+	int direction = player == WHITE ? -1 : 1;
+
+	// Eating
+	get_raw_moves_in_dir(row, column, direction, 1, player, 1, moves, true, true);
+	get_raw_moves_in_dir(row, column, direction, -1, player, 1, moves, true, true);
+
+	// If in starting pos, 2 directly forward
+	if (row == 6 || row == 1)
+	{
+		get_raw_moves_in_dir(row, column, direction, 0, player, 2, moves, false);
+	}
+	// 1 directly forward
+	else
+	{
+		get_raw_moves_in_dir(row, column, direction, 0, player, 1, moves, false);
+	}
+
+
 }
 
 void GameState::get_rook_moves(int row, int column, int player, vector<Move>& moves) const
@@ -106,7 +147,7 @@ void GameState::get_king_moves(int row, int column, int player, vector<Move>& mo
 }
 
 void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int delta_column, 
-	int player, int max_steps, vector<Move>& moves) const
+	int player, int max_steps, vector<Move>& moves, bool can_eat, bool has_to_eat) const
 {
 	// Initilize varibales
 	int current_row = row;
@@ -126,10 +167,24 @@ void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int del
 			current_column > 7)
 			break;
 
+		bool will_promote = false;
+		if ((current_row == 0 || current_row == 7) &&
+			(_board[row][column] == wP || _board[row][column] == bP))
+		{
+			will_promote = true;
+		}
+
 		// Is empty spot
 		if (_board[current_row][current_column] == NA)
 		{
-			moves.push_back(Move(row, column, current_row, current_column));
+			if (!has_to_eat) 
+			{
+				if (will_promote)
+					create_promotion_moves(row, column, current_row, current_column, player, moves);
+				else
+					moves.push_back(Move(row, column, current_row, current_column));
+			}
+
 			steps++;
 			continue;
 		}
@@ -141,7 +196,14 @@ void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int del
 		}
 
 		// Can eat
-		moves.push_back(Move(row, column, current_row, current_column));
+		if (can_eat)
+		{
+			if (will_promote)
+				create_promotion_moves(row, column, current_row, current_column, player, moves);
+			else
+				moves.push_back(Move(row, column, current_row, current_column));
+		}
+
 		break;
 	}
 }

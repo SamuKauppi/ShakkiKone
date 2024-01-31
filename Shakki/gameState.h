@@ -35,6 +35,8 @@ public:
 	void get_knight_moves(int row, int column, int player, vector<Move>& moves) const;
 	void get_king_moves(int row, int column, int player, vector<Move>& moves) const;
 
+	void get_pawn_moves(int row, int column, int player, vector<Move>& moves) const;
+
 
 	/// <summary>
 	/// Return all possible movements in direction
@@ -52,6 +54,16 @@ public:
 		int delta_column, 
 		int player,
 		int max_steps, 
+		vector<Move>& moves,
+		bool can_eat = true,
+		bool has_to_eat = false) const;
+
+	void create_promotion_moves(
+		int row, 
+		int column, 
+		int delta_row, 
+		int delta_column, 
+		int player, 
 		vector<Move>& moves) const;
 
 private:

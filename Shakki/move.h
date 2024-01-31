@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "chess.h"
 using namespace std;
 
 // Defines move in GameState
@@ -21,6 +22,8 @@ public:
 private:
 	vector<int> _start_pos;
 	vector<int> _end_pos;
+
+	int _piece_promotion = NA;
 
 	friend class GameState;
 };
