@@ -82,7 +82,7 @@ Move::Move(const string& m)
 	}
 }
 
-string Move::get_move_name() const
+string Move::get_move_name()
 {
 	if (_move_name != "")
 	{
@@ -118,9 +118,10 @@ string Move::get_move_name() const
 
 	if (_piece_promotion != NA)
 	{
-		move += _piece_promotion;
+		move += piece_names[_piece_promotion];
 	}
 
-	_move_name = "";
+	_move_name = move;
+
 	return move;
 }

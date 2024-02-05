@@ -30,10 +30,10 @@ public:
 	/// <param name="m"></param>
 	Move(const string& m);
 
-	string get_move_name() const;
+	string get_move_name();
 
 private:
-	string _move_name = "";
+	string _move_name;
 	vector<int> _start_pos;
 	vector<int> _end_pos;
 

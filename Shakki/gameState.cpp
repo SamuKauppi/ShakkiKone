@@ -23,8 +23,17 @@ void GameState::empty()
 /// <param name="m"></param>
 void GameState::make_move(const Move& m)
 {
+	int piece;
 	// Get piece from start pos
-	int piece = _board[m._start_pos[0]][m._start_pos[1]];
+	if (m._piece_promotion == NA)
+	{
+		piece = _board[m._start_pos[0]][m._start_pos[1]];
+	}
+	// Get promoted piece
+	else
+	{
+		piece = m._piece_promotion;
+	}
 
 	// Reset piece at start pos
 	_board[m._start_pos[0]][m._start_pos[1]] = NA;
@@ -288,7 +297,7 @@ void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int del
 void GameState::print_board() const
 {
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
-	cout << "   ---------------------------------\n";
+	cout << "   |---|---|---|---|---|---|---|---|\n";
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -298,7 +307,7 @@ void GameState::print_board() const
 			cout << " | " << piece_names[_board[i][j]];
 		}
 		cout << " | " << 8 - i << "\n";
-		cout << "   ---------------------------------\n";
+		cout << "   |---|---|---|---|---|---|---|---|\n";
 	}
 
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
