@@ -25,12 +25,26 @@ public:
 	/// </summary>
 	void print_board() const;
 
-
+	/// <summary>
+	/// Returns all of the moves for turn player
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="moves"></param>
 	void get_all_moves(int player, vector<Move>& moves) const;
 
-	void get_piece_moves(int row, int column, int player, int piece, vector<Move>& moves) const;
 	/// <summary>
-	/// Determine raw move for rook
+	/// Get moves for this piece
+	/// </summary>
+	/// <param name="row"></param>
+	/// <param name="column"></param>
+	/// <param name="player"></param>
+	/// <param name="piece"></param>
+	/// <param name="moves"></param>
+	void get_piece_moves(int row, int column, int player, int piece, vector<Move>& moves) const;
+
+
+	/// <summary>
+	/// Get moves based on piece
 	/// </summary>
 	/// <param name="row"></param>
 	/// <param name="column"></param>
@@ -63,6 +77,16 @@ public:
 		bool can_eat = true,
 		bool has_to_eat = false) const;
 
+
+	/// <summary>
+	/// Creates promotion moves from position
+	/// </summary>
+	/// <param name="row"></param>
+	/// <param name="column"></param>
+	/// <param name="delta_row"></param>
+	/// <param name="delta_column"></param>
+	/// <param name="player"></param>
+	/// <param name="moves"></param>
 	void create_promotion_moves(
 		int row, 
 		int column, 
@@ -70,6 +94,15 @@ public:
 		int delta_column, 
 		int player, 
 		vector<Move>& moves) const;
+
+	/// <summary>
+	/// Finds the position of given piece on board
+	/// </summary>
+	/// <param name="row"></param>
+	/// <param name="column"></param>
+	void find_piece(int piece, int& row, int& column) const;
+
+	bool is_under_threat(int row, int column, int opponent) const;
 
 private:
 	// Game board

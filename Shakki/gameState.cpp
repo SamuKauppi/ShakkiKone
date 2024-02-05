@@ -3,9 +3,6 @@
 #include "gameState.h"
 #include "move.h"
 
-/// <summary>
-/// Empties gameboard
-/// </summary>
 void GameState::empty()
 {
 	for (int i = 0; i < 8; i++)
@@ -17,10 +14,6 @@ void GameState::empty()
 	}
 }
 
-/// <summary>
-/// Moves piece from a to b
-/// </summary>
-/// <param name="m"></param>
 void GameState::make_move(const Move& m)
 {
 	int piece;
@@ -44,11 +37,6 @@ void GameState::make_move(const Move& m)
 	TurnPlayer = 1 - TurnPlayer;
 }
 
-/// <summary>
-/// Returns all possible moves from current board state
-/// </summary>
-/// <param name="player"></param>
-/// <param name="moves"></param>
 void GameState::get_all_moves(int player, vector<Move>& moves) const
 {
 	for (int i = 0; i < 8; i++)
@@ -69,15 +57,6 @@ void GameState::get_all_moves(int player, vector<Move>& moves) const
 	}
 }
 
-/// <summary>
-/// Create promotion moves for (Q, R, B, N)
-/// </summary>
-/// <param name="row"></param>
-/// <param name="column"></param>
-/// <param name="delta_row"></param>
-/// <param name="delta_column"></param>
-/// <param name="player"></param>
-/// <param name="moves"></param>
 void GameState::create_promotion_moves(
 	int row,
 	int column,
@@ -96,15 +75,6 @@ void GameState::create_promotion_moves(
 	}
 }
 
-
-/// <summary>
-/// Get moves from position with specific piece
-/// </summary>
-/// <param name="row"></param>
-/// <param name="column"></param>
-/// <param name="player"></param>
-/// <param name="piece"></param>
-/// <param name="moves"></param>
 void GameState::get_piece_moves(int row, int column, int player, int piece, vector<Move>& moves) const
 {
 	switch (piece)
@@ -145,14 +115,6 @@ void GameState::get_piece_moves(int row, int column, int player, int piece, vect
 	}
 }
 
-
-/// <summary>
-/// Return moves based on piece
-/// </summary>
-/// <param name="row"></param>
-/// <param name="column"></param>
-/// <param name="player"></param>
-/// <param name="moves"></param>
 void GameState::get_pawn_moves(int row, int column, int player, vector<Move>& moves) const
 {
 	// Direction based on player
@@ -215,19 +177,6 @@ void GameState::get_king_moves(int row, int column, int player, vector<Move>& mo
 	get_raw_moves_in_dir(row, column, 1, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
 }
-
-/// <summary>
-/// Get all possible moves from direction
-/// </summary>
-/// <param name="row"></param>
-/// <param name="column"></param>
-/// <param name="delta_row"></param>
-/// <param name="delta_column"></param>
-/// <param name="player"></param>
-/// <param name="max_steps"></param>
-/// <param name="moves"></param>
-/// <param name="can_eat"></param>
-/// <param name="has_to_eat"></param>
 void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int delta_column,
 	int player, int max_steps, vector<Move>& moves, bool can_eat, bool has_to_eat) const
 {
@@ -291,9 +240,28 @@ void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int del
 	}
 }
 
-/// <summary>
-/// Prints the board
-/// </summary>
+void GameState::find_piece(int piece, int& row, int& column) const
+{
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			int p = _board[i][j];
+			if (p == piece)
+			{
+				row = i;
+				column = j;
+				return;
+			}
+		}
+	}
+}
+
+bool GameState::is_under_threat(int row, int column, int opponent) const
+{
+
+}
+
 void GameState::print_board() const
 {
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
