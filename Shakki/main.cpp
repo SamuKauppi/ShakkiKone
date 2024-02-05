@@ -80,7 +80,7 @@ static void game_loop()
 	while (true)
 	{
 		vector<Move> moves;
-		state.get_all_moves(state.TurnPlayer, moves);
+		state.give_moves(moves);
 
 		for (int i = 0; i < moves.size(); i++)
 		{

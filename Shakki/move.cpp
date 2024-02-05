@@ -89,8 +89,6 @@ string Move::get_move_name()
 		return _move_name;
 	}
 
-	string move = "";
-
 	for (int i = 0; i < 4; i++)
 	{
 		int temp;
@@ -107,21 +105,19 @@ string Move::get_move_name()
 		if (i % 2 != 0)
 		{
 			m = int_pos_to_char(temp);
-			move.insert(0, 1, m);
+			_move_name.insert(0, 1, m);
 		}
 		else
 		{
 			temp = abs(temp - 8);
-			move.insert(0, to_string(temp));
+			_move_name.insert(0, to_string(temp));
 		}
 	}
 
 	if (_piece_promotion != NA)
 	{
-		move += piece_names[_piece_promotion];
+		_move_name += piece_names[_piece_promotion];
 	}
 
-	_move_name = move;
-
-	return move;
+	return _move_name;
 }

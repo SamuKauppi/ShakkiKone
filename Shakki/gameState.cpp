@@ -175,7 +175,7 @@ void GameState::get_bishop_moves(int row, int column, int player, vector<Move>& 
 	get_raw_moves_in_dir(row, column, -1, 1, player, 7, moves);
 	get_raw_moves_in_dir(row, column, 1, 1, player, 7, moves);
 	get_raw_moves_in_dir(row, column, 1, -1, player, 7, moves);
-	get_raw_moves_in_dir(row, column, -1, 1, player, 7, moves);
+	get_raw_moves_in_dir(row, column, -1, -1, player, 7, moves);
 }
 
 void GameState::get_knight_moves(int row, int column, int player, vector<Move>& moves) const
