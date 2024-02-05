@@ -57,6 +57,30 @@ void GameState::get_all_moves(int player, vector<Move>& moves) const
 	}
 }
 
+void GameState::give_moves(vector<Move>& moves) {
+
+	int king = TurnPlayer == WHITE ? wK : bK;
+	int player = TurnPlayer;
+	int opponent = 1 - TurnPlayer;
+
+	vector<Move> rawMoves;
+	get_all_moves(player, rawMoves);
+
+	for (Move& rm : rawMoves) {
+		GameState testState = *this;
+
+		testState.make_move(rm);
+
+		int row, column;
+		testState.find_piece(king, row, column);
+
+		if (!testState.is_under_threat(row, column, opponent)) {
+			moves.push_back(rm);
+		}
+
+	}
+}
+
 void GameState::create_promotion_moves(
 	int row,
 	int column,
@@ -259,6 +283,19 @@ void GameState::find_piece(int piece, int& row, int& column) const
 
 bool GameState::is_under_threat(int row, int column, int opponent) const
 {
+	// Generate opponents raw moves
+	vector<Move> opponentMoves;
+	get_all_moves(opponent, opponentMoves);
+
+
+	// check if any end position matches row and column
+	for (int i = 0; i < opponentMoves.size(); i++)
+	{
+		if (opponentMoves[i]._end_pos[0] == row && opponentMoves[i]._end_pos[1] == column) {
+			return true;
+		}
+	}
+	return false;
 
 }
 

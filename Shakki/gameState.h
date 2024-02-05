@@ -104,6 +104,8 @@ public:
 
 	bool is_under_threat(int row, int column, int opponent) const;
 
+
+	void give_moves(vector<Move>& moves);
 private:
 	// Game board
 	// [y][x]
