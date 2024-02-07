@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <math.h>
 #include "gameState.h"
 #include "move.h"
 
@@ -16,11 +17,17 @@ void GameState::empty()
 
 void GameState::make_move(const Move& m)
 {
+	// Create variables
+	int start_row = m._start_pos[0];
+	int start_column = m._start_pos[1];
+	int end_row = m._end_pos[0];
+	int end_column = m._end_pos[1];
 	int piece;
+
 	// Get piece from start pos
 	if (m._piece_promotion == NA)
 	{
-		piece = _board[m._start_pos[0]][m._start_pos[1]];
+		piece = _board[start_row][start_column];
 	}
 	// Get promoted piece
 	else
@@ -28,16 +35,69 @@ void GameState::make_move(const Move& m)
 		piece = m._piece_promotion;
 	}
 
+	// Check if king is moved and disable castle
+	if (piece == wK)
+	{
+		_w_long_castle = false;
+		_w_short_castle = false;
+	}
+	else if (piece == bK)
+	{
+		_b_long_castle = false;
+		_b_short_castle = false;
+	}
+
+	// Check if rook has moved and disble castle
+	if (end_row == 0)
+	{
+		if (end_column == 0)
+		{
+			_w_long_castle = false;
+		}
+		else if (end_column == 7)
+		{
+			_w_short_castle = false;
+		}
+	}
+	else if (end_row == 7)
+	{
+		if (end_column == 0)
+		{
+			_b_long_castle = false;
+		}
+		else if (end_column == 7)
+		{
+			_b_short_castle = false;
+		}
+	}
+
 	// Reset piece at start pos
-	_board[m._start_pos[0]][m._start_pos[1]] = NA;
+	_board[start_row][start_column] = NA;
 
 	// Update piece at end pos
-	_board[m._end_pos[0]][m._end_pos[1]] = piece;
+	_board[end_row][end_column] = piece;
+
+	// Check if the move was castle
+	if ((piece == wK || piece == bK) &&
+		abs(end_column - start_column) > 1)
+	{
+		// row = start_row
+		// column = 2 or 5
+		int rook_dir = end_column - start_column;
+		int rook_column = rook_dir > 0 ? 5 : 2;
+		int corner = rook_dir > 0 ? 7 : 0;
+
+		int rook = _board[start_row][corner];
+		
+		_board[start_row][corner] = NA;
+
+		_board[start_row][rook_column] = rook;
+	}
 
 	TurnPlayer = 1 - TurnPlayer;
 }
 
-void GameState::get_all_moves(int player, vector<Move>& moves) const
+void GameState::get_raw_moves(int player, vector<Move>& moves) const
 {
 	for (int i = 0; i < 8; i++)
 	{
@@ -57,14 +117,48 @@ void GameState::get_all_moves(int player, vector<Move>& moves) const
 	}
 }
 
-void GameState::give_moves(vector<Move>& moves) {
+void GameState::get_castles(int player, vector<Move>& moves) const 
+{
+	// Get opponent
+	int opponent = 1 - player;
+
+	// Get the player position
+	int player_pos = player == WHITE ? 7 : 0;
+
+	// check if short castle is allowed
+	bool can_short = _board[player_pos][5] == NA && _board[player_pos][6] == NA &&
+		((player == WHITE && _w_short_castle) || (player == BLACK && _b_short_castle));
+
+	// check if long castle is allowed
+	bool can_long = _board[player_pos][3] == NA && _board[player_pos][2] == NA && _board[player_pos][1] == NA &&
+		((player == WHITE && _w_long_castle) || (player == BLACK && _b_long_castle));
+
+	if (can_short && 
+		!is_under_threat(player_pos, 4, opponent) && 
+		!is_under_threat(player_pos, 5, opponent))
+	{
+		moves.push_back(Move(player_pos, 4, player_pos, 6));
+	}
+
+	if (can_long && 
+		!is_under_threat(player_pos, 3, opponent) && 
+		!is_under_threat(player_pos, 2, opponent) && 
+		!is_under_threat(player_pos, 1, opponent))
+	{
+		moves.push_back(Move(player_pos, 4, player_pos, 1));
+	}
+}
+
+void GameState::get_moves(vector<Move>& moves) {
 
 	int king = TurnPlayer == WHITE ? wK : bK;
 	int player = TurnPlayer;
 	int opponent = 1 - TurnPlayer;
 
 	vector<Move> rawMoves;
-	get_all_moves(player, rawMoves);
+
+	get_raw_moves(player, rawMoves);
+	get_castles(player, moves);0
 
 	for (Move& rm : rawMoves) {
 		GameState testState = *this;
@@ -74,7 +168,8 @@ void GameState::give_moves(vector<Move>& moves) {
 		int row, column;
 		testState.find_piece(king, row, column);
 
-		if (!testState.is_under_threat(row, column, opponent)) {
+		if (!testState.is_under_threat(row, column, opponent)) 
+		{
 			moves.push_back(rm);
 		}
 
@@ -192,12 +287,12 @@ void GameState::get_knight_moves(int row, int column, int player, vector<Move>& 
 
 void GameState::get_king_moves(int row, int column, int player, vector<Move>& moves) const
 {
-	get_raw_moves_in_dir(row, column, -1, 0, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 1, 0, player, 1, moves);
-	get_raw_moves_in_dir(row, column, 0, -1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, 0, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 0, 1, player, 1, moves);
-	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, 0, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 1, 1, player, 1, moves);
+	get_raw_moves_in_dir(row, column, -1, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, 1, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
 }
@@ -285,7 +380,7 @@ bool GameState::is_under_threat(int row, int column, int opponent) const
 {
 	// Generate opponents raw moves
 	vector<Move> opponentMoves;
-	get_all_moves(opponent, opponentMoves);
+	get_raw_moves(opponent, opponentMoves);
 
 
 	// check if any end position matches row and column
