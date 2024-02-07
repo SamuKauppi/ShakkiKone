@@ -113,12 +113,23 @@ public:
 	bool is_under_threat(int row, int column, int opponent) const;
 
 	/// <summary>
-	/// Return valid moves
+	/// Sets all legal moves into moves vector
 	/// </summary>
 	/// <param name="moves"></param>
-	void get_moves(vector<Move>& moves);
+	void get_moves(vector<Move>& moves) const;
 
+	/// <summary>
+	/// Sets all legal castle moves into vector
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="moves"></param>
 	void get_castles(int player, vector<Move>& moves) const;
+
+	void update_castle_legality();
+
+	void disable_one_castle(bool& short_castle, bool& long_castle, int column);
+
+	bool can_player_castle(int player) const;
 
 private:
 	// Game board
@@ -133,16 +144,19 @@ private:
 	//	{wP, wP, wP, wP, wP, wP, wP, wP},
 	//	{wR, wN, wB, wQ, wK, wB, wN, wR}
 	//};
+
+	// Test board
 	int _board[8][8] = {
-	{bR, NA, NA, NA, bK, NA, NA, bR},
-	{bP, bP, bP, bP, bP, bP, bP, bP},
-	{NA, NA, NA, NA, NA, NA, NA, NA},
-	{NA, NA, NA, NA, NA, NA, NA, NA},
-	{NA, NA, NA, NA, NA, NA, NA, NA},
-	{NA, NA, NA, NA, NA, NA, NA, NA},
-	{wP, wP, wP, wP, wP, wP, wP, wP},
-	{wR, NA, NA, NA, wK, NA, NA, wR}
+		{bR, NA, NA, NA, bK, NA, NA, bR},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{wR, NA, NA, NA, wK, NA, NA, wR}
 	};
+
 
 	bool _w_long_castle = true;
 	bool _w_short_castle = true;

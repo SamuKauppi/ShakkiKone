@@ -35,65 +35,34 @@ void GameState::make_move(const Move& m)
 		piece = m._piece_promotion;
 	}
 
-	// Check if king is moved and disable castle
-	if (piece == wK)
-	{
-		_w_long_castle = false;
-		_w_short_castle = false;
-	}
-	else if (piece == bK)
-	{
-		_b_long_castle = false;
-		_b_short_castle = false;
-	}
-
-	// Check if rook has moved and disble castle
-	if (end_row == 0)
-	{
-		if (end_column == 0)
-		{
-			_w_long_castle = false;
-		}
-		else if (end_column == 7)
-		{
-			_w_short_castle = false;
-		}
-	}
-	else if (end_row == 7)
-	{
-		if (end_column == 0)
-		{
-			_b_long_castle = false;
-		}
-		else if (end_column == 7)
-		{
-			_b_short_castle = false;
-		}
-	}
-
 	// Reset piece at start pos
 	_board[start_row][start_column] = NA;
 
 	// Update piece at end pos
 	_board[end_row][end_column] = piece;
 
-	// Check if the move was castle
+	// Move was a castle if king moves more than 1 step
 	if ((piece == wK || piece == bK) &&
 		abs(end_column - start_column) > 1)
 	{
-		// row = start_row
-		// column = 2 or 5
+		// get the direction for the rook
 		int rook_dir = end_column - start_column;
+		// get column where rook will go
 		int rook_column = rook_dir > 0 ? 5 : 2;
+		// get the corner where the rook starts
 		int corner = rook_dir > 0 ? 7 : 0;
 
+		// get the rook index
 		int rook = _board[start_row][corner];
 		
+		// empty the corner spot
 		_board[start_row][corner] = NA;
 
+		// add rook to end pos
 		_board[start_row][rook_column] = rook;
 	}
 
+	// switch players
 	TurnPlayer = 1 - TurnPlayer;
 }
 
@@ -149,7 +118,8 @@ void GameState::get_castles(int player, vector<Move>& moves) const
 	}
 }
 
-void GameState::get_moves(vector<Move>& moves) {
+void GameState::get_moves(vector<Move>& moves) const 
+{
 
 	int king = TurnPlayer == WHITE ? wK : bK;
 	int player = TurnPlayer;
@@ -158,9 +128,10 @@ void GameState::get_moves(vector<Move>& moves) {
 	vector<Move> rawMoves;
 
 	get_raw_moves(player, rawMoves);
-	get_castles(player, moves);0
+	get_castles(player, moves);
 
-	for (Move& rm : rawMoves) {
+	for (Move& rm : rawMoves) 
+	{
 		GameState testState = *this;
 
 		testState.make_move(rm);
@@ -392,6 +363,96 @@ bool GameState::is_under_threat(int row, int column, int opponent) const
 	}
 	return false;
 
+}
+
+void GameState::update_castle_legality()
+{
+	// Check if castles can be performed
+	if (!can_player_castle(WHITE) && !can_player_castle(BLACK))
+	{
+		return;
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		// Get alternating row
+		int row = i % 2 == 0 ? 0 : 7;
+		// Get player index based on row
+		int player = row > 0 ? WHITE : BLACK;
+
+		// Skip if this player can't castle
+		if (!can_player_castle(player))
+		{
+			continue;
+		}
+
+		// Check if king has been moved
+		if (i < 2)
+		{
+			// Get piece at king pos
+			int king = _board[row][4];
+
+			// disable castles if no king was found
+			if (row == 0 && king != bK)
+			{
+				_b_long_castle = false;
+				_b_short_castle = false;
+			}
+			else if (row == 7 && king != wK)
+			{
+				_w_long_castle = false;
+				_w_short_castle = false;
+			}
+		}
+		// Check if rook has been moved
+		else
+		{
+			// check first column index 0 twice and then 7 twice
+			int column = i < 4 ? 0 : 7;
+
+			// get piece at pos
+			int piece = _board[row][column];
+
+			// disable right castle if no rook was found
+			if (piece != wR && row == 7)
+			{
+				disable_one_castle(_w_short_castle, _w_long_castle, column);
+			}
+			else if (piece != bR && row == 0)
+			{
+				disable_one_castle(_b_short_castle, _b_long_castle, column);
+			}
+		}
+
+	}
+}
+
+void GameState::disable_one_castle(bool& short_castle, bool& long_castle, int column)
+{
+	if (column == 0 && long_castle)
+	{
+		long_castle = false;
+		cout << "can't long castle";
+	}
+	else if (column == 7 && short_castle)
+	{
+		short_castle = false;
+		cout << "can't short castle";
+	}
+}
+
+bool GameState::can_player_castle(int player) const
+{
+	if (player == WHITE && (_w_short_castle || _w_long_castle))
+	{
+		return true;
+	}
+	else if ( player == BLACK && (_b_short_castle || _b_long_castle))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void GameState::print_board() const

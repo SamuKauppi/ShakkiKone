@@ -56,6 +56,7 @@ static void game_loop()
 		}
 
 		state.make_move(moves[move_index]);
+		state.update_castle_legality();
 		state.print_board();
 	}
 }
