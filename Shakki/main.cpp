@@ -1,7 +1,49 @@
 #include "gameState.h"
 #include "move.h"
+#include "limits"
 #include <vector>
 #include <iostream>
+
+static float minimax(GameState& state, int depth)
+{
+	// Generate moves for this state
+	vector<Move> moves;
+	state.get_moves(moves);
+
+	// If no moves remain, game is over
+	if (moves.size() <= 0)
+	{
+		return state.score_board();
+	}
+
+	// Reached max depth
+	if (depth <= 0)
+	{
+		return state.evaluate();
+	}
+
+	float best_value = state.TurnPlayer == WHITE ?
+		numeric_limits<float>::min() : numeric_limits<float>::max();
+
+	for (Move& m : moves)
+	{
+		GameState new_state = state;
+		new_state.make_move(m);
+
+		float value = minimax(new_state, depth - 1);
+
+		if (state.TurnPlayer == WHITE && value > best_value)
+		{
+			best_value = value;
+		}
+		else if (state.TurnPlayer == BLACK && value < best_value)
+		{
+			best_value = value;
+		}
+	}
+
+	return best_value;
+}
 
 static int get_valid_move_index(vector<Move>& moves, string chosen)
 {
@@ -17,7 +59,14 @@ static int get_valid_move_index(vector<Move>& moves, string chosen)
 
 static void game_loop()
 {
+	srand((unsigned)time(NULL));
 	GameState state;
+
+	float value = minimax(state, 2);
+	cout << value << "\n";
+	system("pause");
+
+
 	state.print_board();
 	while (true)
 	{
@@ -44,8 +93,8 @@ static void game_loop()
 		while (true)
 		{
 			string chosen = "";
-			cin >> chosen;
-
+			//cin >> chosen;
+			chosen = moves[rand() % moves.size()].get_move_name();
 			move_index = get_valid_move_index(moves, chosen);
 			if (move_index != -1)
 			{
@@ -56,8 +105,9 @@ static void game_loop()
 		}
 
 		state.make_move(moves[move_index]);
-		state.update_castle_legality();
 		state.print_board();
+
+		system("pause");
 	}
 }
 

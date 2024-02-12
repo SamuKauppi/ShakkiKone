@@ -62,6 +62,8 @@ void GameState::make_move(const Move& m)
 		_board[start_row][rook_column] = rook;
 	}
 
+	update_castle_legality();
+
 	// switch players
 	TurnPlayer = 1 - TurnPlayer;
 }
@@ -474,3 +476,62 @@ void GameState::print_board() const
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
 }
 
+float GameState::score_board() const
+{
+	// Get opponent
+	int opponent = 1 - TurnPlayer;
+
+	// Get worst score for turn player
+	int worst_score = TurnPlayer == WHITE ? -1000000 : 1000000;
+
+	// Find correct king
+	int row, column;
+	int king = TurnPlayer == WHITE ? wK : bK;
+	find_piece(king, row, column);
+
+	// Return worst score if ít's under threat
+	if (is_under_threat(row, column, opponent))
+	{
+		return worst_score;
+	}
+
+	// Return draw if the king is not under threat
+	return 0;
+}
+
+float GameState::evaluate() const
+{
+	return 1.0 * material_difference() + 0.05 * mobility_difference();
+}
+
+float GameState::material_difference() const
+{
+	float value = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			int piece = _board[i][j];
+			auto it = piece_values.find(piece);
+			if (it != piece_values.end()) 
+			{
+				value += it->second;
+			}
+		}
+	}
+
+	return value;
+}
+
+float GameState::mobility_difference() const
+{
+	vector<Move> white_m;
+	vector<Move> black_m;
+
+	get_raw_moves(WHITE, white_m);
+	get_raw_moves(BLACK, white_m);
+
+
+	return white_m.size() - black_m.size();
+}

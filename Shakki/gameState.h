@@ -1,6 +1,7 @@
 #pragma once
 #include "chess.h"
 #include "move.h"
+#include "unordered_map"
 
 class GameState
 {
@@ -131,6 +132,44 @@ public:
 
 	bool can_player_castle(int player) const;
 
+
+	/// <summary>
+	/// Evaluates the board as follow:
+	/// 
+	/// White made check mate:		1000000
+	/// Draw						0
+	/// Black made check mate:		-1000000
+	/// 
+	/// Called when no legal moves are left
+	/// </summary>
+	/// <returns></returns>
+	float score_board() const;
+
+	/// <summary>
+	/// Evaluates board state
+	/// </summary>
+	/// <returns></returns>
+	float evaluate() const;
+
+	/// <summary>
+	/// Gives the difference between white and black pieces
+	/// 
+	/// pawn 		1
+	/// knight		3
+	/// bishop		3.25
+	/// rook 		5
+	/// queen 		9
+	/// </summary>
+	/// <returns></returns>
+	float material_difference() const;
+
+
+	/// <summary>
+	/// Returns the difference between moves
+	/// </summary>
+	/// <returns></returns>
+	float mobility_difference() const;
+
 private:
 	// Game board
 	// [y][x]
@@ -164,4 +203,9 @@ private:
 	bool _b_short_castle = true;
 
 	int _kaksoisaskel = -1;
+
+	const unordered_map<int, float> piece_values = {
+	{wP, 1}, {wN, 3}, {wB, 3.25}, {wR, 5}, {wQ, 9},
+	{bP, -1}, {bN, -3}, {bB, -3.25}, {bR, -5}, {bQ, -9}, 
+	{NA, 0} };
 };
