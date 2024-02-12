@@ -431,12 +431,10 @@ void GameState::disable_one_castle(bool& short_castle, bool& long_castle, int co
 	if (column == 0 && long_castle)
 	{
 		long_castle = false;
-		cout << "can't long castle";
 	}
 	else if (column == 7 && short_castle)
 	{
 		short_castle = false;
-		cout << "can't short castle";
 	}
 }
 
