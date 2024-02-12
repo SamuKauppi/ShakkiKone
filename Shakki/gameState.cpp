@@ -48,7 +48,7 @@ void GameState::make_move(const Move& m)
 		// get the direction for the rook
 		int rook_dir = end_column - start_column;
 		// get column where rook will go
-		int rook_column = rook_dir > 0 ? 5 : 2;
+		int rook_column = rook_dir > 0 ? 5 : 3;
 		// get the corner where the rook starts
 		int corner = rook_dir > 0 ? 7 : 0;
 
@@ -111,10 +111,9 @@ void GameState::get_castles(int player, vector<Move>& moves) const
 
 	if (can_long && 
 		!is_under_threat(player_pos, 3, opponent) && 
-		!is_under_threat(player_pos, 2, opponent) && 
-		!is_under_threat(player_pos, 1, opponent))
+		!is_under_threat(player_pos, 2, opponent))
 	{
-		moves.push_back(Move(player_pos, 4, player_pos, 1));
+		moves.push_back(Move(player_pos, 4, player_pos, 2));
 	}
 }
 
