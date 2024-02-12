@@ -104,12 +104,14 @@ void GameState::get_castles(int player, vector<Move>& moves) const
 
 	if (can_short && 
 		!is_under_threat(player_pos, 4, opponent) && 
-		!is_under_threat(player_pos, 5, opponent))
+		!is_under_threat(player_pos, 5, opponent) &&
+		!is_under_threat(player_pos, 6, opponent))
 	{
 		moves.push_back(Move(player_pos, 4, player_pos, 6));
 	}
 
 	if (can_long && 
+		!is_under_threat(player_pos, 4, opponent) &&
 		!is_under_threat(player_pos, 3, opponent) && 
 		!is_under_threat(player_pos, 2, opponent))
 	{
@@ -266,6 +268,7 @@ void GameState::get_king_moves(int row, int column, int player, vector<Move>& mo
 	get_raw_moves_in_dir(row, column, 1, -1, player, 1, moves);
 	get_raw_moves_in_dir(row, column, -1, 1, player, 1, moves);
 }
+
 void GameState::get_raw_moves_in_dir(int row, int column, int delta_row, int delta_column,
 	int player, int max_steps, vector<Move>& moves, bool can_eat, bool has_to_eat) const
 {
