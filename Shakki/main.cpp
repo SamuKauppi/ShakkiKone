@@ -59,12 +59,12 @@ static int get_valid_move_index(vector<Move>& moves, string chosen)
 
 static void game_loop()
 {
-	srand((unsigned)time(NULL));
+	//srand((unsigned)time(NULL));
 	GameState state;
 
-	float value = minimax(state, 2);
-	cout << value << "\n";
-	system("pause");
+	//float value = minimax(state, 2);
+	//cout << value << "\n";
+	//system("pause");
 
 
 	state.print_board();
@@ -93,8 +93,8 @@ static void game_loop()
 		while (true)
 		{
 			string chosen = "";
-			//cin >> chosen;
-			chosen = moves[rand() % moves.size()].get_move_name();
+			cin >> chosen;
+			//chosen = moves[rand() % moves.size()].get_move_name();
 			move_index = get_valid_move_index(moves, chosen);
 			if (move_index != -1)
 			{
@@ -107,7 +107,7 @@ static void game_loop()
 		state.make_move(moves[move_index]);
 		state.print_board();
 
-		system("pause");
+		//system("pause");
 	}
 }
 
