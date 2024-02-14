@@ -1,6 +1,7 @@
 #pragma once
 #include "chess.h"
 #include "move.h"
+#include "minimax_value.h"
 #include "unordered_map"
 
 class GameState
@@ -170,31 +171,39 @@ public:
 	/// <returns></returns>
 	float mobility_difference() const;
 
+
+	/// <summary>
+	/// Performs minimax alorythmn
+	/// </summary>
+	/// <param name="depth"></param>
+	/// <returns></returns>
+	MinimaxValue minimax(int depth);
+
 private:
 	// Game board
 	// [y][x]
-	//int _board[8][8] = {
-	//	{bR, bN, bB, bQ, bK, bB, bN, bR},
-	//	{bP, bP, bP, bP, bP, bP, bP, bP},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{wP, wP, wP, wP, wP, wP, wP, wP},
-	//	{wR, wN, wB, wQ, wK, wB, wN, wR}
-	//};
+	int _board[8][8] = {
+		{bR, bN, bB, bQ, bK, bB, bN, bR},
+		{bP, bP, bP, bP, bP, bP, bP, bP},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{wP, wP, wP, wP, wP, wP, wP, wP},
+		{wR, wN, wB, wQ, wK, wB, wN, wR}
+	};
 
 	// Test board
-	int _board[8][8] = {
-		{bR, NA, NA, NA, bK, NA, NA, bR},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{wR, NA, NA, NA, wK, NA, NA, wR}
-	};
+	//int _board[8][8] = {
+	//	{bR, NA, NA, NA, bK, NA, NA, bR},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{wR, NA, NA, NA, wK, NA, NA, wR}
+	//};
 
 
 	bool _w_long_castle = true;
@@ -205,7 +214,7 @@ private:
 	int _kaksoisaskel = -1;
 
 	const unordered_map<int, float> piece_values = {
-	{wP, 1}, {wN, 3}, {wB, 3.25}, {wR, 5}, {wQ, 9},
-	{bP, -1}, {bN, -3}, {bB, -3.25}, {bR, -5}, {bQ, -9}, 
-	{NA, 0} };
+	{wP, 1.0f}, {wN, 3.0f}, {wB, 3.25}, {wR, 5.0f}, {wQ, 9.0f},
+	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f}, 
+	{NA, 0.0f} };
 };

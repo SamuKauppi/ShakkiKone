@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <unordered_map>
 #include "gameState.h"
 #include "move.h"
+#include "minimax_value.h"
 
 void GameState::empty()
 {
@@ -482,7 +484,7 @@ float GameState::score_board() const
 	int opponent = 1 - TurnPlayer;
 
 	// Get worst score for turn player
-	int worst_score = TurnPlayer == WHITE ? -1000000 : 1000000;
+	float worst_score = TurnPlayer == WHITE ? -1000000.0f : 1000000.0f;
 
 	// Find correct king
 	int row, column;
@@ -496,12 +498,12 @@ float GameState::score_board() const
 	}
 
 	// Return draw if the king is not under threat
-	return 0;
+	return 0.0f;
 }
 
 float GameState::evaluate() const
 {
-	return 1.0 * material_difference() + 0.05 * mobility_difference();
+	return 1.0f * material_difference() + 0.05f * mobility_difference();
 }
 
 float GameState::material_difference() const
@@ -533,5 +535,55 @@ float GameState::mobility_difference() const
 	get_raw_moves(BLACK, white_m);
 
 
-	return white_m.size() - black_m.size();
+	return (float)(white_m.size() - black_m.size());
+}
+
+MinimaxValue GameState::minimax(int depth)
+{
+	// Generate moves for this state
+	vector<Move> moves;
+	get_moves(moves);
+
+	// If no moves remain, game is over
+	if (moves.size() <= 0)
+	{
+		return	MinimaxValue(score_board(), Move());
+	}
+
+	// Reached max depth
+	if (depth <= 0)
+	{
+		return MinimaxValue(evaluate(), Move());
+	}
+
+	// Get the best_value for player
+	float best_value = TurnPlayer == WHITE ?
+		numeric_limits<float>::min() : numeric_limits<float>::max();
+
+	Move best_move(0, 0, 0, 0);
+
+	// Iterate through moves
+	for (Move& m : moves)
+	{
+		// Create copies of current state
+		GameState new_state = *this;
+		new_state.make_move(m);
+
+		// Recursive call
+		MinimaxValue value = new_state.minimax(depth - 1);
+
+		// Get best value for player
+		if (TurnPlayer == WHITE && value.Value > best_value)
+		{
+			best_value = value.Value;
+			best_move = m;
+		}
+		else if (TurnPlayer == BLACK && value.Value < best_value)
+		{
+			best_value = value.Value;
+			best_move = m;
+		}
+	}
+
+	return MinimaxValue(best_value, best_move);
 }

@@ -4,47 +4,6 @@
 #include <vector>
 #include <iostream>
 
-static float minimax(GameState& state, int depth)
-{
-	// Generate moves for this state
-	vector<Move> moves;
-	state.get_moves(moves);
-
-	// If no moves remain, game is over
-	if (moves.size() <= 0)
-	{
-		return state.score_board();
-	}
-
-	// Reached max depth
-	if (depth <= 0)
-	{
-		return state.evaluate();
-	}
-
-	float best_value = state.TurnPlayer == WHITE ?
-		numeric_limits<float>::min() : numeric_limits<float>::max();
-
-	for (Move& m : moves)
-	{
-		GameState new_state = state;
-		new_state.make_move(m);
-
-		float value = minimax(new_state, depth - 1);
-
-		if (state.TurnPlayer == WHITE && value > best_value)
-		{
-			best_value = value;
-		}
-		else if (state.TurnPlayer == BLACK && value < best_value)
-		{
-			best_value = value;
-		}
-	}
-
-	return best_value;
-}
-
 static int get_valid_move_index(vector<Move>& moves, string chosen)
 {
 	for (int i = 0; i < moves.size(); i++)
@@ -62,8 +21,8 @@ static void game_loop()
 	srand((unsigned)time(NULL));
 	GameState state;
 
-	float value = minimax(state, 2);
-	cout << value << "\n";
+	MinimaxValue ai_value = state.minimax(2);
+	cout << ai_value.Best_move.get_move_name() << "\n";
 	system("pause");
 
 

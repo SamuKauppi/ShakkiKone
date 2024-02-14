@@ -38,5 +38,8 @@
     <ClInclude Include="move.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="minimax_value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

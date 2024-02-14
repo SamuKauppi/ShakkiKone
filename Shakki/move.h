@@ -10,6 +10,12 @@ class Move
 public:
 
 	/// <summary>
+	/// Default constructor
+	/// </summary>
+	Move()
+	{}
+
+	/// <summary>
 	/// Contruct a move from int
 	/// </summary>
 	/// <param name="s_y_pos"></param>
