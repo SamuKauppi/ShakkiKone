@@ -70,6 +70,8 @@ void GameState::make_move(const Move& m)
 
 	// switch players
 	TurnPlayer = 1 - TurnPlayer;
+
+	generate_hash();
 }
 
 void GameState::get_raw_moves(int player, vector<Move>& moves) const

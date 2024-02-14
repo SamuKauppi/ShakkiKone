@@ -32,6 +32,7 @@ static void game_loop()
 	current_state.print_board();
 	while (true)
 	{
+		cout << current_state._hash << "\n";
 		vector<Move> moves;
 		current_state.get_moves(moves);
 

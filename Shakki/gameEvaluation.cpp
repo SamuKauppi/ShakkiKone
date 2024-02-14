@@ -1,5 +1,20 @@
 #include "gameState.h"
 
+void GameState::generate_hash()
+{
+	unsigned long long int test = 1;
+	test ^= 3;
+	int squared = 8 * 8;
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			_hash += pow(2, squared) * _board[i][j];
+			squared--;
+		}
+	}
+}
+
 float GameState::score_board() const
 {
 	// Get opponent

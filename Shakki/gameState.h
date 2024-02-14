@@ -9,7 +9,15 @@ class GameState
 public:
 	// turn player
 	int TurnPlayer = WHITE;
+	int _hash;
 
+
+	GameState()
+	{
+		generate_hash();
+	}
+
+	void generate_hash();
 
 	/// <summary>
 	/// Empties board
@@ -200,6 +208,8 @@ public:
 	}
 
 private:
+
+
 	// Game board
 	// [y][x]
 	int _board[8][8] = {
