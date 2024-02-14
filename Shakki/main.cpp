@@ -1,6 +1,7 @@
 #include "gameState.h"
 #include "move.h"
 #include "limits"
+#include "stack"
 #include <vector>
 #include <iostream>
 
@@ -25,8 +26,8 @@ static void game_loop()
 	cout << ai_value.Best_move.get_move_name() << " " << ai_value.Value << "\n";
 	system("pause");
 
-	vector<GameState> history;
-	history.push_back(current_state);
+	stack<GameState> history;
+	history.push(current_state);
 
 	current_state.print_board();
 	while (true)
@@ -50,16 +51,19 @@ static void game_loop()
 
 		cout << "\nMake a move: ";
 		int move_index = -1;
+		bool wasUndo = false;
 
 		while (true)
 		{
 			string chosen = "";
 			cin >> chosen;
 
-			if (chosen == "undo")
+			if (chosen == "undo" && history.size() > 1)
 			{
-				current_state = history[history.size() - 1];
-				continue;
+				history.pop();
+				current_state = history.top();
+				wasUndo = true;
+				break;
 			}
 
 			//chosen = moves[rand() % moves.size()].get_move_name();
@@ -72,10 +76,14 @@ static void game_loop()
 			cout << "Not a valid move\nMake a move: ";
 		}
 
-		current_state.make_move(moves[move_index]);
+		if (!wasUndo)
+		{
+			current_state.make_move(moves[move_index]);
+			history.push(current_state);
+		}
+
 		current_state.print_board();
 
-		history.push_back(current_state);
 
 		//system("pause");
 	}

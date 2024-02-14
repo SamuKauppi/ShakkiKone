@@ -179,7 +179,7 @@ public:
 	/// <returns></returns>
 	MinimaxValue minimax(int depth, float alpha, float beta) const;
 
-	GameState& operator=(GameState& other)
+	void operator=(GameState& other)
 	{
 		for (int i = 0; i < 8; i++)
 		{
@@ -195,6 +195,8 @@ public:
 		_b_short_castle = other._b_short_castle;
 
 		_doubleStep = other._doubleStep;
+
+		TurnPlayer = other.TurnPlayer;
 	}
 
 private:
