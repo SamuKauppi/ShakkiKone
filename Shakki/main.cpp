@@ -19,17 +19,20 @@ static int get_valid_move_index(vector<Move>& moves, string chosen)
 static void game_loop()
 {
 	//srand((unsigned)time(NULL));
-	GameState state;
+	GameState current_state;
 
-	MinimaxValue ai_value = state.minimax(3);
+	MinimaxValue ai_value = current_state.minimax(2, numeric_limits<float>::lowest(), numeric_limits<float>::max());
 	cout << ai_value.Best_move.get_move_name() << " " << ai_value.Value << "\n";
 	system("pause");
 
-	state.print_board();
+	vector<GameState> history;
+	history.push_back(current_state);
+
+	current_state.print_board();
 	while (true)
 	{
 		vector<Move> moves;
-		state.get_moves(moves);
+		current_state.get_moves(moves);
 
 		if (moves.size() <= 0)
 		{
@@ -52,6 +55,13 @@ static void game_loop()
 		{
 			string chosen = "";
 			cin >> chosen;
+
+			if (chosen == "undo")
+			{
+				current_state = history[history.size() - 1];
+				continue;
+			}
+
 			//chosen = moves[rand() % moves.size()].get_move_name();
 			move_index = get_valid_move_index(moves, chosen);
 			if (move_index != -1)
@@ -62,8 +72,10 @@ static void game_loop()
 			cout << "Not a valid move\nMake a move: ";
 		}
 
-		state.make_move(moves[move_index]);
-		state.print_board();
+		current_state.make_move(moves[move_index]);
+		current_state.print_board();
+
+		history.push_back(current_state);
 
 		//system("pause");
 	}

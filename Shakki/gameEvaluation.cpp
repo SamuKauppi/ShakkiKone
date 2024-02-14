@@ -60,7 +60,7 @@ float GameState::mobility_difference() const
 	return (float)(white_m.size() - black_m.size());
 }
 
-MinimaxValue GameState::minimax(int depth) const
+MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
 {
 	// Generate moves for this state
 	vector<Move> moves;
@@ -83,6 +83,7 @@ MinimaxValue GameState::minimax(int depth) const
 		numeric_limits<float>::lowest() : numeric_limits<float>::max();
 
 	Move best_move(0, 0, 0, 0);
+	bool isMin = TurnPlayer == WHITE ? true : false;
 
 	// Iterate through moves
 	for (Move& m : moves)
@@ -91,15 +92,31 @@ MinimaxValue GameState::minimax(int depth) const
 		GameState new_state = *this;
 		new_state.make_move(m);
 
+		// Compare hash value
+
 		// Recursive call
-		MinimaxValue value = new_state.minimax(depth - 1);
+		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta);
 
 		// Get best value for player
-		if ((TurnPlayer == WHITE && value.Value > best_value) ||
-			(TurnPlayer == BLACK && value.Value < best_value))
+		if ((isMin && value.Value > best_value) ||
+			(!isMin && value.Value < best_value))
 		{
 			best_value = value.Value;
 			best_move = m;
+
+			if (isMin)
+			{
+				alpha = best_value;
+			}
+			else
+			{
+				beta = best_value;
+			}
+		}
+
+		if (beta <= alpha)
+		{
+			break;
 		}
 	}
 

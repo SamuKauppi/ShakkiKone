@@ -177,7 +177,25 @@ public:
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>
-	MinimaxValue minimax(int depth) const;
+	MinimaxValue minimax(int depth, float alpha, float beta) const;
+
+	GameState& operator=(GameState& other)
+	{
+		for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				_board[i][j] = other._board[i][j];
+			}
+		}
+
+		_w_long_castle = other._w_long_castle;
+		_w_short_castle = other._w_short_castle;
+		_b_long_castle = other._b_long_castle;
+		_b_short_castle = other._b_short_castle;
+
+		_doubleStep = other._doubleStep;
+	}
 
 private:
 	// Game board
