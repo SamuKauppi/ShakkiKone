@@ -21,10 +21,9 @@ static void game_loop()
 	//srand((unsigned)time(NULL));
 	GameState state;
 
-	MinimaxValue ai_value = state.minimax(2);
-	cout << ai_value.Best_move.get_move_name() << "\n";
+	MinimaxValue ai_value = state.minimax(3);
+	cout << ai_value.Best_move.get_move_name() << " " << ai_value.Value << "\n";
 	system("pause");
-
 
 	state.print_board();
 	while (true)

@@ -1,7 +1,7 @@
 #pragma once
 #include "chess.h"
 #include "move.h"
-#include "minimax_value.h"
+#include "minimaxValue.h"
 #include "unordered_map"
 
 class GameState
@@ -177,7 +177,7 @@ public:
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>
-	MinimaxValue minimax(int depth);
+	MinimaxValue minimax(int depth) const;
 
 private:
 	// Game board
