@@ -211,7 +211,7 @@ private:
 	bool _b_long_castle = true;
 	bool _b_short_castle = true;
 
-	int _kaksoisaskel = -1;
+	int _doubleStep = -1;
 
 	const unordered_map<int, float> piece_values = {
 	{wP, 1.0f}, {wN, 3.0f}, {wB, 3.25}, {wR, 5.0f}, {wQ, 9.0f},

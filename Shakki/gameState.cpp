@@ -36,12 +36,24 @@ void GameState::make_move(const Move& m)
 	{
 		piece = m._piece_promotion;
 	}
+	
 
-	// Reset piece at start pos
-	_board[start_row][start_column] = NA;
+	_doubleStep = -1;
+	if (piece == wP || piece == bP)
+	{
+		// If pawn has moved more than 1 square save column
+		if (abs(end_row - start_row) > 1)
+		{
+			_doubleStep = end_column;
+		}
 
-	// Update piece at end pos
-	_board[end_row][end_column] = piece;
+		// if moved diagonally to a non occupied square en passant happened
+		if (start_column != end_column && _board[end_row][end_column] == NA)
+		{
+			_board[start_row][end_column] = NA;
+		}
+
+	}
 
 	// Move was a castle if king moves more than 1 step
 	if ((piece == wK || piece == bK) &&
@@ -56,13 +68,19 @@ void GameState::make_move(const Move& m)
 
 		// get the rook index
 		int rook = _board[start_row][corner];
-		
+
 		// empty the corner spot
 		_board[start_row][corner] = NA;
 
 		// add rook to end pos
 		_board[start_row][rook_column] = rook;
 	}
+
+	// Reset piece at start pos
+	_board[start_row][start_column] = NA;
+
+	// Update piece at end pos
+	_board[end_row][end_column] = piece;
 
 	update_castle_legality();
 
@@ -90,7 +108,7 @@ void GameState::get_raw_moves(int player, vector<Move>& moves) const
 	}
 }
 
-void GameState::get_castles(int player, vector<Move>& moves) const 
+void GameState::get_castles(int player, vector<Move>& moves) const
 {
 	// Get opponent
 	int opponent = 1 - player;
@@ -106,24 +124,24 @@ void GameState::get_castles(int player, vector<Move>& moves) const
 	bool can_long = _board[player_pos][3] == NA && _board[player_pos][2] == NA && _board[player_pos][1] == NA &&
 		((player == WHITE && _w_long_castle) || (player == BLACK && _b_long_castle));
 
-	if (can_short && 
-		!is_under_threat(player_pos, 4, opponent) && 
+	if (can_short &&
+		!is_under_threat(player_pos, 4, opponent) &&
 		!is_under_threat(player_pos, 5, opponent) &&
 		!is_under_threat(player_pos, 6, opponent))
 	{
 		moves.push_back(Move(player_pos, 4, player_pos, 6));
 	}
 
-	if (can_long && 
+	if (can_long &&
 		!is_under_threat(player_pos, 4, opponent) &&
-		!is_under_threat(player_pos, 3, opponent) && 
+		!is_under_threat(player_pos, 3, opponent) &&
 		!is_under_threat(player_pos, 2, opponent))
 	{
 		moves.push_back(Move(player_pos, 4, player_pos, 2));
 	}
 }
 
-void GameState::get_moves(vector<Move>& moves) const 
+void GameState::get_moves(vector<Move>& moves) const
 {
 
 	int king = TurnPlayer == WHITE ? wK : bK;
@@ -135,7 +153,7 @@ void GameState::get_moves(vector<Move>& moves) const
 	get_raw_moves(player, rawMoves);
 	get_castles(player, moves);
 
-	for (Move& rm : rawMoves) 
+	for (Move& rm : rawMoves)
 	{
 		GameState testState = *this;
 
@@ -144,7 +162,7 @@ void GameState::get_moves(vector<Move>& moves) const
 		int row, column;
 		testState.find_piece(king, row, column);
 
-		if (!testState.is_under_threat(row, column, opponent)) 
+		if (!testState.is_under_threat(row, column, opponent))
 		{
 			moves.push_back(rm);
 		}
@@ -230,6 +248,19 @@ void GameState::get_pawn_moves(int row, int column, int player, vector<Move>& mo
 		get_raw_moves_in_dir(row, column, direction, 0, player, 1, moves, false);
 	}
 
+	// check for en passant
+	int rowToCheck = player == WHITE ? 3 : 4;
+	if (_doubleStep != -1 && rowToCheck == row)
+	{
+
+		int enemyPawn = player == WHITE ? bP : wP;
+		// check if double step happened within 1 square
+		if (abs(_doubleStep - column) < 2)
+		{
+			get_raw_moves_in_dir(row, column, direction, _doubleStep - column, player, 1, moves);
+		}
+
+	}
 
 }
 
@@ -451,7 +482,7 @@ bool GameState::can_player_castle(int player) const
 	{
 		return true;
 	}
-	else if ( player == BLACK && (_b_short_castle || _b_long_castle))
+	else if (player == BLACK && (_b_short_castle || _b_long_castle))
 	{
 		return true;
 	}
@@ -516,7 +547,7 @@ float GameState::material_difference() const
 		{
 			int piece = _board[i][j];
 			auto it = piece_values.find(piece);
-			if (it != piece_values.end()) 
+			if (it != piece_values.end())
 			{
 				value += it->second;
 			}
