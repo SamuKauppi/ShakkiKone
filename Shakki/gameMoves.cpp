@@ -138,6 +138,7 @@ void GameState::get_moves(vector<Move>& moves) const
 
 	get_raw_moves(player, rawMoves);
 	get_castles(player, moves);
+	int moveIndex = 0;
 
 	for (Move& rm : rawMoves)
 	{
@@ -150,10 +151,18 @@ void GameState::get_moves(vector<Move>& moves) const
 
 		if (!testState.is_under_threat(row, column, opponent))
 		{
-			moves.push_back(rm);
+			if (moveIndex < moves.size())
+			{
+				moves[moveIndex] = rm;
+				moveIndex++;
+			}
+			else
+			{
+				moves.push_back(rm);
+			}
 		}
-
 	}
+	moves.erase(moves.begin() + moveIndex, moves.end());
 }
 
 void GameState::create_promotion_moves(
