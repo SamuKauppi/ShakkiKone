@@ -5,6 +5,57 @@
 #include <vector>
 #include <iostream>
 
+/// <summary>
+/// Undo a move if there are moves in history
+/// </summary>
+/// <param name="current_state"></param>
+/// <param name="history"></param>
+/// <returns></returns>
+static bool try_undo_move(GameState& current_state, stack<GameState>& history)
+{
+	if (history.size() <= 0)
+		return false;
+
+	current_state = history.top();
+	history.pop();
+	return true;
+}
+
+/// <summary>
+/// Handle undo logic
+/// </summary>
+/// <param name="current_state"></param>
+/// <param name="history"></param>
+static void undo_loop(GameState& current_state, stack<GameState>& history)
+{
+	string input = "";
+	while (input != "start")
+	{
+		system("cls");
+		current_state.print_board();
+		cout << "\n'start' = continue game\n";
+		cout << "'undo' = move to the previous state\n";
+		cout << "Input: ";
+		cin >> input;
+
+		if (input == "undo")
+		{
+			try_undo_move(current_state, history);
+		}
+
+	}
+	system("cls");
+	cout << "State reversed...\n";
+	current_state.print_board();
+}
+
+/// <summary>
+/// Compare given string to move names and return an index corresponding to it
+/// Otherwise return -1
+/// </summary>
+/// <param name="moves"></param>
+/// <param name="chosen"></param>
+/// <returns></returns>
 static int get_valid_move_index(vector<Move>& moves, string& chosen)
 {
 	for (int i = 0; i < moves.size(); i++)
@@ -17,16 +68,24 @@ static int get_valid_move_index(vector<Move>& moves, string& chosen)
 	return -1;
 }
 
-static void player_input(GameState& current_state, string& chosen, bool& is_ai)
+/// <summary>
+/// Handles human and ai player input
+/// </summary>
+/// <param name="current_state"></param>
+/// <param name="chosen"></param>
+/// <param name="is_ai"></param>
+static string player_input(GameState& current_state, bool& is_ai)
 {
-
+	string chosen;
 	// Player
 	if (!is_ai)
 	{
 		cin >> chosen;
 	}
+	// AI
 	else
 	{
+		cout << "Calculating...";
 		MinimaxValue ai_input =
 			current_state.minimax(
 				3,
@@ -35,23 +94,39 @@ static void player_input(GameState& current_state, string& chosen, bool& is_ai)
 
 		chosen = ai_input.Best_move.get_move_name();
 	}
+
+	return chosen;
 }
 
-static void game_loop(bool is_w_ai, bool is_b_ai)
+/// <summary>
+/// Handles main game loop
+/// </summary>
+/// <param name="is_w_ai"></param>
+/// <param name="is_b_ai"></param>
+/// <returns></returns>
+static string game_loop(bool is_w_ai, bool is_b_ai)
 {
 	// Generate state and print it
 	GameState current_state;
 	current_state.print_board();
 
-	// test minimax
-	//MinimaxValue ai_value = current_state.minimax(2, numeric_limits<float>::lowest(), numeric_limits<float>::max());
-	//cout << ai_value.Best_move.get_move_name() << " " << ai_value.Value << "\n";
-
 	// Generate history
 	stack<GameState> history;
 
+	// Undo stop flag (used when user types undo)
+	bool wasUndo = false;
+
+	// Main game loop
 	while (true)
 	{
+		// Prevent the game from continuing until user says if undo was last input
+		if (wasUndo)
+		{
+			undo_loop(current_state, history);
+			wasUndo = false;
+			continue;
+		}
+
 		// Generate a list of moves
 		vector<Move> moves(50);
 		current_state.get_moves(moves);
@@ -78,22 +153,18 @@ static void game_loop(bool is_w_ai, bool is_b_ai)
 		// Show the prompt to give a move
 		cout << "\n" << player_name << " a move: ";
 		int move_index = -1;
-		bool wasUndo = false;
 
 		while (true)
 		{
-			// Generate the chosen move
-			string chosen = "";
-
+			// Check if the turn player is ai
 			bool is_ai = current_state.TurnPlayer == WHITE ? is_w_ai : is_b_ai;
 
-			player_input(current_state, chosen, is_ai);
-
-			// If chosen was undo, return to the previous state in history
-			if (chosen == "undo" && history.size() > 0)
+			// Get the chosen move name
+			string chosen = player_input(current_state, is_ai);
+			
+			// if user types undo, skip and go to undo logic
+			if (chosen == "undo")
 			{
-				current_state = history.top();
-				history.pop();
 				wasUndo = true;
 				break;
 			}
@@ -107,23 +178,44 @@ static void game_loop(bool is_w_ai, bool is_b_ai)
 			cout << "Not a valid move\n" << player_name << " a move: ";
 		}
 
-		// if the input was not "undo", add this state to history and make the move
+		// Clear the screen
+		system("cls");
+
+		// If the input was not "undo", add this state to history and make the chosen move
+		// Also print what move was made
 		if (!wasUndo)
 		{
 			history.push(current_state);
 			current_state.make_move(moves[move_index]);
+			cout << player_name << " made the move: " << moves[move_index].get_move_name() << "\n";
 		}
-		system("cls");
-		cout << player_name << " made the move: " << moves[move_index].get_move_name() << "\n";
-		current_state.print_board();
 
-		if (wasUndo)
-		{
-			cout << "State reversed...\n";
-		}
+		// Print the new board
+		current_state.print_board();
 	}
+
+	// Check if it is a draw
+	// Get losing king
+	int losing_king = current_state.TurnPlayer == WHITE ? wK : bK;
+	// Get king coordinates
+	int row, column;
+	current_state.find_piece(losing_king, row, column);
+
+	// If the king is not under threat, it's a draw
+	if (!current_state.is_under_threat(row, column, 1 - current_state.TurnPlayer))
+	{
+		return "it's a draw!";
+	}
+
+	// Otherwise there is a winner
+	return current_state.TurnPlayer == WHITE ? "Black" : "White";
 }
 
+/// <summary>
+/// Ask user player is ai and/or human
+/// </summary>
+/// <param name="player_name"></param>
+/// <returns></returns>
 static bool is_player_ai(string player_name)
 {
 	while (true)
@@ -151,6 +243,7 @@ int main()
 {
 	bool w = is_player_ai("White");
 	bool b = is_player_ai("Black");
-	game_loop(w, b);
+	string winner = game_loop(w, b);
+	cout << "\nAnd the winner is: " << winner;
 	return 0;
 }

@@ -142,7 +142,7 @@ bool GameState::can_player_castle(int player) const
 void GameState::print_board() const
 {
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
-	cout << "   |---|---|---|---|---|---|---|---|\n";
+	cout << "   |---+---+---+---+---+---+---+---|\n";
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -152,7 +152,7 @@ void GameState::print_board() const
 			cout << " | " << piece_names[_board[i][j]];
 		}
 		cout << " | " << 8 - i << "\n";
-		cout << "   |---|---|---|---|---|---|---|---|\n";
+		cout << "   |---+---+---+---+---+---+---+---|\n";
 	}
 
 	cout << "     a   b   c   d   e   f   g   h\n"; // Print file (column) labels
