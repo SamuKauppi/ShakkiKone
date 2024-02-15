@@ -151,7 +151,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		string player_name = current_state.TurnPlayer == WHITE ? "White player" : "Black player";
 
 		// Show the prompt to give a move
-		cout << "\n" << player_name << " a move: ";
+		cout << "\n" << player_name << ", make a move: ";
 		int move_index = -1;
 
 		while (true)
