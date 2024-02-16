@@ -30,10 +30,16 @@ public:
 	/// <param name="m"></param>
 	void make_move(const Move& m);
 
+	void special_pawn_moves(int start_row, int start_column, int end_row, int end_column);
+
+	void special_king_moves(int piece, int start_row, int start_column, int end_row, int end_column);
+
 	/// <summary>
 	/// Print board
 	/// </summary>
 	void print_board() const;
+
+	void add_move_with_index(int& moveIndex, vector<Move>& moves, Move& new_move) const;
 
 	/// <summary>
 	/// Returns all of the moves for turn player
@@ -50,7 +56,7 @@ public:
 	/// <param name="player"></param>
 	/// <param name="piece"></param>
 	/// <param name="moves"></param>
-	void get_piece_moves(int row, int column, int player, int piece, vector<Move>& moves) const;
+	void get_piece_moves(int& moveIndex, int row, int column, int player, int piece, vector<Move>& moves) const;
 
 	/// <summary>
 	/// Get moves based on piece
@@ -59,11 +65,11 @@ public:
 	/// <param name="column"></param>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_rook_moves(int row, int column, int player, vector<Move>& moves) const;
-	void get_bishop_moves(int row, int column, int player, vector<Move>& moves) const;
-	void get_knight_moves(int row, int column, int player, vector<Move>& moves) const;
-	void get_king_moves(int row, int column, int player, vector<Move>& moves) const;
-	void get_pawn_moves(int row, int column, int player, vector<Move>& moves) const;
+	void get_rook_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
+	void get_bishop_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
+	void get_knight_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
+	void get_king_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
+	void get_pawn_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
 
 
 	/// <summary>
@@ -78,7 +84,8 @@ public:
 	/// <param name="moves">		Filled with moves			</param>
 	/// <param name="can_eat">		can eat (true default)		</param>
 	/// <param name="has_to_eat">	has to eat (false default	</param>
-	void get_raw_moves_in_dir(int row,
+	void get_raw_moves_in_dir(int& moveIndex,
+		int row,
 		int column,
 		int delta_row,
 		int delta_column,
@@ -99,6 +106,7 @@ public:
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
 	void create_promotion_moves(
+		int& moveIndex,
 		int row,
 		int column,
 		int delta_row,
@@ -133,7 +141,7 @@ public:
 	/// </summary>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_castles(int player, vector<Move>& moves) const;
+	void get_castles(int player, vector<Move>& moves, int& moveIndex) const;
 
 	void update_castle_legality();
 
@@ -209,7 +217,6 @@ public:
 
 private:
 
-
 	// Game board
 	// [y][x]
 	int _board[8][8] = {
@@ -235,6 +242,8 @@ private:
 	//	{wR, NA, NA, NA, wK, NA, NA, wR}
 	//};
 
+	vector<int> _wK_pos = { 7, 4 };
+	vector<int> _bK_pos = { 0, 4 };
 
 	bool _w_long_castle = true;
 	bool _w_short_castle = true;
@@ -245,6 +254,6 @@ private:
 
 	const unordered_map<int, float> piece_values = {
 	{wP, 1.0f}, {wN, 3.0f}, {wB, 3.25}, {wR, 5.0f}, {wQ, 9.0f},
-	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f}, 
+	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f},
 	{NA, 0.0f} };
 };

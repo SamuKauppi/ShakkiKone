@@ -128,7 +128,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Generate a list of moves
-		vector<Move> moves(50);
+		vector<Move> moves(40);
 		current_state.get_moves(moves);
 
 		// If no moves are left, the game is over
@@ -138,8 +138,10 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Print every move
+		//cout << moves.size() << "\n";
 		for (int i = 0; i < moves.size(); i++)
 		{
+			//cout << "Index: " << i << " ";
 			cout << moves[i].get_move_name();
 			if (i < moves.size() - 1)
 			{
@@ -197,6 +199,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 	// Check if it is a draw
 	// Get losing king
 	int losing_king = current_state.TurnPlayer == WHITE ? wK : bK;
+
 	// Get king coordinates
 	int row, column;
 	current_state.find_piece(losing_king, row, column);

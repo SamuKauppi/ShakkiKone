@@ -2,17 +2,17 @@
 
 void GameState::generate_hash()
 {
-	unsigned long long int test = 1;
-	test ^= 3;
-	int squared = 8 * 8;
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			_hash += pow(2, squared) * _board[i][j];
-			squared--;
-		}
-	}
+	//unsigned long long int test = 1;
+	//test ^= 3;
+	//int squared = 8 * 8;
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	for (int j = 0; j < 8; j++)
+	//	{
+	//		_hash += pow(2, squared) * _board[i][j];
+	//		squared--;
+	//	}
+	//}
 }
 
 float GameState::score_board() const
@@ -25,8 +25,17 @@ float GameState::score_board() const
 
 	// Find correct king
 	int row, column;
-	int king = TurnPlayer == WHITE ? wK : bK;
-	find_piece(king, row, column);
+
+	if (TurnPlayer == WHITE)
+	{
+		row = _wK_pos[0];
+		column = _wK_pos[1];
+	}
+	else
+	{
+		row = _bK_pos[0];
+		column = _bK_pos[1];
+	}
 
 	// Return worst score if ít's under threat
 	if (is_under_threat(row, column, opponent))
@@ -52,6 +61,9 @@ float GameState::material_difference() const
 		for (int j = 0; j < 8; j++)
 		{
 			int piece = _board[i][j];
+			if (piece == NA)
+				continue;
+
 			auto it = piece_values.find(piece);
 			if (it != piece_values.end())
 			{
@@ -65,12 +77,11 @@ float GameState::material_difference() const
 
 float GameState::mobility_difference() const
 {
-	vector<Move> white_m;
-	vector<Move> black_m;
+	vector<Move> white_m(100);
+	vector<Move> black_m(100);
 
 	get_raw_moves(WHITE, white_m);
-	get_raw_moves(BLACK, white_m);
-
+	get_raw_moves(BLACK, black_m);
 
 	return (float)(white_m.size() - black_m.size());
 }
@@ -78,7 +89,7 @@ float GameState::mobility_difference() const
 MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
 {
 	// Generate moves for this state
-	vector<Move> moves;
+	vector<Move> moves(60);
 	get_moves(moves);
 
 	// If no moves remain, game is over
