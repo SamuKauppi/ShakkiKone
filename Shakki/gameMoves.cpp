@@ -1,19 +1,6 @@
 #include "gameState.h"
 #include <iostream>
 
-void GameState::add_move_with_index(int& moveIndex, vector<Move>& moves, Move& new_move) const
-{
-	if (moveIndex < moves.size())
-	{
-		moves[moveIndex] = new_move;
-		moveIndex++;
-	}
-	else
-	{
-		moves.push_back(new_move);
-	}
-}
-
 void GameState::make_move(const Move& m)
 {
 	// Create variables
@@ -80,35 +67,37 @@ void GameState::special_pawn_moves(int start_row, int start_column, int end_row,
 
 void GameState::special_king_moves(int piece, int start_row, int start_column, int end_row, int end_column)
 {
-	// Update the position of the king
-	if (piece == wK)
-	{
-		_wK_pos[0] = end_row;
-		_wK_pos[1] = end_column;
-	}
-	else
-	{
-		_bK_pos[0] = end_row;
-		_bK_pos[1] = end_column;
-	}
+	bool is_white = piece == wK;
 
-	// Move was a castle if king moves more than 1 sqare
+	// Update the position of the king
+	int& row = is_white ? _wK_pos[0] : _bK_pos[0];
+	int& column = is_white ? _wK_pos[1] : _bK_pos[1];
+	row = end_row;
+	column = end_column;
+
+	// Move was a castle if king moves more than 1 square
 	if (abs(end_column - start_column) > 1)
 	{
-		// get the direction for the rook
-		int rook_dir = end_column - start_column;
-		// get column where rook will go
-		int rook_column = rook_dir > 0 ? 5 : 3;
-		// get the corner where the rook starts
-		int corner = rook_dir > 0 ? 7 : 0;
+		// Set the appropriate castle variable
+		if (is_white) 
+			_w_castle = true;
+		else 
+			_b_castle = true;
 
-		// get the rook index
+		// Get the direction for the rook
+		int rook_dir = end_column - start_column;
+		// Get column where rook will go
+		int rook_column = (rook_dir > 0) ? 5 : 3;
+		// Get the corner where the rook starts
+		int corner = (rook_dir > 0) ? 7 : 0;
+
+		// Get the rook index
 		int rook = _board[start_row][corner];
 
-		// empty the corner spot
+		// Empty the corner spot
 		_board[start_row][corner] = NA;
 
-		// add rook to end pos
+		// Add rook to the end position
 		_board[start_row][rook_column] = rook;
 	}
 }
@@ -169,6 +158,19 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		Move m = Move(player_pos, 4, player_pos, 2);
 		add_move_with_index(moveIndex, moves, m);
 	}
+}
+
+void GameState::add_move_with_index(int& moveIndex, vector<Move>& moves, Move& new_move) const
+{
+	if (moveIndex < moves.size())
+	{
+		moves[moveIndex] = new_move;
+	}
+	else
+	{
+		moves.push_back(new_move);
+	}
+	moveIndex++;
 }
 
 void GameState::get_moves(vector<Move>& moves) const

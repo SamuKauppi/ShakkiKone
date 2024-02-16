@@ -11,12 +11,11 @@ public:
 	int TurnPlayer = WHITE;
 	int _hash;
 
-
+	// TODO: Implement hashing
 	GameState()
 	{
 		generate_hash();
 	}
-
 	void generate_hash();
 
 	/// <summary>
@@ -30,8 +29,23 @@ public:
 	/// <param name="m"></param>
 	void make_move(const Move& m);
 
+	/// <summary>
+	/// Handles logic relating to pawn
+	/// </summary>
+	/// <param name="start_row"></param>
+	/// <param name="start_column"></param>
+	/// <param name="end_row"></param>
+	/// <param name="end_column"></param>
 	void special_pawn_moves(int start_row, int start_column, int end_row, int end_column);
 
+	/// <summary>
+	/// Handles logic related to king
+	/// </summary>
+	/// <param name="piece"></param>
+	/// <param name="start_row"></param>
+	/// <param name="start_column"></param>
+	/// <param name="end_row"></param>
+	/// <param name="end_column"></param>
 	void special_king_moves(int piece, int start_row, int start_column, int end_row, int end_column);
 
 	/// <summary>
@@ -39,6 +53,13 @@ public:
 	/// </summary>
 	void print_board() const;
 
+	/// <summary>
+	/// Adds the new move to moves list using the index
+	/// if index is out of bounds, push_back
+	/// </summary>
+	/// <param name="moveIndex"></param>
+	/// <param name="moves"></param>
+	/// <param name="new_move"></param>
 	void add_move_with_index(int& moveIndex, vector<Move>& moves, Move& new_move) const;
 
 	/// <summary>
@@ -143,10 +164,24 @@ public:
 	/// <param name="moves"></param>
 	void get_castles(int player, vector<Move>& moves, int& moveIndex) const;
 
+	/// <summary>
+	/// Keeps up if players can castle
+	/// </summary>
 	void update_castle_legality();
 
+	/// <summary>
+	/// Disables long and/or short castle from player based on column
+	/// </summary>
+	/// <param name="short_castle"></param>
+	/// <param name="long_castle"></param>
+	/// <param name="column"></param>
 	void disable_one_castle(bool& short_castle, bool& long_castle, int column);
 
+	/// <summary>
+	/// Returns false if neither player can perform any castle
+	/// </summary>
+	/// <param name="player"></param>
+	/// <returns></returns>
 	bool can_player_castle(int player) const;
 
 
@@ -168,6 +203,7 @@ public:
 	/// <returns></returns>
 	float evaluate() const;
 
+
 	/// <summary>
 	/// Gives the difference between white and black pieces
 	/// 
@@ -179,15 +215,20 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	float material_difference() const;
-
-
 	/// <summary>
 	/// Returns the difference between moves
 	/// </summary>
 	/// <returns></returns>
 	float mobility_difference() const;
+	/// <summary>
+	/// Returns the difference between castles performed and not performed
+	/// </summary>
+	/// <returns></returns>
+	float castle_difference() const;
+	float evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
 
-
+	float officer_moved_difference() const;
+	float evaluate_officers_moved(int player) const;
 	/// <summary>
 	/// Performs minimax alorythmn
 	/// </summary>
@@ -195,6 +236,10 @@ public:
 	/// <returns></returns>
 	MinimaxValue minimax(int depth, float alpha, float beta) const;
 
+	/// <summary>
+	/// Overwrites this state with chosen states values
+	/// </summary>
+	/// <param name="other"></param>
 	void operator=(GameState& other)
 	{
 		for (int i = 0; i < 8; i++)
@@ -213,6 +258,9 @@ public:
 		_doubleStep = other._doubleStep;
 
 		TurnPlayer = other.TurnPlayer;
+
+		_wK_pos = other._wK_pos;
+		_bK_pos = other._bK_pos;
 	}
 
 private:
@@ -249,6 +297,9 @@ private:
 	bool _w_short_castle = true;
 	bool _b_long_castle = true;
 	bool _b_short_castle = true;
+
+	bool _w_castle = false;
+	bool _b_castle = false;
 
 	int _doubleStep = -1;
 

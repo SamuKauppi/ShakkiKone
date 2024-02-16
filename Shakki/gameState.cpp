@@ -36,7 +36,7 @@ void GameState::find_piece(int piece, int& row, int& column) const
 bool GameState::is_under_threat(int row, int column, int opponent) const
 {
 	// Generate opponents raw moves
-	vector<Move> opponentMoves;
+	vector<Move> opponentMoves(50);
 	get_raw_moves(opponent, opponentMoves);
 
 

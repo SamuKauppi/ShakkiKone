@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 
+static const int MINMAX_DEPTH = 3;
+
 /// <summary>
 /// Undo a move if there are moves in history
 /// </summary>
@@ -88,7 +90,7 @@ static string player_input(GameState& current_state, bool& is_ai)
 		cout << "Calculating...";
 		MinimaxValue ai_input =
 			current_state.minimax(
-				3,
+				MINMAX_DEPTH,
 				numeric_limits<float>::lowest(),
 				numeric_limits<float>::max());
 
@@ -138,10 +140,8 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Print every move
-		//cout << moves.size() << "\n";
 		for (int i = 0; i < moves.size(); i++)
 		{
-			//cout << "Index: " << i << " ";
 			cout << moves[i].get_move_name();
 			if (i < moves.size() - 1)
 			{
@@ -177,7 +177,8 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 			{
 				break;
 			}
-			cout << "Not a valid move\n" << player_name << " a move: ";
+			cout << chosen;
+			cout << "Not a valid move\n" << player_name << " a move: " << moves[move_index].get_move_name();
 		}
 
 		// Clear the screen
