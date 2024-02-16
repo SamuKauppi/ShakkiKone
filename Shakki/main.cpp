@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 
-static const int MINMAX_DEPTH = 3;
+static const int MINMAX_DEPTH = 5;
 
 /// <summary>
 /// Undo a move if there are moves in history
@@ -140,6 +140,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Print every move
+		cout << "list of every move: \n";
 		for (int i = 0; i < moves.size(); i++)
 		{
 			cout << moves[i].get_move_name();
@@ -148,12 +149,13 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 				cout << ", ";
 			}
 		}
+		cout << "\n";
 
 		// Generate player name string
 		string player_name = current_state.TurnPlayer == WHITE ? "White player" : "Black player";
 
 		// Show the prompt to give a move
-		cout << "\n" << player_name << ", make a move: ";
+		cout << "\n" << player_name << ", choose a move: ";
 		int move_index = -1;
 
 		while (true)
@@ -177,8 +179,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 			{
 				break;
 			}
-			cout << chosen;
-			cout << "Not a valid move\n" << player_name << " a move: " << moves[move_index].get_move_name();
+			cout << chosen <<"is not a valid move\n" << player_name << " a move: ";
 		}
 
 		// Clear the screen

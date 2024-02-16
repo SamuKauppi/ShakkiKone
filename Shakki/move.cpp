@@ -63,24 +63,25 @@ static char int_pos_to_char(const int& pos)
 }
 
 
-Move::Move(const string& m)
-{
-	for (int i = 0; i < 4; i++)
-	{
-		int pos_int = char_to_int_pos(m[i]);
-
-		// Start pos
-		if (i < 2)
-		{
-			_start_pos.insert(_start_pos.begin(), pos_int);
-		}
-		// End pos
-		else
-		{
-			_end_pos.insert(_end_pos.begin(), pos_int);
-		}
-	}
-}
+// Maybe unessesary
+//Move::Move(const string& m)
+//{
+//	for (int i = 0; i < 4; i++)
+//	{
+//		int pos_int = char_to_int_pos(m[i]);
+//
+//		// Start pos
+//		if (i < 2)
+//		{
+//			_start_pos.insert(_start_pos.begin(), pos_int);
+//		}
+//		// End pos
+//		else
+//		{
+//			_end_pos.insert(_end_pos.begin(), pos_int);
+//		}
+//	}
+//}
 
 string Move::get_move_name()
 {

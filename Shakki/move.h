@@ -24,10 +24,11 @@ public:
 	/// <param name="e_x_pos"></param>
 	Move(int s_y_pos, int s_x_pos, int e_y_pos, int e_x_pos)
 	{
-		_start_pos.push_back(s_y_pos);
-		_start_pos.push_back(s_x_pos);
-		_end_pos.push_back(e_y_pos);
-		_end_pos.push_back(e_x_pos);
+		_start_pos[0] = s_y_pos;
+		_start_pos[1] = s_x_pos;
+
+		_end_pos[0] = e_y_pos;
+		_end_pos[1] = e_x_pos;
 	}
 
 	/// <summary>
@@ -40,8 +41,8 @@ public:
 
 private:
 	string _move_name;
-	vector<int> _start_pos;
-	vector<int> _end_pos;
+	vector<int> _start_pos = { 0, 0 };
+	vector<int> _end_pos = { 0, 0 };
 
 	int _piece_promotion = NA;
 

@@ -133,6 +133,7 @@
     <ClCompile Include="gameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
+    <ClCompile Include="scoring_logic.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameState.h" />

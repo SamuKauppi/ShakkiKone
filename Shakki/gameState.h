@@ -227,8 +227,15 @@ public:
 	float castle_difference() const;
 	float evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
 
-	float officer_moved_difference() const;
-	float evaluate_officers_moved(int player) const;
+	float evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const;
+
+	float evaluate_pawn_at_pos(float piece_value, int row, int column) const;
+	float evaluate_rook_at_pos(float piece_value, int row, int column) const;
+	float evaluate_bishop_at_pos(float piece_value, int row, int column) const;
+	float evaluate_knight_at_pos(float piece_value, int row, int column) const;
+	float evaluate_queen_at_pos(float piece_value, int row, int column) const;
+	float evaluate_king_at_pos(float piece_value, int row, int column) const;
+
 	/// <summary>
 	/// Performs minimax alorythmn
 	/// </summary>
@@ -306,5 +313,6 @@ private:
 	const unordered_map<int, float> piece_values = {
 	{wP, 1.0f}, {wN, 3.0f}, {wB, 3.25}, {wR, 5.0f}, {wQ, 9.0f},
 	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f},
+	{wK, 1.0f}, {bK, -1.0f},
 	{NA, 0.0f} };
 };

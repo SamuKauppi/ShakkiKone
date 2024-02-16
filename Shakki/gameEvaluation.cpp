@@ -1,4 +1,5 @@
 #include "gameState.h"
+#include "scoring_logic.h"
 
 MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
 {
@@ -115,32 +116,8 @@ float GameState::evaluate() const
 	return 
 		1.0f * material_difference()		+
 		0.05f * mobility_difference()		+
-		0.2f * castle_difference()			+
-		0.15f * officer_moved_difference()	
+		0.2f * castle_difference()
 		;
-}
-
-float GameState::material_difference() const
-{
-	float value = 0;
-
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			int piece = _board[i][j];
-			if (piece == NA)
-				continue;
-
-			auto it = piece_values.find(piece);
-			if (it != piece_values.end())
-			{
-				value += it->second;
-			}
-		}
-	}
-
-	return value;
 }
 
 float GameState::mobility_difference() const
@@ -188,57 +165,97 @@ float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool c
 	return score;
 }
 
-float GameState::officer_moved_difference() const
+float GameState::material_difference() const
 {
-	float score = 0;
-	score += evaluate_officers_moved(WHITE);
-	score -= evaluate_officers_moved(BLACK);
-	return score;
-}
+	float value = 0;
 
-float GameState::evaluate_officers_moved(int player) const
-{
-	float score = 0.0f;
-	// Get player row
-	int player_row = player == WHITE ? 7 : 0;
-
-	// Reward if any of the officers have been moved
 	for (int i = 0; i < 8; i++)
 	{
-		// Reward for having an empty spot
-		if (_board[player_row][i] == NA)
+		for (int j = 0; j < 8; j++)
 		{
-			// Base reward
-			score += 1.3f;
-			// Reward based on which piece has been moved
-			switch (i)
+			int piece = _board[i][j];
+			if (piece == NA)
+				continue;
+
+			auto it = piece_values.find(piece);
+			if (it != piece_values.end())
 			{
-				// Rook
-			case 0:
-			case 7:
-				score += 2.0f;
-				break;
-				// Knight
-			case 1:
-			case 6:
-				score += 0.5f;
-				break;
-				// Bishop
-			case 2:
-			case 5:
-				score += 1.0f;
-				break;
-				// Queen
-			case 3:
-				score += 0.7f;
-				break;
-				// King
-			case 4:
-				score -= 6.3f;
-				break;
+				value += evaluate_piece_at_pos(piece, it->second, i, j);
 			}
 		}
 	}
 
-	return score;
+	return value;
+}
+float GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const
+{
+	switch (piece)
+	{
+	case wP:
+	case bP:
+		return evaluate_pawn_at_pos(piece_value, row, column);
+
+	case wR:
+	case bR:
+		return evaluate_rook_at_pos(piece_value, row, column);
+
+	case wN:
+	case bN:
+		return evaluate_knight_at_pos(piece_value, row, column);
+
+	case wB:
+	case bB:
+		return evaluate_bishop_at_pos(piece_value, row, column);
+
+	case wQ:
+	case bQ:
+		return evaluate_queen_at_pos(piece_value, row, column);
+
+	case wK:
+	case bK:
+		return evaluate_king_at_pos(piece_value, row, column);
+
+	default:
+		return -1.0f;
+	}
+
+}
+float GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) const
+{
+	// TODO: add logic handling promotions
+	
+	// Add score based on how close is pawn to opponents board 
+	float max_row = piece_value > 0.0f ? 0.0f : 7.0f;
+	float close_to_opponent = get_score_from_one_side(row, max_row);
+
+	// Add score based on how center is the pawn
+	float center_score = get_center_score(row, column, 1.15f);
+
+	// Add score based on how close is the pawn to corners 
+	float corner_score = get_corner_score(row, column, 1.25f);
+
+	// Return average
+	return (close_to_opponent + center_score + corner_score) * 0.5f * piece_value;
+}
+float GameState::evaluate_rook_at_pos(float piece_value, int row, int column) const
+{
+	float center_score = get_center_score(row, column, 1.5f);
+	float corner_score = get_corner_score(row, column);
+	return (center_score + corner_score) * 0.5f * piece_value;
+}
+float GameState::evaluate_bishop_at_pos(float piece_value, int row, int column) const
+{
+	return get_center_score(row, column) * piece_value;
+}
+float GameState::evaluate_knight_at_pos(float piece_value, int row, int column) const
+{
+	return get_center_score(row, column) * piece_value;
+}
+float GameState::evaluate_queen_at_pos(float piece_value, int row, int column) const
+{
+	return get_center_score(row, column) * piece_value;
+}
+float GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
+{
+	return get_corner_score(row, column) * piece_value;
 }
