@@ -113,13 +113,17 @@ float GameState::score_board() const
 
 float GameState::evaluate() const
 {
-	return 
-		1.0f * material_difference()		+
-		0.05f * mobility_difference()		+
-		0.2f * castle_difference()
-		;
+	return
+		1.0f * material_difference() +
+		0.05f * mobility_difference() +
+		0.2f * castle_difference() +
+		0.75f * check_difference();
 }
 
+/// <summary>
+/// Returns difference between moves
+/// </summary>
+/// <returns></returns>
 float GameState::mobility_difference() const
 {
 	vector<Move> white_m(100);
@@ -131,6 +135,10 @@ float GameState::mobility_difference() const
 	return (float)white_m.size() - (float)black_m.size();
 }
 
+/// <summary>
+/// Returns difference between castles
+/// </summary>
+/// <returns></returns>
 float GameState::castle_difference() const
 {
 	float score = 0.0f;
@@ -138,7 +146,6 @@ float GameState::castle_difference() const
 	score -= evaluate_player_castle(_b_castle, _b_short_castle, _b_long_castle);
 	return score;
 }
-
 float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const
 {
 	float score = 0.0f;
@@ -146,7 +153,7 @@ float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool c
 	// Player has done a castle
 	if (done_castle)
 	{
-		score += 12.0f;
+		score += 10.0f;
 	}
 	// Player hasn't done castle
 	else
@@ -154,17 +161,21 @@ float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool c
 		// If short castle has been disabled
 		if (!can_short)
 		{
-			score -= 30.0f;
+			score -= 25.0f;
 		}
 		// If long castle has been disabled
 		if (!can_long)
 		{
-			score -= 30.0f;
+			score -= 20.0f;
 		}
 	}
 	return score;
 }
 
+/// <summary>
+/// Returns difference between pieces at position
+/// </summary>
+/// <returns></returns>
 float GameState::material_difference() const
 {
 	float value = 0;
@@ -229,10 +240,10 @@ float GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) co
 	float close_to_opponent = get_score_from_one_side(row, max_row);
 
 	// Add score based on how center is the pawn
-	float center_score = get_center_score(row, column, 1.15f);
+	float center_score = get_center_score(row, column, 1.5f);
 
 	// Add score based on how close is the pawn to corners 
-	float corner_score = get_corner_score(row, column, 1.25f);
+	float corner_score = get_corner_score(row, column, 1.05f);
 
 	// Return average
 	return (close_to_opponent + center_score + corner_score) * 0.5f * piece_value;
@@ -258,4 +269,20 @@ float GameState::evaluate_queen_at_pos(float piece_value, int row, int column) c
 float GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
 {
 	return get_corner_score(row, column) * piece_value;
+}
+
+
+float GameState::check_difference() const
+{
+	if (is_under_threat(_wK_pos[0], _wK_pos[1], BLACK))
+	{
+		return 15.0f;
+	}
+
+	if (is_under_threat(_bK_pos[0], _bK_pos[1], WHITE))
+	{
+		return -15.0f;
+	}
+
+	return 0.0f;
 }

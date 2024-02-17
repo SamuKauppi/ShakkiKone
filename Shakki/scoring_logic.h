@@ -1,5 +1,6 @@
 #pragma once
 #include "math.h"
+#include "cmath"
 /// <summary>
 /// Returns score based on how close is the axis to other_axis side
 /// min = 0
@@ -11,7 +12,7 @@
 /// <returns></returns>
 static float get_score_from_one_side(int axis, int other_axis, float multiplier = 1.0f)
 {
-	return (7.0f - abs(other_axis - axis)) * 0.5f;
+	return (7.0f - abs(other_axis - axis)) * 0.5f * 0.333f;
 }
 
 /// <summary>
@@ -23,7 +24,7 @@ static float get_score_from_one_side(int axis, int other_axis, float multiplier 
 /// <returns></returns>
 static float get_score_from_both_side(int axis)
 {
-	return (abs(3 - axis) - 0.5f) * 1.166f;
+	return (fabs(3.5 - (float)axis) - 0.5f) * 1.166f * 0.333f;
 }
 
 /// <summary>
@@ -35,7 +36,7 @@ static float get_score_from_both_side(int axis)
 /// <returns></returns>
 static float get_score_from_middle(int axis)
 {
-	return (3.5f - abs(3 - axis));
+	return (3.5f - fabs(3.5f - (float)axis)) * 0.333f;
 }
 /// <summary>
 /// Returns score based on how close is the piece to center of the board

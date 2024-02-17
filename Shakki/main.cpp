@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 
-static const int MINMAX_DEPTH = 5;
+static const int MINMAX_DEPTH = 3;
 
 /// <summary>
 /// Undo a move if there are moves in history

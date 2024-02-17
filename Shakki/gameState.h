@@ -205,17 +205,6 @@ public:
 
 
 	/// <summary>
-	/// Gives the difference between white and black pieces
-	/// 
-	/// pawn 		1
-	/// knight		3
-	/// bishop		3.25
-	/// rook 		5
-	/// queen 		9
-	/// </summary>
-	/// <returns></returns>
-	float material_difference() const;
-	/// <summary>
 	/// Returns the difference between moves
 	/// </summary>
 	/// <returns></returns>
@@ -227,6 +216,18 @@ public:
 	float castle_difference() const;
 	float evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
 
+
+	/// <summary>
+	/// Gives the difference between white and black pieces
+	/// 
+	/// pawn 		1
+	/// knight		3
+	/// bishop		3.25
+	/// rook 		5
+	/// queen 		9
+	/// </summary>	
+	/// <returns></returns>
+	float material_difference() const;
 	float evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const;
 
 	float evaluate_pawn_at_pos(float piece_value, int row, int column) const;
@@ -235,6 +236,8 @@ public:
 	float evaluate_knight_at_pos(float piece_value, int row, int column) const;
 	float evaluate_queen_at_pos(float piece_value, int row, int column) const;
 	float evaluate_king_at_pos(float piece_value, int row, int column) const;
+
+	float check_difference() const;
 
 	/// <summary>
 	/// Performs minimax alorythmn
