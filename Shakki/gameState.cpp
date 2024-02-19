@@ -39,7 +39,6 @@ bool GameState::is_under_threat(int row, int column, int opponent) const
 	vector<Move> opponentMoves(50);
 	get_raw_moves(opponent, opponentMoves);
 
-
 	// check if any end position matches row and column
 	for (int i = 0; i < opponentMoves.size(); i++)
 	{

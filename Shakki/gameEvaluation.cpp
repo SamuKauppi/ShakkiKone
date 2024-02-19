@@ -124,7 +124,7 @@ float GameState::evaluate() const
 		0.75f * check_difference();
 }
 
-float GameState::mobility_difference() const
+int GameState::mobility_difference() const
 {
 	vector<Move> white_m(100);
 	vector<Move> black_m(100);
@@ -132,7 +132,7 @@ float GameState::mobility_difference() const
 	get_raw_moves(WHITE, white_m);
 	get_raw_moves(BLACK, black_m);
 
-	return (float)white_m.size() - (float)black_m.size();
+	return white_m.size() - black_m.size();
 }
 
 float GameState::castle_difference() const
@@ -225,42 +225,27 @@ float GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, in
 }
 float GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) const
 {
-	// TODO: add logic handling promotions
-	
-	// Add score based on how close is pawn to opponents board 
-	float max_row = piece_value > 0.0f ? 0.0f : 7.0f;
-	float close_to_opponent = get_score_from_one_side(row, max_row);
 
-	// Add score based on how center is the pawn
-	float center_score = get_center_score(row, column, 1.5f);
-
-	// Add score based on how close is the pawn to corners 
-	float corner_score = get_corner_score(row, column, 1.05f);
-
-	// Return average
-	return (close_to_opponent + center_score + corner_score) * 0.5f * piece_value;
 }
 float GameState::evaluate_rook_at_pos(float piece_value, int row, int column) const
 {
-	float center_score = get_center_score(row, column, 1.5f);
-	float corner_score = get_corner_score(row, column);
-	return (center_score + corner_score) * 0.5f * piece_value;
+
 }
 float GameState::evaluate_bishop_at_pos(float piece_value, int row, int column) const
 {
-	return get_center_score(row, column) * piece_value;
+
 }
 float GameState::evaluate_knight_at_pos(float piece_value, int row, int column) const
 {
-	return get_center_score(row, column) * piece_value;
+
 }
 float GameState::evaluate_queen_at_pos(float piece_value, int row, int column) const
 {
-	return get_center_score(row, column) * piece_value;
+
 }
 float GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
 {
-	return get_corner_score(row, column) * piece_value;
+
 }
 
 

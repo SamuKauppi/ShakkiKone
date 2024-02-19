@@ -196,20 +196,20 @@ public:
 	/// Evaluates board state
 	/// </summary>
 	/// <returns></returns>
-	float evaluate() const;
+	int evaluate() const;
 
 
 	/// <summary>
 	/// Returns the difference between moves
 	/// </summary>
 	/// <returns></returns>
-	float mobility_difference() const;
+	int mobility_difference() const;
 	/// <summary>
 	/// Returns the difference between castles performed and not performed
 	/// </summary>
 	/// <returns></returns>
-	float castle_difference() const;
-	float evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
+	int castle_difference() const;
+	int evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
 
 
 	/// <summary>
@@ -222,17 +222,17 @@ public:
 	/// queen 		9
 	/// </summary>	
 	/// <returns></returns>
-	float material_difference() const;
-	float evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const;
+	int material_difference() const;
+	int evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const;
 
-	float evaluate_pawn_at_pos(float piece_value, int row, int column) const;
-	float evaluate_rook_at_pos(float piece_value, int row, int column) const;
-	float evaluate_bishop_at_pos(float piece_value, int row, int column) const;
-	float evaluate_knight_at_pos(float piece_value, int row, int column) const;
-	float evaluate_queen_at_pos(float piece_value, int row, int column) const;
-	float evaluate_king_at_pos(float piece_value, int row, int column) const;
+	int evaluate_pawn_at_pos(float piece_value, int row, int column) const;
+	int evaluate_rook_at_pos(float piece_value, int row, int column) const;
+	int evaluate_bishop_at_pos(float piece_value, int row, int column) const;
+	int evaluate_knight_at_pos(float piece_value, int row, int column) const;
+	int evaluate_queen_at_pos(float piece_value, int row, int column) const;
+	int evaluate_king_at_pos(float piece_value, int row, int column) const;
 
-	float check_difference() const;
+	int check_difference() const;
 
 	/// <summary>
 	/// Performs minimax alorythmn
