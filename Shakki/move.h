@@ -31,12 +31,6 @@ public:
 		_end_pos[1] = e_x_pos;
 	}
 
-	/// <summary>
-	/// Contruct a move from string
-	/// </summary>
-	/// <param name="m"></param>
-	Move(const string& m);
-
 	string get_move_name();
 
 private:
