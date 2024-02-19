@@ -8,22 +8,6 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	vector<Move> moves(60);
 	get_moves(moves);
 
-	for (Move& m : moves)
-	{
-		// Create copies of current state
-		GameState new_state = *this;
-		new_state.make_move(m);
-
-		// order
-		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
-		if (tt.is_state_hashed(zobristKey)) 
-		{
-			m._evaluation = tt.get_hashed_evaluation(zobristKey);
-		}
-	}
-	
-	sort(moves.begin(), moves.end());
-
 	// If no moves remain, game is over
 	if (moves.size() <= 0)
 	{
@@ -35,6 +19,22 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	{
 		return MinimaxValue(evaluate(), Move());
 	}
+
+	for (Move& m : moves)
+	{
+		// Create copies of current state
+		GameState new_state = *this;
+		new_state.make_move(m);
+
+		// order
+		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
+		if (tt.is_state_hashed(zobristKey))
+		{
+			m._evaluation = tt.get_hashed_evaluation(zobristKey);
+		}
+	}
+
+	sort(moves.begin(), moves.end());
 
 	// Get the best_value for player
 	float best_value = TurnPlayer == WHITE ?
