@@ -31,12 +31,31 @@ public:
 		_end_pos[1] = e_x_pos;
 	}
 
+	Move(int s_y_pos, int s_x_pos, int e_y_pos, int e_x_pos, int player)
+	{
+		_start_pos[0] = s_y_pos;
+		_start_pos[1] = s_x_pos;
+
+		_end_pos[0] = e_y_pos;
+		_end_pos[1] = e_x_pos;
+
+		_evaluation = player == WHITE ?
+			numeric_limits<int>::lowest() : numeric_limits<int>::max();
+	}
+
 	string get_move_name();
+
+	bool operator<(Move& other)
+	{
+		return _evaluation < other._evaluation;
+	}
 
 private:
 	string _move_name;
 	vector<int> _start_pos = { 0, 0 };
 	vector<int> _end_pos = { 0, 0 };
+
+	int _evaluation;
 
 	int _piece_promotion = NA;
 

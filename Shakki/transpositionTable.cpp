@@ -3,7 +3,7 @@
 
 // Information saved in hashmap
 // Defaults for creating the array should not be used. maybe not smart?
-TTEntry::TTEntry(int key = -1, uint64_t zobristKey = 0, int depth = -1, int evaluation = -1, Move bestMove = Move(0,0,0,0)) 
+TTEntry::TTEntry(int key = -1, uint64_t zobristKey = 0, int depth = -1, float evaluation = -1, Move bestMove = Move(0,0,0,0)) 
 {
 	_key = key;
 	_zobristKey = zobristKey;
@@ -68,7 +68,7 @@ uint64_t TranspositionTable::generate_zobrist_key(GameState state)
 	return k;
 }
 
-void TranspositionTable::hash_new_position(GameState state, int depth, int evaluation, Move m) {
+void TranspositionTable::hash_new_position(GameState state, int depth, float evaluation, Move m) {
 	uint64_t zobristKey = generate_zobrist_key(state);
 	int key = hash_key(zobristKey);
 	_positionCount++;
@@ -78,6 +78,20 @@ void TranspositionTable::hash_new_position(GameState state, int depth, int evalu
 		_positionRepeats++;
 	}
 	_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);
+}
+
+
+bool TranspositionTable::is_state_hashed(uint64_t zobristKey)
+{
+	int key = hash_key(zobristKey);
+	if (_positions[key]._zobristKey == zobristKey) return true;
+	else return false;
+}
+
+float TranspositionTable::get_hashed_evaluation(uint64_t zobristKey)
+{
+	int key = hash_key(zobristKey);
+	return _positions[key]._evaluation;
 }
 
 int TranspositionTable::hash_key(uint64_t zobristKey)

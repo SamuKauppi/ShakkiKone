@@ -9,7 +9,7 @@ class GameState;
 class TTEntry
 {
 public:
-	TTEntry(int key, uint64_t zobristKey, int depth, int evaluation, Move bestMove);
+	TTEntry(int key, uint64_t zobristKey, int depth, float evaluation, Move bestMove);
 
 private:
 	int _key;
@@ -28,8 +28,10 @@ public:
 	void init_zobrist();
 	uint64_t generate_zobrist_key(GameState state);
 	int hash_key(uint64_t zobristKey);
-	void hash_new_position(GameState state, int depth, int evaluation, Move m);
+	void hash_new_position(GameState state, int depth, float evaluation, Move m);
 	uint64_t uint64_prng();
+	bool is_state_hashed(uint64_t zobristKey);
+	float get_hashed_evaluation(uint64_t zobristKey);
 
 	// tracking position counts. Not important only used for performance data
 	// public for ease of use
