@@ -44,9 +44,6 @@ void GameState::make_move(const Move& m)
 
 	// switch players
 	TurnPlayer = 1 - TurnPlayer;
-
-	// TODO: create a way to generate hash
-	generate_hash();
 }
 
 void GameState::special_pawn_moves(int start_row, int start_column, int end_row, int end_column)

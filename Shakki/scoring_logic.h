@@ -38,6 +38,7 @@ static float get_score_from_middle(int axis)
 {
 	return (3.5f - fabs(3.5f - (float)axis)) * 0.333f;
 }
+
 /// <summary>
 /// Returns score based on how close is the piece to center of the board
 /// </summary>

@@ -13,13 +13,6 @@ public:
 	int TurnPlayer = WHITE;
 	int _hash;
 
-	// TODO: Implement hashing
-	GameState()
-	{
-		generate_hash();
-	}
-	void generate_hash();
-
 	/// <summary>
 	/// Empties board
 	/// </summary>

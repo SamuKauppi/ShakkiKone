@@ -67,21 +67,6 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	return MinimaxValue(best_value, best_move);
 }
 
-void GameState::generate_hash()
-{
-	//unsigned long long int test = 1;
-	//test ^= 3;
-	//int squared = 8 * 8;
-	//for (int i = 0; i < 8; i++)
-	//{
-	//	for (int j = 0; j < 8; j++)
-	//	{
-	//		_hash += pow(2, squared) * _board[i][j];
-	//		squared--;
-	//	}
-	//}
-}
-
 float GameState::score_board() const
 {
 	// Get opponent
@@ -123,10 +108,6 @@ float GameState::evaluate() const
 		0.75f * check_difference();
 }
 
-/// <summary>
-/// Returns difference between moves
-/// </summary>
-/// <returns></returns>
 float GameState::mobility_difference() const
 {
 	vector<Move> white_m(100);
@@ -138,10 +119,6 @@ float GameState::mobility_difference() const
 	return (float)white_m.size() - (float)black_m.size();
 }
 
-/// <summary>
-/// Returns difference between castles
-/// </summary>
-/// <returns></returns>
 float GameState::castle_difference() const
 {
 	float score = 0.0f;
@@ -175,10 +152,6 @@ float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool c
 	return score;
 }
 
-/// <summary>
-/// Returns difference between pieces at position
-/// </summary>
-/// <returns></returns>
 float GameState::material_difference() const
 {
 	float value = 0;
