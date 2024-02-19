@@ -1,6 +1,6 @@
 #include "gameState.h"
-#include "scoring_logic.h"
 #include "iostream"
+#include "scoring_logic.h"
 
 MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
 {
@@ -132,7 +132,7 @@ int GameState::mobility_difference() const
 	get_raw_moves(WHITE, white_m);
 	get_raw_moves(BLACK, black_m);
 
-	return white_m.size() - black_m.size();
+	return (int)white_m.size() - (int)black_m.size();
 }
 
 int GameState::castle_difference() const
@@ -171,6 +171,7 @@ int GameState::evaluate_player_castle(bool done_castle, bool can_short, bool can
 int GameState::material_difference() const
 {
 	int value = 0;
+	float eg_multiplier = get_game_progress_value();
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -180,72 +181,52 @@ int GameState::material_difference() const
 			if (piece == NA)
 				continue;
 
-			auto it = piece_values.find(piece);
-			if (it != piece_values.end())
-			{
-				value += evaluate_piece_at_pos(piece, it->second, i, j);
-			}
+			evaluate_piece_at_pos(piece, eg_multiplier, i, j);
 		}
 	}
 
 	return value;
 }
-int GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const
+int GameState::evaluate_piece_at_pos(int piece, float eg_multiplier, int row, int column) const
 {
 	switch (piece)
 	{
 	case wP:
 	case bP:
-		return evaluate_pawn_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_pawn_table, eg_pawn_table);
 
 	case wR:
 	case bR:
-		return evaluate_rook_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_rook_table, eg_rook_table);
 
 	case wN:
 	case bN:
-		return evaluate_knight_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_knight_table, eg_knight_table);
 
 	case wB:
 	case bB:
-		return evaluate_bishop_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_bishop_table, eg_bishop_table);
 
 	case wQ:
 	case bQ:
-		return evaluate_queen_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_queen_table, eg_queen_table);
 
 	case wK:
 	case bK:
-		return evaluate_king_at_pos(piece_value, row, column);
+		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_king_table, eg_king_table);
 
 	default:
 		return -1;
 	}
 
 }
-int GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) const
-{
 
-}
-int GameState::evaluate_rook_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_piece_at_pos(float eg_multiplier, int row, int column, int mg_table[], int eg_table[]) const
 {
+	float mg_value = (float)mg_table[column + (8 * row)] * (1 / eg_multiplier);
+	float eg_value = (float)eg_table[column + (8 * row)] * eg_multiplier;
 
-}
-int GameState::evaluate_bishop_at_pos(float piece_value, int row, int column) const
-{
-
-}
-int GameState::evaluate_knight_at_pos(float piece_value, int row, int column) const
-{
-
-}
-int GameState::evaluate_queen_at_pos(float piece_value, int row, int column) const
-{
-
-}
-int GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
-{
-
+	return int((mg_value + eg_value) * 0.5f);
 }
 
 
@@ -262,4 +243,23 @@ int GameState::check_difference() const
 	}
 
 	return 0;
+}
+
+float GameState::get_game_progress_value() const
+{
+	// 0 - 72
+	float value = 0.0f;
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (_board[i][j] == NA) continue;
+
+			value += abs(_board[i][j]);
+		}
+	}
+	
+	// Return as multiplier
+	return value * 0.013888f;
 }

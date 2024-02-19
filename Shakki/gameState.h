@@ -223,16 +223,13 @@ public:
 	/// </summary>	
 	/// <returns></returns>
 	int material_difference() const;
-	int evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const;
+	int evaluate_piece_at_pos(int piece, float eg_multiplier, int row, int column) const;
 
-	int evaluate_pawn_at_pos(float piece_value, int row, int column) const;
-	int evaluate_rook_at_pos(float piece_value, int row, int column) const;
-	int evaluate_bishop_at_pos(float piece_value, int row, int column) const;
-	int evaluate_knight_at_pos(float piece_value, int row, int column) const;
-	int evaluate_queen_at_pos(float piece_value, int row, int column) const;
-	int evaluate_king_at_pos(float piece_value, int row, int column) const;
+	int evaluate_piece_at_pos(float eg_multiplier, int row, int column, int mg_table[], int eg_table[]) const;
 
 	int check_difference() const;
+
+	float get_game_progress_value() const;
 
 	/// <summary>
 	/// Performs minimax alorythmn
