@@ -1,7 +1,8 @@
 #include "gameState.h"
 #include "scoring_logic.h"
+#include "iostream"
 
-MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
+MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
 {
 	// Generate moves for this state
 	vector<Move> moves(60);
@@ -34,9 +35,8 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
 		new_state.make_move(m);
 
 		// Compare hash value
-
 		// Recursive call
-		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta);
+		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt);
 
 		// Get best value for player
 		if ((isMin && value.Value > best_value) ||
@@ -54,6 +54,9 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta) const
 				beta = best_value;
 			}
 		}
+
+		// store position to TT
+		tt.hash_new_position(new_state, depth, best_value, best_move);
 
 		if (beta <= alpha)
 		{

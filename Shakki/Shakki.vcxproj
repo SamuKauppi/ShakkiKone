@@ -134,12 +134,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
     <ClCompile Include="scoring_logic.h" />
+    <ClCompile Include="transpositionTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameState.h" />
     <ClInclude Include="chess.h" />
     <ClInclude Include="minimaxValue.h" />
     <ClInclude Include="move.h" />
+    <ClInclude Include="transpositionTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

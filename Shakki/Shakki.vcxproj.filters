@@ -36,6 +36,9 @@
     <ClCompile Include="scoring_logic.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="transpositionTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameState.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="minimaxValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transpositionTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

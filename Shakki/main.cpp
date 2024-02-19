@@ -4,6 +4,8 @@
 #include "stack"
 #include <vector>
 #include <iostream>
+#include "transpositionTable.h"
+#include "chrono"
 
 static const int MINMAX_DEPTH = 3;
 
@@ -76,7 +78,7 @@ static int get_valid_move_index(vector<Move>& moves, string& chosen)
 /// <param name="current_state"></param>
 /// <param name="chosen"></param>
 /// <param name="is_ai"></param>
-static string player_input(GameState& current_state, bool& is_ai)
+static string player_input(GameState& current_state, bool& is_ai, TranspositionTable& tt)
 {
 	string chosen;
 	// Player
@@ -92,7 +94,7 @@ static string player_input(GameState& current_state, bool& is_ai)
 			current_state.minimax(
 				MINMAX_DEPTH,
 				numeric_limits<float>::lowest(),
-				numeric_limits<float>::max());
+				numeric_limits<float>::max(), tt);
 
 		chosen = ai_input.Best_move.get_move_name();
 	}
@@ -108,6 +110,7 @@ static string player_input(GameState& current_state, bool& is_ai)
 /// <returns></returns>
 static string game_loop(bool is_w_ai, bool is_b_ai)
 {
+	TranspositionTable tt;
 	// Generate state and print it
 	GameState current_state;
 	current_state.print_board();
@@ -121,6 +124,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 	// Main game loop
 	while (true)
 	{
+		auto s = chrono::high_resolution_clock::now();
 		// Prevent the game from continuing until user says if undo was last input
 		if (wasUndo)
 		{
@@ -164,7 +168,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 			bool is_ai = current_state.TurnPlayer == WHITE ? is_w_ai : is_b_ai;
 
 			// Get the chosen move name
-			string chosen = player_input(current_state, is_ai);
+			string chosen = player_input(current_state, is_ai, tt);
 			
 			// if user types undo, skip and go to undo logic
 			if (chosen == "undo")
@@ -183,7 +187,11 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Clear the screen
+		auto stop = chrono::high_resolution_clock::now();
 		system("cls");
+		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - s);
+		cout << duration.count() << "\n";
+		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
 
 		// If the input was not "undo", add this state to history and make the chosen move
 		// Also print what move was made

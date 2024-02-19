@@ -3,6 +3,8 @@
 #include "move.h"
 #include "minimaxValue.h"
 #include "unordered_map"
+#include "transpositionTable.h"
+class TranspositionTable;
 
 class GameState
 {
@@ -244,7 +246,7 @@ public:
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>
-	MinimaxValue minimax(int depth, float alpha, float beta) const;
+	MinimaxValue minimax(int depth, float alpha, float beta, TranspositionTable& tt) const;
 
 	/// <summary>
 	/// Overwrites this state with chosen states values
@@ -318,4 +320,7 @@ private:
 	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f},
 	{wK, 1.0f}, {bK, -1.0f},
 	{NA, 0.0f} };
+
+
+	friend class TranspositionTable;
 };
