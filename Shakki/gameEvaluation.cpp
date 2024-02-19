@@ -83,13 +83,13 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	return MinimaxValue(best_value, best_move);
 }
 
-float GameState::score_board() const
+int GameState::score_board() const
 {
 	// Get opponent
 	int opponent = 1 - TurnPlayer;
 
 	// Get worst score for turn player
-	float worst_score = TurnPlayer == WHITE ? -1000000.0f : 1000000.0f;
+	int worst_score = TurnPlayer == WHITE ? -1000000 : 1000000;
 
 	// Find correct king
 	int row, column;
@@ -112,16 +112,16 @@ float GameState::score_board() const
 	}
 
 	// Return draw if the king is not under threat
-	return 0.0f;
+	return 0;
 }
 
-float GameState::evaluate() const
+int GameState::evaluate() const
 {
 	return
-		1.0f * material_difference() +
-		0.05f * mobility_difference() +
-		0.2f * castle_difference() +
-		0.75f * check_difference();
+		material_difference() +
+		mobility_difference() +
+		castle_difference() +
+		check_difference();
 }
 
 int GameState::mobility_difference() const
@@ -135,21 +135,21 @@ int GameState::mobility_difference() const
 	return white_m.size() - black_m.size();
 }
 
-float GameState::castle_difference() const
+int GameState::castle_difference() const
 {
-	float score = 0.0f;
+	int score = 0;
 	score += evaluate_player_castle(_w_castle, _w_short_castle, _w_long_castle);
 	score -= evaluate_player_castle(_b_castle, _b_short_castle, _b_long_castle);
 	return score;
 }
-float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const
+int GameState::evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const
 {
-	float score = 0.0f;
+	int score = 0;
 
 	// Player has done a castle
 	if (done_castle)
 	{
-		score += 10.0f;
+		score += 10;
 	}
 	// Player hasn't done castle
 	else
@@ -157,20 +157,20 @@ float GameState::evaluate_player_castle(bool done_castle, bool can_short, bool c
 		// If short castle has been disabled
 		if (!can_short)
 		{
-			score -= 25.0f;
+			score -= 25;
 		}
 		// If long castle has been disabled
 		if (!can_long)
 		{
-			score -= 20.0f;
+			score -= 20;
 		}
 	}
 	return score;
 }
 
-float GameState::material_difference() const
+int GameState::material_difference() const
 {
-	float value = 0;
+	int value = 0;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -190,7 +190,7 @@ float GameState::material_difference() const
 
 	return value;
 }
-float GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const
+int GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, int column) const
 {
 	switch (piece)
 	{
@@ -219,47 +219,47 @@ float GameState::evaluate_piece_at_pos(int piece, float piece_value, int row, in
 		return evaluate_king_at_pos(piece_value, row, column);
 
 	default:
-		return -1.0f;
+		return -1;
 	}
 
 }
-float GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_pawn_at_pos(float piece_value, int row, int column) const
 {
 
 }
-float GameState::evaluate_rook_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_rook_at_pos(float piece_value, int row, int column) const
 {
 
 }
-float GameState::evaluate_bishop_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_bishop_at_pos(float piece_value, int row, int column) const
 {
 
 }
-float GameState::evaluate_knight_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_knight_at_pos(float piece_value, int row, int column) const
 {
 
 }
-float GameState::evaluate_queen_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_queen_at_pos(float piece_value, int row, int column) const
 {
 
 }
-float GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
+int GameState::evaluate_king_at_pos(float piece_value, int row, int column) const
 {
 
 }
 
 
-float GameState::check_difference() const
+int GameState::check_difference() const
 {
 	if (is_under_threat(_wK_pos[0], _wK_pos[1], BLACK))
 	{
-		return 15.0f;
+		return 15;
 	}
 
 	if (is_under_threat(_bK_pos[0], _bK_pos[1], WHITE))
 	{
-		return -15.0f;
+		return -15;
 	}
 
-	return 0.0f;
+	return 0;
 }

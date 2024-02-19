@@ -190,7 +190,7 @@ public:
 	/// Called when no legal moves are left
 	/// </summary>
 	/// <returns></returns>
-	float score_board() const;
+	int score_board() const;
 
 	/// <summary>
 	/// Evaluates board state
@@ -308,11 +308,11 @@ private:
 
 	int _doubleStep = -1;
 
-	const unordered_map<int, float> piece_values = {
-	{wP, 1.0f}, {wN, 3.0f}, {wB, 3.25}, {wR, 5.0f}, {wQ, 9.0f},
-	{bP, -1.0f}, {bN, -3.0f}, {bB, -3.25f}, {bR, -5.0f}, {bQ, -9.0f},
-	{wK, 1.0f}, {bK, -1.0f},
-	{NA, 0.0f} };
+	const unordered_map<int, int> piece_values = {
+	{wP, 1}, {wN, 3}, {wB, 3}, {wR, 5}, {wQ, 9},
+	{bP, -1}, {bN, -3}, {bB, -3}, {bR, -5}, {bQ, -9},
+	{wK, 1}, {bK, -1},
+	{NA, 0} };
 
 
 	friend class TranspositionTable;
