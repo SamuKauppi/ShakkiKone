@@ -1,10 +1,10 @@
 #include "gameState.h"
 #include "move.h"
+#include "transpositionTable.h"
 #include "limits"
 #include "stack"
 #include <vector>
 #include <iostream>
-#include "transpositionTable.h"
 #include "chrono"
 
 static const int MINMAX_DEPTH = 3;

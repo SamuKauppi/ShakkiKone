@@ -179,7 +179,6 @@ public:
 	/// <returns></returns>
 	bool can_player_castle(int player) const;
 
-
 	/// <summary>
 	/// Evaluates the board as follow:
 	/// 
@@ -196,40 +195,7 @@ public:
 	/// Evaluates board state
 	/// </summary>
 	/// <returns></returns>
-	int evaluate() const;
-
-
-	/// <summary>
-	/// Returns the difference between moves
-	/// </summary>
-	/// <returns></returns>
-	int mobility_difference() const;
-	/// <summary>
-	/// Returns the difference between castles performed and not performed
-	/// </summary>
-	/// <returns></returns>
-	int castle_difference() const;
-	int evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const;
-
-
-	/// <summary>
-	/// Gives the difference between white and black pieces
-	/// 
-	/// pawn 		1
-	/// knight		3
-	/// bishop		3.25
-	/// rook 		5
-	/// queen 		9
-	/// </summary>	
-	/// <returns></returns>
-	int material_difference() const;
-	int evaluate_piece_at_pos(int piece, float eg_multiplier, int row, int column) const;
-
-	int evaluate_piece_at_pos(float eg_multiplier, int row, int column, int mg_table[], int eg_table[]) const;
-
-	int check_difference() const;
-
-	float get_game_progress_value() const;
+	float evaluate() const;
 
 	/// <summary>
 	/// Performs minimax alorythmn
@@ -305,7 +271,7 @@ private:
 
 	int _doubleStep = -1;
 
-	const unordered_map<int, int> piece_values = {
+	const unordered_map<int, int> _piece_values = {
 	{wP, 1}, {wN, 3}, {wB, 3}, {wR, 5}, {wQ, 9},
 	{bP, -1}, {bN, -3}, {bB, -3}, {bR, -5}, {bQ, -9},
 	{wK, 1}, {bK, -1},

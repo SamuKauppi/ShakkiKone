@@ -2,6 +2,8 @@
 #include "iostream"
 #include "scoring_logic.h"
 
+Evaluation eval = Evaluation();
+
 MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
 {
 	// Generate moves for this state
@@ -115,151 +117,7 @@ int GameState::score_board() const
 	return 0;
 }
 
-int GameState::evaluate() const
+float GameState::evaluate() const
 {
-	return
-		material_difference() +
-		mobility_difference() +
-		castle_difference() +
-		check_difference();
-}
-
-int GameState::mobility_difference() const
-{
-	vector<Move> white_m(100);
-	vector<Move> black_m(100);
-
-	get_raw_moves(WHITE, white_m);
-	get_raw_moves(BLACK, black_m);
-
-	return (int)white_m.size() - (int)black_m.size();
-}
-
-int GameState::castle_difference() const
-{
-	int score = 0;
-	score += evaluate_player_castle(_w_castle, _w_short_castle, _w_long_castle);
-	score -= evaluate_player_castle(_b_castle, _b_short_castle, _b_long_castle);
-	return score;
-}
-int GameState::evaluate_player_castle(bool done_castle, bool can_short, bool can_long) const
-{
-	int score = 0;
-
-	// Player has done a castle
-	if (done_castle)
-	{
-		score += 10;
-	}
-	// Player hasn't done castle
-	else
-	{
-		// If short castle has been disabled
-		if (!can_short)
-		{
-			score -= 25;
-		}
-		// If long castle has been disabled
-		if (!can_long)
-		{
-			score -= 20;
-		}
-	}
-	return score;
-}
-
-int GameState::material_difference() const
-{
-	int value = 0;
-	float eg_multiplier = get_game_progress_value();
-
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			int piece = _board[i][j];
-			if (piece == NA)
-				continue;
-
-			evaluate_piece_at_pos(piece, eg_multiplier, i, j);
-		}
-	}
-
-	return value;
-}
-int GameState::evaluate_piece_at_pos(int piece, float eg_multiplier, int row, int column) const
-{
-	switch (piece)
-	{
-	case wP:
-	case bP:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_pawn_table, eg_pawn_table);
-
-	case wR:
-	case bR:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_rook_table, eg_rook_table);
-
-	case wN:
-	case bN:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_knight_table, eg_knight_table);
-
-	case wB:
-	case bB:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_bishop_table, eg_bishop_table);
-
-	case wQ:
-	case bQ:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_queen_table, eg_queen_table);
-
-	case wK:
-	case bK:
-		return evaluate_piece_at_pos(eg_multiplier, row, column, mg_king_table, eg_king_table);
-
-	default:
-		return -1;
-	}
-
-}
-
-int GameState::evaluate_piece_at_pos(float eg_multiplier, int row, int column, int mg_table[], int eg_table[]) const
-{
-	float mg_value = (float)mg_table[column + (8 * row)] * (1 / eg_multiplier);
-	float eg_value = (float)eg_table[column + (8 * row)] * eg_multiplier;
-
-	return int((mg_value + eg_value) * 0.5f);
-}
-
-
-int GameState::check_difference() const
-{
-	if (is_under_threat(_wK_pos[0], _wK_pos[1], BLACK))
-	{
-		return 15;
-	}
-
-	if (is_under_threat(_bK_pos[0], _bK_pos[1], WHITE))
-	{
-		return -15;
-	}
-
-	return 0;
-}
-
-float GameState::get_game_progress_value() const
-{
-	// 0 - 72
-	float value = 0.0f;
-
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			if (_board[i][j] == NA) continue;
-
-			value += abs(_board[i][j]);
-		}
-	}
-	
-	// Return as multiplier
-	return value * 0.013888f;
+	return eval.eval(_board, TurnPlayer);
 }
