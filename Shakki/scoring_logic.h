@@ -7,40 +7,63 @@ public:
 	Evaluation();
 	int eval(const int board[8][8], int side2Move) const;
 	void init_tables();
+	int flip_square(int sq) const;
+	int get_pcolor(int pc) const;
+	int get_evaluated_piece(int pc) const;
 
 private:
-#define PAWN   0
-#define KNIGHT 1
-#define BISHOP 2
-#define ROOK   3
-#define QUEEN  4
-#define KING   5
 
-	/* board representation */
-#define WHITE  0
-#define BLACK  1
+	enum PieceType {
+		PAWN = 0,
+		KNIGHT = 1,
+		BISHOP = 2,
+		ROOK = 3,
+		QUEEN = 4,
+		KING = 5
+	};
 
-#define WHITE_PAWN      (2*PAWN   + WHITE)
-#define BLACK_PAWN      (2*PAWN   + BLACK)
-#define WHITE_KNIGHT    (2*KNIGHT + WHITE)
-#define BLACK_KNIGHT    (2*KNIGHT + BLACK)
-#define WHITE_BISHOP    (2*BISHOP + WHITE)
-#define BLACK_BISHOP    (2*BISHOP + BLACK)
-#define WHITE_ROOK      (2*ROOK   + WHITE)
-#define BLACK_ROOK      (2*ROOK   + BLACK)
-#define WHITE_QUEEN     (2*QUEEN  + WHITE)
-#define BLACK_QUEEN     (2*QUEEN  + BLACK)
-#define WHITE_KING      (2*KING   + WHITE)
-#define BLACK_KING      (2*KING   + BLACK)
-#define EMPTY           (BLACK_KING  +  1)
-
-#define PCOLOR(p) ((p)&1)
-
-#define FLIP(sq) ((sq)^56)
-#define OTHER(side) ((side)^ 1)
+	enum Piece {
+		WHITE_PAWN = 2 * PAWN + WHITE,
+		BLACK_PAWN = 2 * PAWN + BLACK,
+		WHITE_KNIGHT = 2 * KNIGHT + WHITE,
+		BLACK_KNIGHT = 2 * KNIGHT + BLACK,
+		WHITE_BISHOP = 2 * BISHOP + WHITE,
+		BLACK_BISHOP = 2 * BISHOP + BLACK,
+		WHITE_ROOK = 2 * ROOK + WHITE,
+		BLACK_ROOK = 2 * ROOK + BLACK,
+		WHITE_QUEEN = 2 * QUEEN + WHITE,
+		BLACK_QUEEN = 2 * QUEEN + BLACK,
+		WHITE_KING = 2 * KING + WHITE,
+		BLACK_KING = 2 * KING + BLACK,
+		EMPTY = BLACK_KING + 1
+	};
 
 	int mg_value[6] = { 82, 337, 365, 477, 1025,  0 };
 	int eg_value[6] = { 94, 281, 297, 512,  936,  0 };
+
+	int* mg_pesto_table[6] =
+	{
+		mg_pawn_table,
+		mg_knight_table,
+		mg_bishop_table,
+		mg_rook_table,
+		mg_queen_table,
+		mg_king_table
+	};
+
+	int* eg_pesto_table[6] =
+	{
+		eg_pawn_table,
+		eg_knight_table,
+		eg_bishop_table,
+		eg_rook_table,
+		eg_queen_table,
+		eg_king_table
+	};
+
+	int gamephaseInc[12] = { 0,0,1,1,1,1,2,2,4,4,0,0 };
+	int mg_table[12][64];
+	int eg_table[12][64];
 
 	/* piece/sq tables */
 	/* values from Rofchade: http://www.talkchess.com/forum3/viewtopic.php?f=2&t=68311&start=19 */
@@ -176,30 +199,6 @@ private:
 		-27, -11,   4,  13,  14,   4,  -5, -17,
 		-53, -34, -21, -11, -28, -14, -24, -43
 	};
-
-	int* mg_pesto_table[6] =
-	{
-		mg_pawn_table,
-		mg_knight_table,
-		mg_bishop_table,
-		mg_rook_table,
-		mg_queen_table,
-		mg_king_table
-	};
-
-	int* eg_pesto_table[6] =
-	{
-		eg_pawn_table,
-		eg_knight_table,
-		eg_bishop_table,
-		eg_rook_table,
-		eg_queen_table,
-		eg_king_table
-	};
-
-	int gamephaseInc[12] = { 0,0,1,1,1,1,2,2,4,4,0,0 };
-	int mg_table[12][64];
-	int eg_table[12][64];
 
 	friend class GameState;
 };

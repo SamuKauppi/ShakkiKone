@@ -117,7 +117,7 @@ int GameState::score_board() const
 	return 0;
 }
 
-float GameState::evaluate() const
+int GameState::evaluate() const
 {
 	return eval.eval(_board, TurnPlayer);
 }

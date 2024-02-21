@@ -195,7 +195,7 @@ public:
 	/// Evaluates board state
 	/// </summary>
 	/// <returns></returns>
-	float evaluate() const;
+	int evaluate() const;
 
 	/// <summary>
 	/// Performs minimax alorythmn
@@ -270,13 +270,6 @@ private:
 	bool _b_castle = false;
 
 	int _doubleStep = -1;
-
-	const unordered_map<int, int> _piece_values = {
-	{wP, 1}, {wN, 3}, {wB, 3}, {wR, 5}, {wQ, 9},
-	{bP, -1}, {bN, -3}, {bB, -3}, {bR, -5}, {bQ, -9},
-	{wK, 1}, {bK, -1},
-	{NA, 0} };
-
 
 	friend class TranspositionTable;
 };
