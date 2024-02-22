@@ -35,12 +35,14 @@ int Evaluation::eval(const int board[8][8], int side2Move) const
         for (int column = 0; column < 8; column++)
         {
             int pc = get_evaluated_piece(board[row][column]);
-            if (pc != EMPTY) 
+            if (pc != NA) 
             {
+                int pcColor = get_piece_color(pc);
+                int eval_pc = get_evaluated_piece(pc);
                 int sq = row * 8 + column;
-                mg[get_pcolor(pc)] += mg_table[pc][sq];
-                eg[get_pcolor(pc)] += eg_table[pc][sq];
-                gamePhase += gamephaseInc[pc];
+                mg[pcColor] += mg_table[eval_pc][sq];
+                eg[pcColor] += eg_table[eval_pc][sq];
+                gamePhase += gamephaseInc[eval_pc];
             }
         }
     }
@@ -57,11 +59,6 @@ int Evaluation::eval(const int board[8][8], int side2Move) const
 int Evaluation::flip_square(int sq) const
 {
     return sq ^ 56;
-}
-
-int Evaluation::get_pcolor(int pc) const
-{
-    return pc & 1;
 }
 
 int Evaluation::get_evaluated_piece(int pc) const
