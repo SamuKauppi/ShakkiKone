@@ -204,7 +204,7 @@ public:
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>
-	MinimaxValue minimax(int depth, float alpha, float beta, TranspositionTable& tt) const;
+	MinimaxValue minimax(int depth, int alpha, int beta, TranspositionTable& tt) const;
 
 	/// <summary>
 	/// Overwrites this state with chosen states values

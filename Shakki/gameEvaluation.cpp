@@ -4,7 +4,7 @@
 
 Evaluation eval = Evaluation();
 
-MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
+MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
 {
 	// Generate moves for this state
 	/*
@@ -49,7 +49,7 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	
 	bool isMin = TurnPlayer == WHITE ? true : false;
 
-	if (isMin)
+	if (TurnPlayer == BLACK)
 	{
 		sort(moves.begin(), moves.end());
 	}
@@ -59,8 +59,8 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	}
 
 	// Get the best_value for player
-	float best_value = TurnPlayer == WHITE ?
-		numeric_limits<float>::lowest() : numeric_limits<float>::max();
+	int best_value = TurnPlayer == WHITE ?
+		numeric_limits<int>::lowest() : numeric_limits<int>::max();
 
 	Move best_move(0, 0, 0, 0);
 
@@ -70,6 +70,10 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 		// Create copies of current state
 		GameState new_state = *this;
 		new_state.make_move(m);
+
+		// for better TT saving eval in node and best move in node
+		Move best_move_in_node(0, 0, 0, 0);
+		int best_value_in_node = TurnPlayer == WHITE ? numeric_limits<int>::lowest() : numeric_limits<int>::max();
 
 		// Check move legality during search to avoid unnecessary checks. 
 		// Still using inefficient method.
@@ -97,8 +101,15 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 			
 		}
 
+		// update best value in node
+		if (value.Value > best_value_in_node)
+		{
+			best_value_in_node = value.Value;
+			best_move_in_node = m;
+		}
+
 		// store position to TT
-		tt.hash_new_position(new_state, depth, best_value, best_move);
+		tt.hash_new_position(new_state, depth, best_value_in_node, best_move_in_node);
 		
 		if (beta <= alpha)
 		{
