@@ -49,6 +49,10 @@ public:
 	{
 		return _evaluation < other._evaluation;
 	}
+	bool operator>(Move& other)
+	{
+		return _evaluation > other._evaluation;
+	}
 
 private:
 	string _move_name;

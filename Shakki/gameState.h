@@ -152,6 +152,8 @@ public:
 	/// <param name="moves"></param>
 	void get_moves(vector<Move>& moves) const;
 
+	bool is_legal(Move& m) const;
+
 	/// <summary>
 	/// Sets all legal castle moves into vector
 	/// </summary>

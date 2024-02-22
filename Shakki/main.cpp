@@ -7,7 +7,7 @@
 #include <iostream>
 #include "chrono"
 
-static const int MINMAX_DEPTH = 3;
+static const int MINMAX_DEPTH = 5;
 
 /// <summary>
 /// Undo a move if there are moves in history
@@ -192,6 +192,8 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - s);
 		cout << duration.count() << "\n";
 		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
+		tt._positionCount = 0;
+		tt._positionRepeats = 0;
 
 		// If the input was not "undo", add this state to history and make the chosen move
 		// Also print what move was made

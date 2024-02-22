@@ -7,8 +7,17 @@ Evaluation eval = Evaluation();
 MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
 {
 	// Generate moves for this state
+	/*
 	vector<Move> moves(60);
 	get_moves(moves);
+	*/
+
+	//test
+	vector<Move> moves;
+	get_raw_moves(TurnPlayer, moves);
+	int index = moves.size();
+	get_castles(TurnPlayer, moves, index);
+	int legal_moves_made = 0;
 
 	// If no moves remain, game is over
 	if (moves.size() <= 0)
@@ -21,7 +30,9 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	{
 		return MinimaxValue(evaluate(), Move());
 	}
+	
 
+	// TODO: Calculate zobrist keys without test state, 
 	for (Move& m : moves)
 	{
 		// Create copies of current state
@@ -35,15 +46,23 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 			m._evaluation = tt.get_hashed_evaluation(zobristKey);
 		}
 	}
+	
+	bool isMin = TurnPlayer == WHITE ? true : false;
 
-	sort(moves.begin(), moves.end());
+	if (isMin)
+	{
+		sort(moves.begin(), moves.end());
+	}
+	else
+	{
+		sort(moves.begin(), moves.end(), greater<>());
+	}
 
 	// Get the best_value for player
 	float best_value = TurnPlayer == WHITE ?
 		numeric_limits<float>::lowest() : numeric_limits<float>::max();
 
 	Move best_move(0, 0, 0, 0);
-	bool isMin = TurnPlayer == WHITE ? true : false;
 
 	// Iterate through moves
 	for (Move& m : moves)
@@ -52,7 +71,11 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 		GameState new_state = *this;
 		new_state.make_move(m);
 
-		// Compare hash value
+		// Check move legality during search to avoid unnecessary checks. 
+		// Still using inefficient method.
+		if (!is_legal(m)) continue;
+		legal_moves_made++;
+
 		// Recursive call
 		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt);
 
@@ -62,7 +85,7 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 		{
 			best_value = value.Value;
 			best_move = m;
-
+			
 			if (isMin)
 			{
 				alpha = best_value;
@@ -71,15 +94,22 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 			{
 				beta = best_value;
 			}
+			
 		}
 
 		// store position to TT
 		tt.hash_new_position(new_state, depth, best_value, best_move);
-
+		
 		if (beta <= alpha)
 		{
 			break;
 		}
+		
+	}
+	// no legal moves in branch, game is over
+	if (legal_moves_made <= 0)
+	{
+		return	MinimaxValue(score_board(), Move());
 	}
 
 	return MinimaxValue(best_value, best_move);

@@ -143,7 +143,7 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		!is_under_threat(player_pos, 5, opponent) &&
 		!is_under_threat(player_pos, 6, opponent))
 	{
-		Move m = Move(player_pos, 4, player_pos, 6);
+		Move m = Move(player_pos, 4, player_pos, 6, player);
 		add_move_with_index(moveIndex, moves, m);
 	}
 
@@ -152,7 +152,7 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		!is_under_threat(player_pos, 3, opponent) &&
 		!is_under_threat(player_pos, 2, opponent))
 	{
-		Move m = Move(player_pos, 4, player_pos, 2);
+		Move m = Move(player_pos, 4, player_pos, 2, player);
 		add_move_with_index(moveIndex, moves, m);
 	}
 }
@@ -215,6 +215,25 @@ void GameState::get_moves(vector<Move>& moves) const
 
 	// Remove possible empty slots
 	moves.erase(moves.begin() + moveIndex, moves.end());
+}
+
+bool GameState::is_legal(Move& m) const {
+	GameState testState = *this;
+	testState.make_move(m);
+
+	// Get king position
+	int row, column;
+	if (TurnPlayer == WHITE)
+	{
+		row = testState._wK_pos[0];
+		column = testState._wK_pos[1];
+	}
+	else
+	{
+		row = testState._bK_pos[0];
+		column = testState._bK_pos[1];
+	}
+	return !testState.is_under_threat(row, column, 1 - TurnPlayer);
 }
 
 void GameState::create_promotion_moves(
@@ -390,7 +409,7 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 					create_promotion_moves(moveIndex, row, column, current_row, current_column, player, moves);
 				else
 				{
-					Move m = Move(row, column, current_row, current_column);
+					Move m = Move(row, column, current_row, current_column, player);
 					add_move_with_index(moveIndex, moves, m);
 				}
 			}
@@ -412,7 +431,7 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 				create_promotion_moves(moveIndex, row, column, current_row, current_column, player, moves);
 			else
 			{
-				Move m = Move(row, column, current_row, current_column);
+				Move m = Move(row, column, current_row, current_column, player);
 				add_move_with_index(moveIndex, moves, m);
 			}
 		}

@@ -74,8 +74,11 @@ void TranspositionTable::hash_new_position(GameState state, int depth, float eva
 	_positionCount++;
 	if (_positions[key]._zobristKey == zobristKey)
 	{
-		// cout << "position repeats original depth " << _positions[key]._depth << "\nnew depth " << depth << "\n";
-		_positionRepeats++;
+		if (_positions[key]._depth >= depth) 
+		{ 
+		_positionRepeats++; 
+		return;
+		}
 	}
 	_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);
 }
