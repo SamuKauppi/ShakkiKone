@@ -34,11 +34,19 @@ int Evaluation::eval(const int board[8][8], int side2Move) const
     {
         for (int column = 0; column < 8; column++)
         {
+<<<<<<< HEAD
             int pc = board[row][column];
             if (pc != NA) 
             {
                 int eval_pc = get_evaluated_piece(pc);
                 int pcColor = get_piece_color(pc);
+=======
+            int pc = get_evaluated_piece(board[row][column]);
+            if (pc != NA) 
+            {
+                int pcColor = get_piece_color(pc);
+                int eval_pc = get_evaluated_piece(pc);
+>>>>>>> main
                 int sq = row * 8 + column;
                 mg[pcColor] += mg_table[eval_pc][sq];
                 eg[pcColor] += eg_table[eval_pc][sq];
