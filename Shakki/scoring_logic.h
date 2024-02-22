@@ -8,7 +8,6 @@ public:
 	int eval(const int board[8][8], int side2Move) const;
 	void init_tables();
 	int flip_square(int sq) const;
-	int get_pcolor(int pc) const;
 	int get_evaluated_piece(int pc) const;
 
 private:
