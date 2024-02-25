@@ -161,5 +161,5 @@ int GameState::score_board() const
 
 int GameState::evaluate() const
 {
-	return eval.eval(_board, TurnPlayer);
+	return eval.eval(_board);
 }

@@ -5,10 +5,9 @@ class Evaluation
 {
 public:
 	Evaluation();
-	int eval(const int board[8][8], int side2Move) const;
+	int eval(const int board[8][8]) const;
 	void init_tables();
 	int flip_square(int sq) const;
-	int get_pcolor(int pc) const;
 	int get_evaluated_piece(int pc) const;
 
 private:
