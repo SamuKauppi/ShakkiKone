@@ -12,13 +12,14 @@ void Evaluation::init_tables()
         for (sq = 0; sq < 64; sq++) {
             mg_table[pc][sq] = mg_value[p] + mg_pesto_table[p][sq];
             eg_table[pc][sq] = eg_value[p] + eg_pesto_table[p][sq];
-            mg_table[pc + 1][sq] = mg_value[p] + mg_pesto_table[p][flip_square(sq)];
-            eg_table[pc + 1][sq] = eg_value[p] + eg_pesto_table[p][flip_square(sq)];
+            int flipped_Sq = flip_square(sq);
+            mg_table[pc + 1][sq] = mg_value[p] + mg_pesto_table[p][flipped_Sq];
+            eg_table[pc + 1][sq] = eg_value[p] + eg_pesto_table[p][flipped_Sq];
         }
     }
 }
 
-int Evaluation::eval(const int board[8][8], int side2Move) const
+int Evaluation::eval(const int board[8][8]) const
 {
     int mg[2]{};
     int eg[2]{};
@@ -48,8 +49,8 @@ int Evaluation::eval(const int board[8][8], int side2Move) const
     }
 
     /* tapered eval */
-    int mgScore = mg[side2Move] - mg[1 - side2Move];
-    int egScore = eg[side2Move] - eg[1 - side2Move];
+    int mgScore = mg[WHITE] - mg[BLACK];
+    int egScore = eg[WHITE] - eg[BLACK];
     int mgPhase = gamePhase;
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
