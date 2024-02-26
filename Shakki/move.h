@@ -56,8 +56,8 @@ public:
 
 private:
 	string _move_name;
-	vector<int> _start_pos = { 0, 0 };
-	vector<int> _end_pos = { 0, 0 };
+	int _start_pos[2] = {0, 0};
+	int _end_pos[2] = {0, 0};
 
 	int _evaluation;
 

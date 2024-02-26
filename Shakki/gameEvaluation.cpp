@@ -19,7 +19,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	*/
 
 	//test
-	vector<Move> moves;
+	vector<Move> moves(50);
 	get_raw_moves(TurnPlayer, moves);
 	int index = moves.size();
 	get_castles(TurnPlayer, moves, index);
