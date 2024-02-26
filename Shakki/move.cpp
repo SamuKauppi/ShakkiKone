@@ -83,12 +83,9 @@ static char int_pos_to_char(const int& pos)
 //	}
 //}
 
-string Move::get_move_name()
+string Move::get_move_name() const
 {
-	if (_move_name != "")
-	{
-		return _move_name;
-	}
+	string _move_name;
 
 	for (int i = 0; i < 4; i++)
 	{
