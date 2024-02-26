@@ -5,8 +5,8 @@ class MinimaxValue
 {
 public:
 
-	MinimaxValue(float value, Move move) : Value(value), Best_move(move)
+	MinimaxValue(int value, Move move) : Value(value), Best_move(move)
 	{}
-	float Value;
+	int Value;
 	Move Best_move;
 };

@@ -108,11 +108,13 @@ void GameState::get_raw_moves(int player, vector<Move>& moves) const
 		{
 			// Get piece index
 			int piece = _board[i][j];
+			if (piece == NA)
+				continue;
 
 			// Compare piece to player to piece index
 			// White gets only white moves and vice versa
-			if ((player == WHITE && piece < 6) ||
-				(player == BLACK && (piece >= 6 && piece != 12)))
+			if ((player == WHITE && get_piece_color(piece) == WHITE) ||
+				(player == BLACK && get_piece_color(piece) == BLACK))
 			{
 				get_piece_moves(moveIndex, i, j, player, piece, moves);
 			}

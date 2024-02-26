@@ -4,7 +4,7 @@
 
 Evaluation eval = Evaluation();
 
-MinimaxValue GameState::minimax(int depth, float alpha, float beta, TranspositionTable& tt) const
+MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
 {
 	// Generate moves for this state
 	/*
@@ -13,14 +13,14 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	*/
 
 	//test
-	vector<Move> moves;
+	vector<Move> moves(50);
 	get_raw_moves(TurnPlayer, moves);
-	int index = moves.size();
+	int index = (int)moves.size();
 	get_castles(TurnPlayer, moves, index);
 	int legal_moves_made = 0;
 
 	// If no moves remain, game is over
-	if (moves.size() <= 0)
+	if ((int)moves.size() <= 0)
 	{
 		return	MinimaxValue(score_board(), Move());
 	}
@@ -59,8 +59,8 @@ MinimaxValue GameState::minimax(int depth, float alpha, float beta, Transpositio
 	}
 
 	// Get the best_value for player
-	float best_value = TurnPlayer == WHITE ?
-		numeric_limits<float>::lowest() : numeric_limits<float>::max();
+	int best_value = TurnPlayer == WHITE ?
+		numeric_limits<int>::lowest() : numeric_limits<int>::max();
 
 	Move best_move(0, 0, 0, 0);
 
