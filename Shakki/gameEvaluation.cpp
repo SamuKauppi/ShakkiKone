@@ -84,7 +84,6 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		int row, column;
 		row = TurnPlayer == WHITE ? new_state._wK_pos[0] : new_state._bK_pos[0];
 		column = TurnPlayer == WHITE ? new_state._wK_pos[1] : new_state._bK_pos[1];
-
 		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
 
@@ -117,7 +116,6 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		}
 		
 	}
-
 	// tt.hash_new_position(*this, depth, best_value, best_move);
 	// no legal moves in branch, game is over
 	if (legal_moves_made <= 0)

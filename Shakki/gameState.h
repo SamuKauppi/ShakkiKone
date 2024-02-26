@@ -262,16 +262,18 @@ private:
 	};
 
 	// Test board
-	//int _board[8][8] = {
-	//	{bR, NA, NA, NA, bK, NA, NA, bR},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{NA, NA, NA, NA, NA, NA, NA, NA},
-	//	{wR, NA, NA, NA, wK, NA, NA, wR}
-	//};
+	/*
+	int _board[8][8] = {
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, bP, bP, NA},
+		{NA, NA, NA, NA, bB, NA, NA, bP},
+		{NA, NA, wB, NA, wP, NA, NA, bK},
+		{NA, NA, NA, NA, NA, wP, NA, NA},
+		{NA, NA, NA, NA, NA, wK, NA, NA},
+		{NA, NA, NA, NA, NA, wP, NA, wP},
+		{NA, NA, NA, NA, NA, NA, NA, NA}
+	};
+	*/
 
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};

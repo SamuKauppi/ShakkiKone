@@ -243,6 +243,7 @@ bool GameState::is_diagonal_safe(int row_direction, int column_direction, int ro
 			if (steps == 1) {
 				if (piece == bP && pawn_attack_check_direction == -1) return false;
 				if (piece == wP && pawn_attack_check_direction == 1) return false;
+				if (piece == bK || piece == wK) return false;
 			}
 			// if piece is queen or bishop king is not safe
 			if (piece == wQ || piece == bQ || piece == wB || piece == bB) return false;
@@ -264,10 +265,12 @@ bool GameState::is_row_or_column_safe(int row_direction, int column_direction, i
 	current_column += column_direction;
 	current_row += row_direction;
 	int piece;
+	int steps = 0;
 
 	// loop all tiles in direction
 	while (current_column <= 7 && current_column >= 0 && current_row <= 7 && current_row >= 0)
 	{
+		steps++;
 		piece = _board[current_row][current_column];
 		if (piece != NA)
 		{
@@ -277,6 +280,10 @@ bool GameState::is_row_or_column_safe(int row_direction, int column_direction, i
 			// if piece is queen or rook king is not safe
 			if (piece == wQ || piece == bQ || piece == wR || piece == bR) return false;
 
+			if (steps == 1) 
+			{
+				if (piece == bK || piece == wK) return false;
+			}
 			// if piece is anything else king is safe
 			return true;
 		}
