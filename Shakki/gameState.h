@@ -152,7 +152,13 @@ public:
 	/// <param name="moves"></param>
 	void get_moves(vector<Move>& moves) const;
 
-	bool is_legal(Move& m) const;
+	bool is_king_in_check(int player) const;
+
+
+	bool is_diagonal_safe(int row_dir, int column_dir, int row, int column, int player) const;
+	bool is_safe_from_knight(int row, int column, int player) const;
+	bool is_row_or_column_safe(int row_dir, int column_dir, int row, int column, int player) const;
+	bool is_king_safe(Move& m, int player) const;
 
 	/// <summary>
 	/// Sets all legal castle moves into vector
@@ -200,7 +206,12 @@ public:
 	int evaluate() const;
 
 	/// <summary>
-	/// Performs minimax alorythmn
+	/// iteratively deepens search
+	/// </summary>
+	//MinimaxValue iterative_deepening(TranspositionTable& tt) const;
+
+	/// <summary>
+	/// Performs minimax algorythmn
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>

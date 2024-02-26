@@ -71,13 +71,15 @@ uint64_t TranspositionTable::generate_zobrist_key(GameState state)
 void TranspositionTable::hash_new_position(GameState state, int depth, int evaluation, Move m) {
 	uint64_t zobristKey = generate_zobrist_key(state);
 	int key = hash_key(zobristKey);
-	_positionCount++;
 	if (_positions[key]._zobristKey == zobristKey)
 	{
 		if (_positions[key]._depth >= depth) 
 		{ 
 		_positionRepeats++; 
 		return;
+		}
+		if (_positions[key]._depth < depth) {
+			_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);
 		}
 	}
 	_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);

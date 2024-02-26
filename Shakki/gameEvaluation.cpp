@@ -6,6 +6,11 @@ Evaluation eval = Evaluation();
 
 MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
 {
+	return;
+}
+*/
+MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
+{
 	// Generate moves for this state
 	/*
 	vector<Move> moves(60);
@@ -31,7 +36,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		return MinimaxValue(evaluate(), Move());
 	}
 	
-
+	
 	// TODO: Calculate zobrist keys without test state, 
 	for (Move& m : moves)
 	{
@@ -47,9 +52,9 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		}
 	}
 	
-	bool isMin = TurnPlayer == WHITE ? true : false;
+	bool isMax = TurnPlayer == WHITE ? true : false;
 
-	if (isMin)
+	if (TurnPlayer == BLACK)
 	{
 		sort(moves.begin(), moves.end());
 	}
@@ -57,13 +62,12 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	{
 		sort(moves.begin(), moves.end(), greater<>());
 	}
-
+	
 	// Get the best_value for player
 	int best_value = TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max();
 
 	Move best_move(0, 0, 0, 0);
-
 	// Iterate through moves
 	for (Move& m : moves)
 	{
@@ -71,47 +75,54 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		GameState new_state = *this;
 		new_state.make_move(m);
 
-		// Check move legality during search to avoid unnecessary checks. 
-		// Still using inefficient method.
-		if (!is_legal(m)) continue;
+		// Check move legality during search to avoid unnecessarily checking moves
+		// that will be pruned away by alpha beta
+
+		/* old expensive method here only for testing
+		auto king_pos = (TurnPlayer == WHITE) ? new_state._wK_pos : new_state._bK_pos;
+		if (new_state.is_under_threat(king_pos[0], king_pos[1], 1 - TurnPlayer)) continue;
+		*/
+
+		// new method to check if king is in check. extremely fast
+		if (new_state.is_king_in_check(TurnPlayer)) continue;
 		legal_moves_made++;
 
 		// Recursive call
 		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt);
 
 		// Get best value for player
-		if ((isMin && value.Value > best_value) ||
-			(!isMin && value.Value < best_value))
+		if ((isMax && value.Value > best_value) ||
+			(!isMax && value.Value < best_value))
 		{
 			best_value = value.Value;
 			best_move = m;
 			
-			if (isMin)
+			if (isMax && best_value > alpha)
 			{
 				alpha = best_value;
 			}
-			else
+			else if (!isMax && best_value < beta)
 			{
 				beta = best_value;
 			}
 			
 		}
-
+		tt._positionCount++;
 		// store position to TT
-		tt.hash_new_position(new_state, depth, best_value, best_move);
-		
+		tt.hash_new_position(new_state, depth - 1, value.Value, best_move);
 		if (beta <= alpha)
 		{
 			break;
 		}
 		
 	}
+
+	// tt.hash_new_position(*this, depth, best_value, best_move);
 	// no legal moves in branch, game is over
 	if (legal_moves_made <= 0)
 	{
 		return	MinimaxValue(score_board(), Move());
 	}
-
 	return MinimaxValue(best_value, best_move);
 }
 

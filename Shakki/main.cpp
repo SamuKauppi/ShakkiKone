@@ -190,7 +190,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		auto stop = chrono::high_resolution_clock::now();
 		system("cls");
 		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - s);
-		cout << duration.count() << "\n";
+		cout << "Time spent: " << duration.count() << "ms\n";
 		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
 		tt._positionCount = 0;
 		tt._positionRepeats = 0;
