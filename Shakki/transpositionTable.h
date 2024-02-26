@@ -52,6 +52,6 @@ private:
 
 	// array for positions
 	// size fixed 1,000,000 positions for now
-	int _size = 1000000;
+	int _size = 3000000;
 	TTEntry* _positions;
 };

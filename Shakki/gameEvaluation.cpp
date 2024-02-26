@@ -82,8 +82,8 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		// new method to check if king is in check. extremely fast
 		// Get king position
 		int row, column;
-		row = TurnPlayer == WHITE ? _wK_pos[0] : _bK_pos[0];
-		column = TurnPlayer == WHITE ? _wK_pos[1] : _bK_pos[1];
+		row = TurnPlayer == WHITE ? new_state._wK_pos[0] : new_state._bK_pos[0];
+		column = TurnPlayer == WHITE ? new_state._wK_pos[1] : new_state._bK_pos[1];
 
 		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
@@ -106,7 +106,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 			{
 				beta = best_value;
 			}
-			
+	
 		}
 		tt._positionCount++;
 		// store position to TT
@@ -137,17 +137,8 @@ int GameState::score_board() const
 
 	// Find correct king
 	int row, column;
-
-	if (TurnPlayer == WHITE)
-	{
-		row = _wK_pos[0];
-		column = _wK_pos[1];
-	}
-	else
-	{
-		row = _bK_pos[0];
-		column = _bK_pos[1];
-	}
+	row = TurnPlayer == WHITE ? _wK_pos[0] : _bK_pos[0];
+	column = TurnPlayer == WHITE ? _wK_pos[1] : _bK_pos[1];
 
 	// Return worst score if ít's under threat
 	if (is_under_threat(row, column, opponent))
