@@ -22,7 +22,8 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	// If no moves remain, game is over
 	if ((int)moves.size() <= 0)
 	{
-		return	MinimaxValue(score_board(), Move());
+
+		return MinimaxValue(score_board(), Move());
 	}
 
 	// Reached max depth
@@ -79,7 +80,12 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		*/
 
 		// new method to check if king is in check. extremely fast
-		if (new_state.is_king_in_check(TurnPlayer)) continue;
+		// Get king position
+		int row, column;
+		row = TurnPlayer == WHITE ? _wK_pos[0] : _bK_pos[0];
+		column = TurnPlayer == WHITE ? _wK_pos[1] : _bK_pos[1];
+
+		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
 
 		// Recursive call
@@ -116,7 +122,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	// no legal moves in branch, game is over
 	if (legal_moves_made <= 0)
 	{
-		return	MinimaxValue(score_board(), Move());
+		return MinimaxValue(score_board(), Move());
 	}
 	return MinimaxValue(best_value, best_move);
 }

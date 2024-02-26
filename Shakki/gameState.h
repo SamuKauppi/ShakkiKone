@@ -152,7 +152,7 @@ public:
 	/// <param name="moves"></param>
 	void get_moves(vector<Move>& moves) const;
 
-	bool is_king_in_check(int player) const;
+	bool is_square_in_check(int player, int row, int column) const;
 
 
 	bool is_diagonal_safe(int row_dir, int column_dir, int row, int column, int player) const;
@@ -240,8 +240,10 @@ public:
 
 		TurnPlayer = other.TurnPlayer;
 
-		_wK_pos = other._wK_pos;
-		_bK_pos = other._bK_pos;
+		_wK_pos[0] = other._wK_pos[0];
+		_wK_pos[1] = other._wK_pos[1];
+		_bK_pos[0] = other._bK_pos[0];
+		_bK_pos[1] = other._bK_pos[1];
 	}
 
 private:
@@ -271,8 +273,8 @@ private:
 	//	{wR, NA, NA, NA, wK, NA, NA, wR}
 	//};
 
-	vector<int> _wK_pos = { 7, 4 };
-	vector<int> _bK_pos = { 0, 4 };
+	int _wK_pos[2] = {7, 4};
+	int _bK_pos[2] = {0, 4};
 
 	bool _w_long_castle = true;
 	bool _w_short_castle = true;

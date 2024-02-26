@@ -141,18 +141,18 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		((player == WHITE && _w_long_castle) || (player == BLACK && _b_long_castle));
 
 	if (can_short &&
-		!is_under_threat(player_pos, 4, opponent) &&
-		!is_under_threat(player_pos, 5, opponent) &&
-		!is_under_threat(player_pos, 6, opponent))
+		!is_square_in_check(player, player_pos, 4) &&
+		!is_square_in_check(player, player_pos, 5) &&
+		!is_square_in_check(player, player_pos, 6))
 	{
 		Move m = Move(player_pos, 4, player_pos, 6, player);
 		add_move_with_index(moveIndex, moves, m);
 	}
 
 	if (can_long &&
-		!is_under_threat(player_pos, 4, opponent) &&
-		!is_under_threat(player_pos, 3, opponent) &&
-		!is_under_threat(player_pos, 2, opponent))
+		!is_square_in_check(player, player_pos, 4) &&
+		!is_square_in_check(player, player_pos, 3) &&
+		!is_square_in_check(player, player_pos, 2))
 	{
 		Move m = Move(player_pos, 4, player_pos, 2, player);
 		add_move_with_index(moveIndex, moves, m);
@@ -312,20 +312,9 @@ bool GameState::is_safe_from_knight(int row, int column, int player) const {
 	return true;
 }
 
-bool GameState::is_king_in_check(int player) const {
-	// Get king position
-	int row, column;
-	if (player == WHITE)
-	{
-		row = _wK_pos[0];
-		column = _wK_pos[1];
-	}
-	else
-	{
-		row = _bK_pos[0];
-		column = _bK_pos[1];
-	}
-	// checkk all possible tiles where knight can attack king
+bool GameState::is_square_in_check(int player, int row, int column) const {
+
+	// check all possible tiles where knight can attack king
 	if (!is_safe_from_knight(row, column, player)) return true;
 
 	// check horizontal and vertical moves for attacks from rooks and quuens
@@ -343,82 +332,82 @@ bool GameState::is_king_in_check(int player) const {
 	return false;
 }
 
-// checks from kings positions all possible locations where king could be attacked
-// when piece is moved.
-bool GameState::is_king_safe(Move& m, int player) const {
-	int row, column;
-	bool in_board;
-	bool is_king = false;
-	int opponent;
-	if (player == WHITE)
-	{
-		row = _wK_pos[0];
-		column = _wK_pos[1];
-		opponent = BLACK;
-	}
-	else
-	{
-		row = _bK_pos[0];
-		column = _bK_pos[1];
-		opponent = WHITE;
-	}
-
-	if (!is_safe_from_knight(row, column, player)) return false;
-	
-	// check if moved piece is king.
-	// if not king we can avoid a lot of checks
-	if (m._end_pos[0] == row && m._end_pos[1] == column) is_king = true;
-
-	if (!is_king) 
-	{
-		// if not king we can reduce checks by calculating direction that needs to be checked as we
-		// can assume position prior to the move was legal and only the moved piece could open king 
-		// up to danger.
-		int column_dir = 0;
-		int row_dir = 0;
-
-		// if moved piece was on same row or column check for rooks/queens on that file
-		if (m._start_pos[0] == row || m._start_pos[1] == column)
-		{
-			// column direction that needs to be checked, 0 if moved piece was not on the same row
-			if (m._start_pos[0] == row) column_dir = (m._start_pos[1] < column) ? -1 : 1;
-			// row direction, 0 if moved piece was not on the same column
-			if (m._start_pos[1] == column) row_dir = (m._start_pos[0] < row) ? -1 : 1;
-			
-			return is_row_or_column_safe(row_dir, column_dir, row, column, player);
-		}
-
-		// row and column difference of moved pieces original position and king
-		int row_difference = m._start_pos[0] - row;
-		int column_difference = m._start_pos[1] - column;
-
-		// bitwise operation to get absolute value of a number
-		uint32_t temp = row_difference >> 31;
-		row_difference ^= temp;
-		row_difference += temp & 1;
-
-		temp = column_difference >> 31;
-		column_difference ^= temp;
-		column_difference += temp & 1;
-
-		// if column and row difference are same piece was originally diagonally aligned with king
-		if (row_difference == column_difference)
-		{
-			// column direction that needs to be checked
-			column_dir = (m._start_pos[1] < column) ? -1 : 1;
-			// row direction,
-			row_dir = (m._start_pos[0] < row) ? -1 : 1;
-			return is_diagonal_safe(row_dir, column_dir, row, column, player);
-		}
-
-		// if moved piece was not vertically, horizontally or diagonally aligned with king we know king is safe
-		// this is most likely outcome which allows us to skip most of the looping through the board
-		return true;
-	}
-
-	// for king moves we do expensive function call
-	return !is_king_in_check(player);
-}
+//// checks from kings positions all possible locations where king could be attacked
+//// when piece is moved.
+//bool GameState::is_king_safe(Move& m, int player) const {
+//	int row, column;
+//	bool in_board;
+//	bool is_king = false;
+//	int opponent;
+//	if (player == WHITE)
+//	{
+//		row = _wK_pos[0];
+//		column = _wK_pos[1];
+//		opponent = BLACK;
+//	}
+//	else
+//	{
+//		row = _bK_pos[0];
+//		column = _bK_pos[1];
+//		opponent = WHITE;
+//	}
+//
+//	if (!is_safe_from_knight(row, column, player)) return false;
+//	
+//	// check if moved piece is king.
+//	// if not king we can avoid a lot of checks
+//	if (m._end_pos[0] == row && m._end_pos[1] == column) is_king = true;
+//
+//	if (!is_king) 
+//	{
+//		// if not king we can reduce checks by calculating direction that needs to be checked as we
+//		// can assume position prior to the move was legal and only the moved piece could open king 
+//		// up to danger.
+//		int column_dir = 0;
+//		int row_dir = 0;
+//
+//		// if moved piece was on same row or column check for rooks/queens on that file
+//		if (m._start_pos[0] == row || m._start_pos[1] == column)
+//		{
+//			// column direction that needs to be checked, 0 if moved piece was not on the same row
+//			if (m._start_pos[0] == row) column_dir = (m._start_pos[1] < column) ? -1 : 1;
+//			// row direction, 0 if moved piece was not on the same column
+//			if (m._start_pos[1] == column) row_dir = (m._start_pos[0] < row) ? -1 : 1;
+//			
+//			return is_row_or_column_safe(row_dir, column_dir, row, column, player);
+//		}
+//
+//		// row and column difference of moved pieces original position and king
+//		int row_difference = m._start_pos[0] - row;
+//		int column_difference = m._start_pos[1] - column;
+//
+//		// bitwise operation to get absolute value of a number
+//		uint32_t temp = row_difference >> 31;
+//		row_difference ^= temp;
+//		row_difference += temp & 1;
+//
+//		temp = column_difference >> 31;
+//		column_difference ^= temp;
+//		column_difference += temp & 1;
+//
+//		// if column and row difference are same piece was originally diagonally aligned with king
+//		if (row_difference == column_difference)
+//		{
+//			// column direction that needs to be checked
+//			column_dir = (m._start_pos[1] < column) ? -1 : 1;
+//			// row direction,
+//			row_dir = (m._start_pos[0] < row) ? -1 : 1;
+//			return is_diagonal_safe(row_dir, column_dir, row, column, player);
+//		}
+//
+//		// if moved piece was not vertically, horizontally or diagonally aligned with king we know king is safe
+//		// this is most likely outcome which allows us to skip most of the looping through the board
+//		return true;
+//	}
+//
+//	// for king moves we do expensive function call
+//	return !is_square_in_check(player);
+//}
 
 void GameState::create_promotion_moves(
 	int& moveIndex,
