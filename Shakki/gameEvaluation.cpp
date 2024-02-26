@@ -6,11 +6,6 @@ Evaluation eval = Evaluation();
 
 MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
 {
-	return;
-}
-*/
-MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
-{
 	// Generate moves for this state
 	/*
 	vector<Move> moves(60);
