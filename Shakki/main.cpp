@@ -7,7 +7,7 @@
 #include <iostream>
 #include "chrono"
 
-static const int MINMAX_DEPTH = 6;
+static const int MINMAX_DEPTH = 7;
 
 /// <summary>
 /// Undo a move if there are moves in history
