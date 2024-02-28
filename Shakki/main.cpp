@@ -3,11 +3,11 @@
 #include "transpositionTable.h"
 #include "limits"
 #include "stack"
+#include "chrono"
 #include <vector>
 #include <iostream>
-#include "chrono"
 
-static const int MINMAX_DEPTH = 7;
+static const int MINMAX_DEPTH = 6;
 
 /// <summary>
 /// Undo a move if there are moves in history
@@ -94,7 +94,7 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 			current_state.minimax(
 				MINMAX_DEPTH,
 				numeric_limits<int>::lowest(),
-				numeric_limits<int>::max(), tt);
+				numeric_limits<int>::max(), tt, Move());
 
 		chosen = ai_input.Best_move.get_move_name();
 	}
