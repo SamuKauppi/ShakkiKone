@@ -1,10 +1,33 @@
 #include "gameState.h"
 #include "iostream"
 #include "scoring_logic.h"
+#include "future";
+#include "chrono";
 
 Evaluation eval = Evaluation();
 
-MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt) const
+MinimaxValue GameState::iterative_deepening(int depth, int alpha, int beta, TranspositionTable& tt) const
+{
+	MinimaxValue best_value(TurnPlayer == WHITE ?
+		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
+	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
+	for (int i = 4; i < 100; i++)
+	{
+		auto stop = chrono::high_resolution_clock::now();
+		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
+		if (duration.count() > 15000)
+		{
+			return best_value;
+		}
+		MinimaxValue new_value = minimax(i, alpha, beta, tt, timer_start);
+		if (best_value.Depth == 0)
+		{
+			best_value = new_value;
+		}
+	}
+}
+
+MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const
 {
 	// Generate moves for this state
 	/*
@@ -23,13 +46,13 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	if ((int)moves.size() <= 0)
 	{
 
-		return MinimaxValue(score_board(), Move());
+		return MinimaxValue(score_board(), Move(), depth);
 	}
 
 	// Reached max depth
 	if (depth <= 0)
 	{
-		return MinimaxValue(evaluate(), Move());
+		return MinimaxValue(evaluate(), Move(), depth);
 	}
 	
 	
@@ -86,7 +109,6 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		column = TurnPlayer == WHITE ? new_state._wK_pos[1] : new_state._bK_pos[1];
 		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
-
 		// Recursive call
 		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt);
 
@@ -120,9 +142,9 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	// no legal moves in branch, game is over
 	if (legal_moves_made <= 0)
 	{
-		return MinimaxValue(score_board(), Move());
+		return MinimaxValue(score_board(), Move(), depth);
 	}
-	return MinimaxValue(best_value, best_move);
+	return MinimaxValue(best_value, best_move, depth);
 }
 
 int GameState::score_board() const
