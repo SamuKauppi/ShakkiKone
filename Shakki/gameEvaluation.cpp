@@ -2,40 +2,44 @@
 #include "iostream"
 #include "scoring_logic.h"
 #include "future";
-#include "chrono";
 
 Evaluation eval = Evaluation();
 
-MinimaxValue GameState::iterative_deepening(int depth, int alpha, int beta, TranspositionTable& tt) const
+MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
 {
 	MinimaxValue best_value(TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
-	for (int i = 4; i < 100; i++)
+
+	// currently searching at 2s increment only because player turn effects evaluation wildly slowing down calculation (read horizon effect)
+	// TODO implement quiencense search to fix this issue and fix horizon effect
+	for (int depth = 4; depth < 100; depth += 2)
 	{
+		cout << depth << ", ";
+		// calculate position at new depth
+		MinimaxValue new_value = minimax(depth, alpha, beta, tt, timer_start);
+
 		auto stop = chrono::high_resolution_clock::now();
 		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
-		if (duration.count() > 15000)
+
+		// return best move from a previous finished search if out of time
+		// time_limit is set in gamestate header
+		if (duration.count() > time_limit)
 		{
+			best_value.Depth = depth-2;
 			return best_value;
 		}
-		MinimaxValue new_value = minimax(i, alpha, beta, tt, timer_start);
-		if (best_value.Depth == 0)
-		{
-			best_value = new_value;
-		}
+		// set new best move if we finished searhing at a new depth
+		best_value = new_value;
 	}
 }
 
 MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const
 {
-	// Generate moves for this state
-	/*
-	vector<Move> moves(60);
-	get_moves(moves);
-	*/
 
-	//test
+	auto stop = chrono::high_resolution_clock::now();
+	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
+
 	vector<Move> moves(50);
 	get_raw_moves(TurnPlayer, moves);
 	int index = (int)moves.size();
@@ -49,8 +53,8 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		return MinimaxValue(score_board(), Move(), depth);
 	}
 
-	// Reached max depth
-	if (depth <= 0)
+	// Reached max depth or time is out
+	if (depth <= 0 || duration.count() > time_limit)
 	{
 		return MinimaxValue(evaluate(), Move(), depth);
 	}
@@ -65,6 +69,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 
 		// order
 		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
+		m._key = zobristKey;
 		if (tt.is_state_hashed(zobristKey))
 		{
 			m._evaluation = tt.get_hashed_evaluation(zobristKey);
@@ -110,7 +115,9 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
 		// Recursive call
-		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt);
+		// MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
+		//	tt.get_value(m._key) : new_state.minimax(depth - 1, alpha, beta, tt, timer_start);
+		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt, timer_start);
 
 		// Get best value for player
 		if ((isMax && value.Value > best_value) ||
@@ -131,7 +138,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		}
 		tt._positionCount++;
 		// store position to TT
-		tt.hash_new_position(new_state, depth - 1, value.Value, best_move);
+		tt.hash_new_position(new_state, depth - 1, value.Value, value.Best_move);
 		if (beta <= alpha)
 		{
 			break;

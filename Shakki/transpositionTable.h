@@ -3,6 +3,7 @@
 #include "move.h"
 #include "chess.h"
 #include "gamestate.h"
+#include "minimaxValue.h"
 
 class GameState;
 
@@ -31,6 +32,9 @@ public:
 	void hash_new_position(GameState state, int depth, int evaluation, Move m);
 	uint64_t uint64_prng();
 	bool is_state_hashed(uint64_t zobristKey);
+	bool is_state_calculated(uint64_t zobristKey, int depth);
+	MinimaxValue get_value(uint64_t zobristKey);
+
 	int get_hashed_evaluation(uint64_t zobristKey);
 
 	// tracking position counts. Not important only used for performance data
@@ -51,7 +55,8 @@ private:
 	random_device _seed;
 
 	// array for positions
-	// size fixed 5,000,000 positions for now
-	int _size = 5000000;
+	// size fixed 10,000,000 positions for now
+	// roughly 500mb
+	int _size = 10000000;
 	TTEntry* _positions;
 };

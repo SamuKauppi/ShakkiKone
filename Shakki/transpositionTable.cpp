@@ -2,8 +2,7 @@
 #include "iostream"
 
 // Information saved in hashmap
-// Defaults for creating the array should not be used. maybe not smart?
-TTEntry::TTEntry(int key = -1, uint64_t zobristKey = 0, int depth = -1, int evaluation = -1, Move bestMove = Move(0,0,0,0)) 
+TTEntry::TTEntry(int key = -1, uint64_t zobristKey = 0, int depth = -1, int evaluation = 0, Move bestMove = Move(0,0,0,0)) 
 {
 	_key = key;
 	_zobristKey = zobristKey;
@@ -47,7 +46,6 @@ void TranspositionTable::init_zobrist()
 
 // Generates a hash key using the values generated above using bitwise operations. This part is very fast but,
 // function is still somewhat expensive due to having to check every tile on the board for pieces. 
-// Possibly able to optimize this and maybe other functions by saving piece positions?
 uint64_t TranspositionTable::generate_zobrist_key(GameState state)
 {
 	uint64_t k = 0;
@@ -73,9 +71,8 @@ void TranspositionTable::hash_new_position(GameState state, int depth, int evalu
 	int key = hash_key(zobristKey);
 	if (_positions[key]._zobristKey == zobristKey)
 	{
-		if (_positions[key]._depth >= depth) 
+		if (_positions[key]._depth > depth) 
 		{ 
-		_positionRepeats++; 
 		return;
 		}
 		if (_positions[key]._depth < depth) {
@@ -102,6 +99,30 @@ int TranspositionTable::get_hashed_evaluation(uint64_t zobristKey)
 int TranspositionTable::hash_key(uint64_t zobristKey)
 {
 	return zobristKey % _size;
+}
+
+bool TranspositionTable::is_state_calculated(uint64_t zobristKey, int depth)
+{
+	int key = hash_key(zobristKey);
+	if (_positions[key]._zobristKey == zobristKey)
+	{
+		if (_positions[key]._depth > depth)
+		{
+			TTEntry entry = _positions[key];
+			// cout << entry._depth << ", " << depth << "\n";
+			// cout << entry._evaluation << ", " << entry._zobristKey << ", " << entry._depth << "\n";
+			_positionRepeats++;
+			return true;
+		}
+	}
+	return false;
+}
+
+MinimaxValue TranspositionTable::get_value(uint64_t zobristKey)
+{
+	int key = hash_key(zobristKey);
+	TTEntry entry = _positions[key];
+	return MinimaxValue(entry._evaluation, entry._bestMove, entry._depth);
 }
 
 // simple pseudo random number generator

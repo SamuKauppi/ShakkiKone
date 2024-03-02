@@ -90,12 +90,17 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 	else
 	{
 		cout << "Calculating...";
+		/*
 		MinimaxValue ai_input =
 			current_state.minimax(
 				MINMAX_DEPTH,
 				numeric_limits<int>::lowest(),
 				numeric_limits<int>::max(), tt);
-
+			*/
+		MinimaxValue ai_input = current_state.iterative_deepening( 
+				numeric_limits<int>::lowest(),
+				numeric_limits<int>::max(), tt);
+		current_state.depth_reached = ai_input.Depth;
 		chosen = ai_input.Best_move.get_move_name();
 	}
 
@@ -192,6 +197,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - s);
 		cout << "Time spent: " << duration.count() << "ms\n";
 		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
+		cout << "Depth calculated: " << current_state.depth_reached << "\n";
 		tt._positionCount = 0;
 		tt._positionRepeats = 0;
 

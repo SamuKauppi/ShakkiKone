@@ -4,6 +4,7 @@
 #include "minimaxValue.h"
 #include "unordered_map"
 #include "transpositionTable.h"
+#include <chrono>
 class TranspositionTable;
 
 class GameState
@@ -12,6 +13,10 @@ public:
 	// turn player
 	int TurnPlayer = WHITE;
 	int _hash;
+	int depth_reached = 0;
+	// time limit allocated for position calculations in milliseconds
+	int time_limit = 15000;
+
 
 	/// <summary>
 	/// Empties board
@@ -210,7 +215,7 @@ public:
 	/// </summary>
 	//MinimaxValue iterative_deepening(TranspositionTable& tt) const;
 
-	MinimaxValue iterative_deepening(int depth, int alpha, int beta, TranspositionTable& tt) const;
+	MinimaxValue iterative_deepening(int alpha, int beta, TranspositionTable& tt) const;
 	/// <summary>
 	/// Performs minimax algorythmn
 	/// </summary>
