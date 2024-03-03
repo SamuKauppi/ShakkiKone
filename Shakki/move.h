@@ -58,7 +58,7 @@ private:
 	int _start_pos[2] = {0, 0};
 	int _end_pos[2] = {0, 0};
 
-	int _evaluation;
+	int _evaluation = 0;
 	uint64_t _key = 0;
 
 	int _piece_promotion = NA;

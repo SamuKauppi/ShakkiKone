@@ -12,16 +12,9 @@ class GameState
 public:
 	// turn player
 	int TurnPlayer = WHITE;
-	int _hash;
-	int depth_reached = 0;
+	int DepthReached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int time_limit = 5000;
-
-
-	/// <summary>
-	/// Empties board
-	/// </summary>
-	void empty();
+	int TimeLimit = 5000;
 
 	/// <summary>
 	/// Moves a piece
@@ -54,23 +47,23 @@ public:
 	void print_board() const;
 
 	/// <summary>
-	/// Adds the new move to moves list using the index
-	/// if index is out of bounds, push_back
+	/// Inserts a move to array
 	/// </summary>
 	/// <param name="moveIndex"></param>
 	/// <param name="moves"></param>
 	/// <param name="new_move"></param>
-	void add_move_with_index(int& moveIndex, vector<Move>& moves, Move& new_move) const;
+	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[]) const;
 
 	/// <summary>
-	/// Returns all of the moves for turn player
+	/// Returns all of the moves for turnplayer
 	/// </summary>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
+	/// <param name="moveIndex"></param>
 	void get_raw_moves(int player, Move moves[], int& moveIndex) const;
 
 	/// <summary>
-	/// Get moves for this piece
+	/// Get moves for a piece at this position
 	/// </summary>
 	/// <param name="row"></param>
 	/// <param name="column"></param>
@@ -78,14 +71,6 @@ public:
 	/// <param name="piece"></param>
 	/// <param name="moves"></param>
 	void get_piece_moves(int& moveIndex, int row, int column, int player, int piece, Move moves[]) const;
-
-	/// <summary>
-	/// Get moves based on piece
-	/// </summary>
-	/// <param name="row"></param>
-	/// <param name="column"></param>
-	/// <param name="player"></param>
-	/// <param name="moves"></param>
 	void get_rook_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
 	void get_bishop_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
 	void get_knight_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
@@ -126,7 +111,7 @@ public:
 	/// <param name="delta_column"></param>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void create_promotion_moves(
+	void get_promotion_moves(
 		int& moveIndex,
 		int row,
 		int column,
@@ -157,13 +142,17 @@ public:
 	/// <param name="moves"></param>
 	void get_moves(vector<Move>& moves) const;
 
+	/// <summary>
+	/// Checks if square is in check
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="row"></param>
+	/// <param name="column"></param>
+	/// <returns></returns>
 	bool is_square_in_check(int player, int row, int column) const;
-
-
 	bool is_diagonal_safe(int row_dir, int column_dir, int row, int column, int player) const;
 	bool is_safe_from_knight(int row, int column, int player) const;
 	bool is_row_or_column_safe(int row_dir, int column_dir, int row, int column, int player) const;
-	bool is_king_safe(Move& m, int player) const;
 
 	/// <summary>
 	/// Sets all legal castle moves into vector
@@ -266,20 +255,6 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
-
-	// Test board
-	/*
-	int _board[8][8] = {
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, bP, bP, NA},
-		{NA, NA, NA, NA, bB, NA, NA, bP},
-		{NA, NA, wB, NA, wP, NA, NA, bK},
-		{NA, NA, NA, NA, NA, wP, NA, NA},
-		{NA, NA, NA, NA, NA, wK, NA, NA},
-		{NA, NA, NA, NA, NA, wP, NA, wP},
-		{NA, NA, NA, NA, NA, NA, NA, NA}
-	};
-	*/
 
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};

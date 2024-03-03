@@ -5,17 +5,6 @@
 #include "move.h"
 #include "minimaxValue.h"
 
-void GameState::empty()
-{
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			_board[i][j] = NA;
-		}
-	}
-}
-
 void GameState::find_piece(int piece, int& row, int& column) const
 {
 	for (int i = 0; i < 8; i++)
@@ -31,29 +20,6 @@ void GameState::find_piece(int piece, int& row, int& column) const
 			}
 		}
 	}
-}
-
-bool GameState::is_under_threat(int row, int column, int opponent) const
-{
-	// Generate opponents raw moves
-	vector<Move> opponentMoves(50);
-	int moveIndex = 0;
-	Move moves[200];
-	get_raw_moves(opponent, moves, moveIndex);
-	for (int i = 0; i < moveIndex; i++)
-	{
-		opponentMoves.push_back(moves[i]);
-	}
-
-	// check if any end position matches row and column
-	for (int i = 0; i < opponentMoves.size(); i++)
-	{
-		if (opponentMoves[i]._end_pos[0] == row && opponentMoves[i]._end_pos[1] == column) {
-			return true;
-		}
-	}
-	return false;
-
 }
 
 void GameState::update_castle_legality()
