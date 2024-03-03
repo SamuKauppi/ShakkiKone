@@ -30,16 +30,25 @@
     <ClCompile Include="gameEvaluation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gameMoves.cpp">
+    <ClCompile Include="gameGetMoves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scoring_logic.h">
+    <ClCompile Include="scoringLogic.h">
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="transpositionTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scoring_logic.cpp">
+    <ClCompile Include="scoringLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameChecks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameMakeMoves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameGetPieceMoves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

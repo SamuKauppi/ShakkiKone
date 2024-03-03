@@ -128,13 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="chess.cpp" />
+    <ClCompile Include="gameChecks.cpp" />
     <ClCompile Include="gameEvaluation.cpp" />
-    <ClCompile Include="gameMoves.cpp" />
+    <ClCompile Include="gameGetMoves.cpp" />
+    <ClCompile Include="gameGetPieceMoves.cpp" />
+    <ClCompile Include="gameMakeMoves.cpp" />
     <ClCompile Include="gameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
-    <ClCompile Include="scoring_logic.cpp" />
-    <ClCompile Include="scoring_logic.h" />
+    <ClCompile Include="scoringLogic.cpp" />
+    <ClCompile Include="scoringLogic.h" />
     <ClCompile Include="transpositionTable.cpp" />
   </ItemGroup>
   <ItemGroup>

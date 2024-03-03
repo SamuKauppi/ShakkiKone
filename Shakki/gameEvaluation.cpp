@@ -1,6 +1,6 @@
 #include "gameState.h"
 #include "iostream"
-#include "scoring_logic.h"
+#include "scoringLogic.h"
 #include "future"
 
 Evaluation eval = Evaluation();
@@ -23,7 +23,7 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 
 		// return best move from a previous finished search if out of time
 		// time_limit is set in gamestate header
-		if (duration.count() > time_limit)
+		if (duration.count() > TimeLimit)
 		{
 			best_value.Depth = depth-2;
 			return best_value;
@@ -40,7 +40,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
 	// Reached max depth or time is out
-	if (depth <= 0 || duration.count() > time_limit)
+	if (depth <= 0 || duration.count() > TimeLimit)
 	{
 		return MinimaxValue(evaluate(), Move(), depth);
 	}
@@ -150,12 +150,13 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 	}
 	// tt.hash_new_position(*this, depth, best_value, best_move);
 	// no legal moves in branch, game is over
+	delete moves;
+
 	if (legal_moves_made <= 0)
 	{
-		delete moves;
 		return MinimaxValue(score_board(), Move(), depth);
 	}
-	delete moves;
+
 	return MinimaxValue(best_value, best_move, depth);
 }
 

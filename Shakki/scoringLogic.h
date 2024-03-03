@@ -5,9 +5,30 @@ class Evaluation
 {
 public:
 	Evaluation();
+	/// <summary>
+	/// Evaluates given board
+	/// </summary>
+	/// <param name="board"></param>
+	/// <returns></returns>
 	int eval(const int board[8][8]) const;
+
+	/// <summary>
+	/// Initializes mg and eg values
+	/// </summary>
 	void init_tables();
+
+	/// <summary>
+	/// Flips the the square on horizontal axis
+	/// </summary>
+	/// <param name="sq"></param>
+	/// <returns></returns>
 	int flip_square(int sq) const;
+
+	/// <summary>
+	/// Returns scoring logic piece from chess.h piece
+	/// </summary>
+	/// <param name="pc"></param>
+	/// <returns></returns>
 	int get_evaluated_piece(int pc) const;
 
 private:
