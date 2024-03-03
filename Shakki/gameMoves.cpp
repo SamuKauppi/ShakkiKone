@@ -99,9 +99,8 @@ void GameState::special_king_moves(int piece, int start_row, int start_column, i
 	}
 }
 
-void GameState::get_raw_moves(int player, vector<Move>& moves) const
+void GameState::get_raw_moves(int player, Move moves[], int& moveIndex) const
 {
-	int moveIndex = 0;
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
@@ -120,11 +119,9 @@ void GameState::get_raw_moves(int player, vector<Move>& moves) const
 			}
 		}
 	}
-
-	moves.erase(moves.begin() + moveIndex, moves.end());
 }
 
-void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) const
+void GameState::get_castles(int player, Move moves[], int& moveIndex) const
 {
 	// Get opponent
 	int opponent = 1 - player;
@@ -146,7 +143,8 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		!is_square_in_check(player, player_pos, 6))
 	{
 		Move m = Move(player_pos, 4, player_pos, 6, player);
-		add_move_with_index(moveIndex, moves, m);
+		moves[moveIndex] = m;
+		moveIndex++;
 	}
 
 	if (can_long &&
@@ -155,7 +153,8 @@ void GameState::get_castles(int player, vector<Move>& moves, int& moveIndex) con
 		!is_square_in_check(player, player_pos, 2))
 	{
 		Move m = Move(player_pos, 4, player_pos, 2, player);
-		add_move_with_index(moveIndex, moves, m);
+		moves[moveIndex] = m;
+		moveIndex++;
 	}
 }
 
@@ -179,21 +178,20 @@ void GameState::get_moves(vector<Move>& moves) const
 	int opponent = 1 - TurnPlayer;
 
 	// Generate raw moves
-	vector<Move> rawMoves(50);
-	get_raw_moves(player, rawMoves);
-
-	// Generate move index (used to fill empty spots in vector<Move>& moves)
+	Move rawMovesTemp[200];
 	int moveIndex = 0;
+	get_raw_moves(player, rawMovesTemp, moveIndex);
+	// Generate move index (used to fill empty spots in vector<Move>& moves)
 
 	// Add castle moves into moves (validates if it's legal on it's own)
-	get_castles(player, moves, moveIndex);
+	get_castles(player, rawMovesTemp, moveIndex);
 
 	// Iterate through moves
-	for (Move& rm : rawMoves)
+	for (int i = 0; i < moveIndex; i++)
 	{
 		// Generate test state and test a move
 		GameState testState = *this;
-		testState.make_move(rm);
+		testState.make_move(rawMovesTemp[i]);
 
 		// Get king position
 		int row, column;
@@ -211,12 +209,9 @@ void GameState::get_moves(vector<Move>& moves) const
 		// If king is not under threat, the move is legal
 		if (!testState.is_under_threat(row, column, opponent))
 		{
-			add_move_with_index(moveIndex, moves, rm);
+			moves.push_back(rawMovesTemp[i]);
 		}
 	}
-
-	// Remove possible empty slots
-	moves.erase(moves.begin() + moveIndex, moves.end());
 }
 
 bool GameState::is_diagonal_safe(int row_direction, int column_direction, int row, int column, int player) const {
@@ -423,7 +418,7 @@ void GameState::create_promotion_moves(
 	int delta_row,
 	int delta_column,
 	int player,
-	vector<Move>& moves) const
+	Move moves[]) const
 {
 	int player_offset = player == BLACK ? 6 : 0;
 	for (int i = 0; i < 4; i++)
@@ -431,11 +426,12 @@ void GameState::create_promotion_moves(
 		int piece = i + player_offset;
 		Move m = Move(row, column, delta_row, delta_column);
 		m._piece_promotion = piece;
-		add_move_with_index(moveIndex, moves, m);
+		moves[moveIndex] = m;
+		moveIndex++;
 	}
 }
 
-void GameState::get_piece_moves(int& moveIndex, int row, int column, int player, int piece, vector<Move>& moves) const
+void GameState::get_piece_moves(int& moveIndex, int row, int column, int player, int piece, Move moves[]) const
 {
 	switch (piece)
 	{
@@ -475,7 +471,7 @@ void GameState::get_piece_moves(int& moveIndex, int row, int column, int player,
 	}
 }
 
-void GameState::get_pawn_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const
+void GameState::get_pawn_moves(int& moveIndex, int row, int column, int player, Move moves[]) const
 {
 	// Direction based on player
 	int direction = player == WHITE ? -1 : 1;
@@ -511,7 +507,7 @@ void GameState::get_pawn_moves(int& moveIndex, int row, int column, int player, 
 
 }
 
-void GameState::get_rook_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const
+void GameState::get_rook_moves(int& moveIndex, int row, int column, int player, Move moves[]) const
 {
 	get_raw_moves_in_dir(moveIndex, row, column, -1, 0, player, 7, moves);
 	get_raw_moves_in_dir(moveIndex, row, column, 1, 0, player, 7, moves);
@@ -519,7 +515,7 @@ void GameState::get_rook_moves(int& moveIndex, int row, int column, int player, 
 	get_raw_moves_in_dir(moveIndex, row, column, 0, 1, player, 7, moves);
 }
 
-void GameState::get_bishop_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const
+void GameState::get_bishop_moves(int& moveIndex, int row, int column, int player, Move moves[]) const
 {
 	get_raw_moves_in_dir(moveIndex, row, column, -1, 1, player, 7, moves);
 	get_raw_moves_in_dir(moveIndex, row, column, 1, 1, player, 7, moves);
@@ -527,7 +523,7 @@ void GameState::get_bishop_moves(int& moveIndex, int row, int column, int player
 	get_raw_moves_in_dir(moveIndex, row, column, -1, -1, player, 7, moves);
 }
 
-void GameState::get_knight_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const
+void GameState::get_knight_moves(int& moveIndex, int row, int column, int player, Move moves[]) const
 {
 	get_raw_moves_in_dir(moveIndex, row, column, 2, 1, player, 1, moves);
 	get_raw_moves_in_dir(moveIndex, row, column, 2, -1, player, 1, moves);
@@ -539,7 +535,7 @@ void GameState::get_knight_moves(int& moveIndex, int row, int column, int player
 	get_raw_moves_in_dir(moveIndex, row, column, -1, -2, player, 1, moves);
 }
 
-void GameState::get_king_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const
+void GameState::get_king_moves(int& moveIndex, int row, int column, int player, Move moves[]) const
 {
 	get_raw_moves_in_dir(moveIndex, row, column, 1, 0, player, 1, moves);
 	get_raw_moves_in_dir(moveIndex, row, column, -1, 0, player, 1, moves);
@@ -552,7 +548,7 @@ void GameState::get_king_moves(int& moveIndex, int row, int column, int player, 
 }
 
 void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int delta_row, int delta_column,
-	int player, int max_steps, vector<Move>& moves, bool can_eat, bool has_to_eat) const
+	int player, int max_steps, Move moves[], bool can_eat, bool has_to_eat) const
 {
 	// Initilize varibales
 	int current_row = row;
@@ -590,7 +586,8 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 				else
 				{
 					Move m = Move(row, column, current_row, current_column, player);
-					add_move_with_index(moveIndex, moves, m);
+					moves[moveIndex] = m;
+					moveIndex++;
 				}
 			}
 
@@ -612,7 +609,8 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 			else
 			{
 				Move m = Move(row, column, current_row, current_column, player);
-				add_move_with_index(moveIndex, moves, m);
+				moves[moveIndex] = m;
+				moveIndex++;
 			}
 		}
 

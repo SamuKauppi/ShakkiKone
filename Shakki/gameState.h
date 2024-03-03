@@ -15,7 +15,7 @@ public:
 	int _hash;
 	int depth_reached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int time_limit = 15000;
+	int time_limit = 5000;
 
 
 	/// <summary>
@@ -67,7 +67,7 @@ public:
 	/// </summary>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_raw_moves(int player, vector<Move>& moves) const;
+	void get_raw_moves(int player, Move moves[], int& moveIndex) const;
 
 	/// <summary>
 	/// Get moves for this piece
@@ -77,7 +77,7 @@ public:
 	/// <param name="player"></param>
 	/// <param name="piece"></param>
 	/// <param name="moves"></param>
-	void get_piece_moves(int& moveIndex, int row, int column, int player, int piece, vector<Move>& moves) const;
+	void get_piece_moves(int& moveIndex, int row, int column, int player, int piece, Move moves[]) const;
 
 	/// <summary>
 	/// Get moves based on piece
@@ -86,11 +86,11 @@ public:
 	/// <param name="column"></param>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_rook_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
-	void get_bishop_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
-	void get_knight_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
-	void get_king_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
-	void get_pawn_moves(int& moveIndex, int row, int column, int player, vector<Move>& moves) const;
+	void get_rook_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
+	void get_bishop_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
+	void get_knight_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
+	void get_king_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
+	void get_pawn_moves(int& moveIndex, int row, int column, int player, Move moves[]) const;
 
 
 	/// <summary>
@@ -112,7 +112,7 @@ public:
 		int delta_column,
 		int player,
 		int max_steps,
-		vector<Move>& moves,
+		Move moves[],
 		bool can_eat = true,
 		bool has_to_eat = false) const;
 
@@ -133,7 +133,7 @@ public:
 		int delta_row,
 		int delta_column,
 		int player,
-		vector<Move>& moves) const;
+		Move moves[]) const;
 
 	/// <summary>
 	/// Finds the position of given piece on board
@@ -170,7 +170,7 @@ public:
 	/// </summary>
 	/// <param name="player"></param>
 	/// <param name="moves"></param>
-	void get_castles(int player, vector<Move>& moves, int& moveIndex) const;
+	void get_castles(int player, Move moves[], int& moveIndex) const;
 
 	/// <summary>
 	/// Keeps up if players can castle

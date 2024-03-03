@@ -139,7 +139,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Generate a list of moves
-		vector<Move> moves(40);
+		vector<Move> moves;
 		current_state.get_moves(moves);
 
 		// If no moves are left, the game is over
