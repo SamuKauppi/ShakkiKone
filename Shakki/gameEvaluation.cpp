@@ -11,9 +11,8 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
 
-	// currently searching at 2s increment only because player turn effects evaluation wildly slowing down calculation (read horizon effect)
-	// TODO implement quiencense search to fix this issue and fix horizon effect
-	for (int depth = 2; depth < 100; depth+=2)
+	// TODO implement quiencense search to fix horizon effect and allow better utilization of TT
+	for (int depth = 4; depth < 100; depth+=2)
 	{
 		cout << depth << ", ";
 		// calculate position at new depth
