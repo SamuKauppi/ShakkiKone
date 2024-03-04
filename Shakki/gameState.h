@@ -210,7 +210,7 @@ public:
 	/// </summary>
 	/// <param name="depth"></param>
 	/// <returns></returns>
-	MinimaxValue minimax(int depth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const;
+	MinimaxValue minimax(int depth, int startingDepth ,int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const;
 
 	/// <summary>
 	/// Overwrites this state with chosen states values

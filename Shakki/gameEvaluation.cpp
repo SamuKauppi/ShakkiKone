@@ -10,22 +10,21 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 	MinimaxValue best_value(TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
-
 	// TODO implement quiencense search to fix horizon effect and allow better utilization of TT
-	for (int depth = 4; depth < 100; depth+=2)
+	for (int depth = 4; depth < 100; depth++)
 	{
 		cout << depth << ", ";
 		// calculate position at new depth
-		MinimaxValue new_value = minimax(depth, alpha, beta, tt, timer_start);
+		MinimaxValue new_value = minimax(depth, depth, alpha, beta, tt, timer_start);
 
 		auto stop = chrono::high_resolution_clock::now();
 		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
 		// return best move from a previous finished search if out of time
 		// time_limit is set in gamestate header
-		if (duration.count() > TimeLimit)
+		if (duration.count() > TimeLimit && depth > 6)
 		{
-			best_value.Depth = depth-2;
+			best_value.Depth = depth-1;
 			return best_value;
 		}
 		// set new best move if we finished searhing at a new depth
@@ -33,14 +32,14 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 	}
 }
 
-MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const
+MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const
 {
 
 	auto stop = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
 	// Reached max depth or time is out
-	if (depth <= 0 || duration.count() > TimeLimit)
+	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > 6)
 	{
 		return MinimaxValue(evaluate(), Move(), depth);
 	}
@@ -118,7 +117,7 @@ MinimaxValue GameState::minimax(int depth, int alpha, int beta, TranspositionTab
 		// Recursive call
 		// MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
 		//	tt.get_value(m._key) : new_state.minimax(depth - 1, alpha, beta, tt, timer_start);
-		MinimaxValue value = new_state.minimax(depth - 1, alpha, beta, tt, timer_start);
+		MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 
 		// Get best value for player
 		if ((isMax && value.Value > best_value) ||
