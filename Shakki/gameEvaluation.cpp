@@ -3,6 +3,7 @@
 #include "scoringLogic.h"
 #include "future"
 
+static const int MINMAX_DEPTH = 6;
 Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
@@ -11,7 +12,7 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
 	// TODO implement quiencense search to fix horizon effect and allow better utilization of TT
-	for (int depth = 4; depth < 100; depth++)
+	for (int depth = 6; depth < 100; depth++)
 	{
 		cout << depth << ", ";
 		// calculate position at new depth
@@ -22,7 +23,7 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 
 		// return best move from a previous finished search if out of time
 		// time_limit is set in gamestate header
-		if (duration.count() > TimeLimit && depth > 6)
+		if (duration.count() > TimeLimit && depth > MINMAX_DEPTH)
 		{
 			best_value.Depth = depth-1;
 			return best_value;
@@ -34,12 +35,11 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 
 MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const
 {
-
 	auto stop = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
 	// Reached max depth or time is out
-	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > 6)
+	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > MINMAX_DEPTH)
 	{
 		return MinimaxValue(evaluate(), Move(), depth);
 	}
