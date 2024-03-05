@@ -44,7 +44,8 @@ public:
 		_evaluation = player == WHITE ?
 			numeric_limits<int>::lowest() : numeric_limits<int>::max();
 		bool capture = false;
-		int pieceValueDifferential = 0;
+		pieceValueDifferential = player == WHITE ?
+			numeric_limits<int>::lowest() : numeric_limits<int>::max();
 	}
 
 	string get_move_name() const;

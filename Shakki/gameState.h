@@ -192,7 +192,7 @@ public:
 	/// Called when no legal moves are left
 	/// </summary>
 	/// <returns></returns>
-	int score_board() const;
+	int score_board(int startingDepth, int depth) const;
 
 	/// <summary>
 	/// Evaluates board state
@@ -250,7 +250,7 @@ private:
 
 	// Game board
 	// [y][x]
-	/*
+
 	int _board[8][8] = {
 		{bR, bN, bB, bQ, bK, bB, bN, bR},
 		{bP, bP, bP, bP, bP, bP, bP, bP},
@@ -261,8 +261,9 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
-	*/
+
 	//test board
+	/*
 	int _board[8][8] = {
 		{NA, NA, NA, NA, NA, NA, NA, NA},
 		{NA, NA, NA, NA, NA, NA, NA, NA},
@@ -273,7 +274,7 @@ private:
 		{NA, NA, NA, NA, NA, bR, NA, NA},
 		{wK, NA, NA, NA, NA, NA, NA, NA}
 	};
-
+	*/
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 

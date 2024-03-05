@@ -196,11 +196,11 @@ void GameState::add_move_with_index(int& moveIndex, int row, int column, int del
 		moves[moveIndex].capture = true;
 		if (player == WHITE)
 		{
-			moves[moveIndex].pieceValueDifferential = get_simple_piece_value(_board[delta_row][delta_column] - get_simple_piece_value(_board[row][column]));
+			moves[moveIndex].pieceValueDifferential = get_simple_piece_value(_board[delta_row][delta_column]) - get_simple_piece_value(_board[row][column]);
 		}
 		else
 		{
-			moves[moveIndex].pieceValueDifferential = - (get_simple_piece_value(_board[delta_row][delta_column] - get_simple_piece_value(_board[row][column])));
+			moves[moveIndex].pieceValueDifferential = -(get_simple_piece_value(_board[delta_row][delta_column]) - get_simple_piece_value(_board[row][column]));
 		}
 	}
 	moveIndex++;

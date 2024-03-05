@@ -106,11 +106,8 @@ bool TranspositionTable::is_state_calculated(uint64_t zobristKey, int depth)
 	int key = hash_key(zobristKey);
 	if (_positions[key]._zobristKey == zobristKey)
 	{
-		if (_positions[key]._depth > depth)
+		if (_positions[key]._depth >= depth)
 		{
-			TTEntry entry = _positions[key];
-			// cout << entry._depth << ", " << depth << "\n";
-			// cout << entry._evaluation << ", " << entry._zobristKey << ", " << entry._depth << "\n";
 			_positionRepeats++;
 			return true;
 		}
