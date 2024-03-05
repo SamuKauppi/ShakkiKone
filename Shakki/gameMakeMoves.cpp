@@ -63,22 +63,15 @@ void GameState::special_pawn_moves(int start_row, int start_column, int end_row,
 
 void GameState::special_king_moves(int piece, int start_row, int start_column, int end_row, int end_column)
 {
-	bool is_white = piece == wK;
-
 	// Update the position of the king
-	int& row = is_white ? _wK_pos[0] : _bK_pos[0];
-	int& column = is_white ? _wK_pos[1] : _bK_pos[1];
+	int& row = piece == wK ? _wK_pos[0] : _bK_pos[0];
+	int& column = piece == wK ? _wK_pos[1] : _bK_pos[1];
 	row = end_row;
 	column = end_column;
 
 	// Move was a castle if king moves more than 1 square
 	if (abs(end_column - start_column) > 1)
 	{
-		// Set the appropriate castle variable
-		if (is_white)
-			_w_castle = true;
-		else
-			_b_castle = true;
 
 		// Get the direction for the rook
 		int rook_dir = end_column - start_column;

@@ -14,7 +14,7 @@ public:
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 5000;
+	int TimeLimit = 7500;
 
 	/// <summary>
 	/// Moves a piece
@@ -168,14 +168,6 @@ public:
 	void update_castle_legality();
 
 	/// <summary>
-	/// Disables long and/or short castle from player based on column
-	/// </summary>
-	/// <param name="short_castle"></param>
-	/// <param name="long_castle"></param>
-	/// <param name="column"></param>
-	void disable_one_castle(bool& short_castle, bool& long_castle, int column);
-
-	/// <summary>
 	/// Returns false if neither player can perform any castle
 	/// </summary>
 	/// <param name="player"></param>
@@ -282,9 +274,6 @@ private:
 	bool _w_short_castle = true;
 	bool _b_long_castle = true;
 	bool _b_short_castle = true;
-
-	bool _w_castle = false;
-	bool _b_castle = false;
 
 	int _doubleStep = -1;
 
