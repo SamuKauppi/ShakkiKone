@@ -12,9 +12,8 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();
 	// TODO implement quiencense search to fix horizon effect and allow better utilization of TT
-	for (int depth = 6; depth < 100; depth++)
+	for (int depth = MINMAX_DEPTH; depth < 100; depth++)
 	{
-		cout << depth << ", ";
 		// calculate position at new depth
 		MinimaxValue new_value = minimax(depth, depth, alpha, beta, tt, timer_start);
 

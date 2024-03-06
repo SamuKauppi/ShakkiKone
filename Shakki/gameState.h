@@ -14,7 +14,7 @@ public:
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 7500;
+	int TimeLimit = 4500;
 
 	/// <summary>
 	/// Moves a piece

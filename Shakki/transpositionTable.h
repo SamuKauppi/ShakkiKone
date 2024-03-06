@@ -55,8 +55,8 @@ private:
 	random_device _seed;
 
 	// array for positions
-	// size fixed 10,000,000 positions for now
+	// size fixed 50,000,000 positions for now
 	// roughly 500mb
-	int _size = 10000000;
+	int _size = 50000000;
 	TTEntry* _positions;
 };
