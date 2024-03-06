@@ -29,6 +29,8 @@ public:
 
 		_end_pos[0] = e_y_pos;
 		_end_pos[1] = e_x_pos;
+		bool capture = false;
+		int pieceValueDifferential = 0;
 	}
 
 	Move(int s_y_pos, int s_x_pos, int e_y_pos, int e_x_pos, int player)
@@ -41,16 +43,27 @@ public:
 
 		_evaluation = player == WHITE ?
 			numeric_limits<int>::lowest() : numeric_limits<int>::max();
+		bool capture = false;
+		pieceValueDifferential = player == WHITE ?
+			numeric_limits<int>::lowest() : numeric_limits<int>::max();
 	}
 
 	string get_move_name() const;
 
 	bool operator<(Move& other)
 	{
+		if (_evaluation == other._evaluation)
+		{
+			return pieceValueDifferential < other.pieceValueDifferential;
+		}
 		return _evaluation < other._evaluation;
 	}
 	bool operator>(Move& other)
 	{
+		if (_evaluation == other._evaluation)
+		{
+			return pieceValueDifferential > other.pieceValueDifferential;
+		}
 		return _evaluation > other._evaluation;
 	}
 
@@ -62,6 +75,10 @@ private:
 	uint64_t _key = 0;
 
 	int _piece_promotion = NA;
+
+	// used to evaluate which piece made capture. used for move ordering and quiescence search
+	bool capture = false;
+	int pieceValueDifferential = 0;
 
 	friend class GameState;
 };

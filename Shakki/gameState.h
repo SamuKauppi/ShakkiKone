@@ -52,7 +52,7 @@ public:
 	/// <param name="moveIndex"></param>
 	/// <param name="moves"></param>
 	/// <param name="new_move"></param>
-	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[]) const;
+	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture = false) const;
 
 	/// <summary>
 	/// Returns all of the moves for turnplayer
@@ -118,7 +118,8 @@ public:
 		int delta_row,
 		int delta_column,
 		int player,
-		Move moves[]) const;
+		Move moves[],
+		bool capture = false) const;
 
 	/// <summary>
 	/// Finds the position of given piece on board
@@ -183,7 +184,7 @@ public:
 	/// Called when no legal moves are left
 	/// </summary>
 	/// <returns></returns>
-	int score_board() const;
+	int score_board(int startingDepth, int depth) const;
 
 	/// <summary>
 	/// Evaluates board state
@@ -203,6 +204,10 @@ public:
 	/// <param name="depth"></param>
 	/// <returns></returns>
 	MinimaxValue minimax(int depth, int startingDepth ,int alpha, int beta, TranspositionTable& tt, chrono::steady_clock::time_point timer_start) const;
+
+	int quiescence(int alpha, int beta) const;
+
+	int get_simple_piece_value(int piece) const;
 
 	/// <summary>
 	/// Overwrites this state with chosen states values
@@ -237,6 +242,7 @@ private:
 
 	// Game board
 	// [y][x]
+
 	int _board[8][8] = {
 		{bR, bN, bB, bQ, bK, bB, bN, bR},
 		{bP, bP, bP, bP, bP, bP, bP, bP},
@@ -248,6 +254,19 @@ private:
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
 
+	//test board
+	/*
+	int _board[8][8] = {
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, bK, NA, NA, NA, bP, bP, bP},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{wP, bP, wP, NA, NA, bB, bB, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, bR, NA, NA},
+		{wK, NA, NA, NA, NA, NA, NA, NA}
+	};
+	*/
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 

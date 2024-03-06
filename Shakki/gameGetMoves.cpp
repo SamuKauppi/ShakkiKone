@@ -11,7 +11,6 @@ void GameState::get_moves(vector<Move>& moves) const
 	Move rawMovesTemp[200];
 	int moveIndex = 0;
 	get_raw_moves(player, rawMovesTemp, moveIndex);
-	// Generate move index (used to fill empty spots in vector<Move>& moves)
 
 	// Add castle moves into moves (validates if it's legal on it's own)
 	get_castles(player, rawMovesTemp, moveIndex);
@@ -95,7 +94,7 @@ void GameState::get_castles(int player, Move moves[], int& moveIndex) const
 		!is_square_in_check(player, player_pos, 3) &&
 		!is_square_in_check(player, player_pos, 2))
 	{
-		add_move_with_index(moveIndex, player_pos, 4, player_pos, 6, player, moves);
+		add_move_with_index(moveIndex, player_pos, 4, player_pos, 2, player, moves);
 	}
 }
 
@@ -106,13 +105,14 @@ void GameState::get_promotion_moves(
 	int delta_row,
 	int delta_column,
 	int player,
-	Move moves[]) const
+	Move moves[],
+	bool capture) const
 {
 	int player_offset = player == BLACK ? 6 : 0;
 	for (int i = 0; i < 4; i++)
 	{
 		int piece = i + player_offset;
-		add_move_with_index(moveIndex, row, column, delta_row, delta_column, player, moves);
+		add_move_with_index(moveIndex, row, column, delta_row, delta_column, player, moves, capture);
 	}
 }
 
@@ -172,10 +172,10 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 		if (can_eat)
 		{
 			if (will_promote)
-				get_promotion_moves(moveIndex, row, column, current_row, current_column, player, moves);
+				get_promotion_moves(moveIndex, row, column, current_row, current_column, player, moves, true);
 			else
 			{
-				add_move_with_index(moveIndex, row, column, current_row, current_column, player, moves);
+				add_move_with_index(moveIndex, row, column, current_row, current_column, player, moves, true);
 			}
 		}
 
@@ -183,9 +183,26 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 	}
 }
 
-void GameState::add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[]) const
+void GameState::add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture) const
 {
 	moves[moveIndex] = Move(row, column, delta_row, delta_column, player);
+	if (capture)
+	{
+		if (_board[delta_row][delta_column] == wK || _board[delta_row][delta_column] == bK)
+		{
+			moveIndex++;
+			return;
+		}
+		moves[moveIndex].capture = true;
+		if (player == WHITE)
+		{
+			moves[moveIndex].pieceValueDifferential = get_simple_piece_value(_board[delta_row][delta_column]) - get_simple_piece_value(_board[row][column]);
+		}
+		else
+		{
+			moves[moveIndex].pieceValueDifferential = -(get_simple_piece_value(_board[delta_row][delta_column]) - get_simple_piece_value(_board[row][column]));
+		}
+	}
 	moveIndex++;
 }
 

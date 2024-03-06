@@ -40,7 +40,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	// Reached max depth or time is out
 	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > MINMAX_DEPTH)
 	{
-		return MinimaxValue(evaluate(), Move(), depth);
+		return MinimaxValue(quiescence(alpha, beta), Move(), depth);
 	}
 
 	Move tempMoves[200];
@@ -58,8 +58,8 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	// If no moves remain, game is over
 	if (index <= 0)
 	{
-		delete moves;
-		return MinimaxValue(score_board(), Move(), depth);
+		delete[] moves;
+		return MinimaxValue(score_board(depth, startingDepth), Move(), depth);
 	}
 	
 	
@@ -73,7 +73,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 
 		// order
 		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
-		m._key = zobristKey;
+		moves[i]._key = zobristKey;
 		if (tt.is_state_hashed(zobristKey))
 		{
 			m._evaluation = tt.get_hashed_evaluation(zobristKey);
@@ -114,17 +114,16 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		legal_moves_made++;
 
 		// Recursive call
-		// MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
-		//	tt.get_value(m._key) : new_state.minimax(depth - 1, alpha, beta, tt, timer_start);
-		MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
-
-		// Get best value for player
+		MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
+			tt.get_value(m._key) : new_state.minimax(depth - 1, startingDepth ,alpha, beta, tt, timer_start);
+		// MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
+		
 		if ((isMax && value.Value > best_value) ||
 			(!isMax && value.Value < best_value))
 		{
 			best_value = value.Value;
 			best_move = m;
-			
+
 			if (isMax && best_value > alpha)
 			{
 				alpha = best_value;
@@ -133,39 +132,136 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 			{
 				beta = best_value;
 			}
-	
+
 		}
 		
 		tt._positionCount++;
 		// store position to TT
 		tt.hash_new_position(new_state, depth - 1, value.Value, value.Best_move);
+
 		
 		if (beta <= alpha)
 		{
 			break;
 		}
 		
+		
 	}
 	// tt.hash_new_position(*this, depth, best_value, best_move);
 	// no legal moves in branch, game is over
-	delete moves;
+	delete[] moves;
 
 	if (legal_moves_made <= 0)
 	{
-		return MinimaxValue(score_board(), Move(), depth);
+		return MinimaxValue(score_board(depth, startingDepth), Move(), depth);
 	}
 
 	return MinimaxValue(best_value, best_move, depth);
 }
 
-int GameState::score_board() const
+
+// Quiescence search to evaluate captures at the end of normal search
+int GameState::quiescence(int alpha, int beta) const
+{
+	int standPat = evaluate();
+	bool isMax = TurnPlayer == WHITE ? true : false;
+	if (isMax)
+	{
+		if (standPat >= beta) return standPat;
+		if (alpha < standPat) alpha = standPat;
+	}
+	else 
+	{
+		if (standPat <= alpha) return standPat;
+		if (beta > standPat) beta = standPat;
+	}
+
+	Move tempMoves[200];
+	int index = 0;
+	get_raw_moves(TurnPlayer, tempMoves, index);
+	int legal_moves_made = 0;
+	if (index <= 0)
+	{
+		return score_board(0, 0);
+	}
+	Move* moves = new Move[index];
+
+	for (int i = 0; i < index; i++)
+	{
+		moves[i] = tempMoves[i];
+	}
+
+	if (TurnPlayer == BLACK)
+	{
+		sort(moves, moves + index);
+	}
+	else
+	{
+		sort(moves, moves + index, greater<>());
+	}
+
+	int best_value = TurnPlayer == WHITE ?
+		numeric_limits<int>::lowest() : numeric_limits<int>::max();
+
+	for (int i = 0; i < index; i++)
+	{
+		Move m = moves[i];
+		if (m.capture == false) continue;
+		// Create copies of current state
+		GameState new_state = *this;
+		new_state.make_move(m);
+		// new method to check if king is in check. extremely fast
+		// Get king position
+		int row, column;
+		row = TurnPlayer == WHITE ? new_state._wK_pos[0] : new_state._bK_pos[0];
+		column = TurnPlayer == WHITE ? new_state._wK_pos[1] : new_state._bK_pos[1];
+		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
+		legal_moves_made++;
+		int value = new_state.quiescence(alpha, beta);
+
+
+		if (isMax) 
+		{
+			if (value > best_value) best_value = value;
+			if (best_value >= beta)
+			{
+				delete[] moves;
+				return best_value;  
+			}
+			if (best_value > alpha)
+				alpha = best_value; 
+		}
+		else
+		{
+			if (value < best_value) best_value = value;
+			if (best_value <= alpha)
+			{
+				delete[] moves;
+				return best_value; 
+			}
+			if (best_value < beta)
+				beta = best_value; 
+		}
+
+	}
+
+	delete[] moves;
+	if (legal_moves_made <= 0)
+	{
+		return standPat;
+	}
+	return best_value;
+}
+
+
+int GameState::score_board(int depth, int startingDepth) const
 {
 	// Get opponent
 	int opponent = 1 - TurnPlayer;
 
 	// Get worst score for turn player
-	int worst_score = TurnPlayer == WHITE ? -1000000 : 1000000;
-
+	int depthDifference = startingDepth - depth;
+	int worst_score = TurnPlayer == WHITE ? -1000000 + depthDifference : 1000000 - depthDifference;
 	// Find correct king
 	int row, column;
 	row = TurnPlayer == WHITE ? _wK_pos[0] : _bK_pos[0];
