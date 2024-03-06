@@ -27,7 +27,7 @@ class TranspositionTable
 public:
 	TranspositionTable();
 	void init_zobrist();
-	uint64_t generate_zobrist_key(GameState state);
+	uint64_t generate_zobrist_key(GameState state) const;
 	int hash_key(uint64_t zobristKey);
 	void hash_new_position(GameState state, int depth, int evaluation, Move m);
 	uint64_t uint64_prng();

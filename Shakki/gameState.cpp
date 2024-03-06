@@ -107,20 +107,22 @@ int GameState::get_simple_piece_value(int piece) const
 	switch (piece)
 	{
 	case wP:
-		return 100;
 	case bP:
 		return 100;
 	case wN:
-		return 300;
 	case bN:
 		return 300;
 	case wB:
-		return 350;
 	case bB:
 		return 350;
+	case wR:
+	case bR:
+		return 500;
 	case wQ:
-		return 800;
 	case bQ:
 		return 800;
+
+	default:
+		return 0;
 	}
 }

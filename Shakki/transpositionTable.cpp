@@ -46,7 +46,7 @@ void TranspositionTable::init_zobrist()
 
 // Generates a hash key using the values generated above using bitwise operations. This part is very fast but,
 // function is still somewhat expensive due to having to check every tile on the board for pieces. 
-uint64_t TranspositionTable::generate_zobrist_key(GameState state)
+uint64_t TranspositionTable::generate_zobrist_key(GameState state) const
 {
 	uint64_t k = 0;
 	for (int row = 0; row < 8; row++) {

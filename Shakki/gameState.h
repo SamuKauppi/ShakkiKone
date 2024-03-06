@@ -14,7 +14,7 @@ public:
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 4500;
+	int TimeLimit = 4000;
 
 	/// <summary>
 	/// Moves a piece
@@ -52,7 +52,7 @@ public:
 	/// <param name="moveIndex"></param>
 	/// <param name="moves"></param>
 	/// <param name="new_move"></param>
-	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture = false) const;
+	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture = false, int promo = NA) const;
 
 	/// <summary>
 	/// Returns all of the moves for turnplayer
@@ -267,6 +267,18 @@ private:
 		{wK, NA, NA, NA, NA, NA, NA, NA}
 	};
 	*/
+
+	//int _board[8][8] = {
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, wP, NA, wP, NA, NA, NA, NA},
+	//{NA, bK, NA, NA, NA, bP, bP, bP},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{wP, bP, wP, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{bP, bR, bP, NA, NA, NA, NA, NA},
+	//{wK, NA, NA, NA, NA, NA, NA, NA}
+	//};
+
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 

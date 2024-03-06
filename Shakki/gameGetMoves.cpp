@@ -112,7 +112,7 @@ void GameState::get_promotion_moves(
 	for (int i = 0; i < 4; i++)
 	{
 		int piece = i + player_offset;
-		add_move_with_index(moveIndex, row, column, delta_row, delta_column, player, moves, capture);
+		add_move_with_index(moveIndex, row, column, delta_row, delta_column, player, moves, capture, piece);
 	}
 }
 
@@ -183,9 +183,13 @@ void GameState::get_raw_moves_in_dir(int& moveIndex, int row, int column, int de
 	}
 }
 
-void GameState::add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture) const
+void GameState::add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture, int promo) const
 {
 	moves[moveIndex] = Move(row, column, delta_row, delta_column, player);
+	
+	if (promo != NA)
+		moves[moveIndex]._piece_promotion = promo;
+
 	if (capture)
 	{
 		if (_board[delta_row][delta_column] == wK || _board[delta_row][delta_column] == bK)
