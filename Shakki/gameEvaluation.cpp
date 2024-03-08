@@ -3,7 +3,7 @@
 #include "scoringLogic.h"
 #include "future"
 
-static const int MINMAX_DEPTH = 1;
+static const int MINMAX_DEPTH = 6;
 Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const

@@ -269,17 +269,17 @@ private:
 	*/
 
 	//int _board[8][8] = {
+	//{bR, bN, NA, NA, bK, NA, NA, bR},
+	//{NA, bP, NA, NA, NA, bP, NA, NA},
+	//{bP, NA, NA, wQ, NA, NA, NA, bP},
+	//{NA, NA, wP, NA, NA, NA, bP, NA},
+	//{NA, NA, NA, NA, wP, NA, NA, NA},
 	//{NA, NA, NA, NA, NA, NA, NA, NA},
-	//{NA, wP, NA, wP, NA, NA, NA, NA},
-	//{NA, bK, NA, NA, NA, bP, bP, bP},
-	//{NA, NA, NA, NA, NA, NA, NA, NA},
-	//{wP, bP, wP, NA, NA, NA, NA, NA},
-	//{NA, NA, NA, NA, NA, NA, NA, NA},
-	//{bP, bR, bP, NA, NA, NA, NA, NA},
-	//{wK, NA, NA, NA, NA, NA, NA, NA}
+	//{bQ, wP, wP, NA, NA, wP, wP, wP},
+	//{NA, NA, wR, NA, NA, wR, wK, NA}
 	//};
 
-	int _wK_pos[2] = {7, 4};
+	int _wK_pos[2] = {7, 6};
 	int _bK_pos[2] = {0, 4};
 
 	bool _w_long_castle = true;

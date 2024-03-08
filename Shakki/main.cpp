@@ -7,6 +7,8 @@
 #include <iostream>
 #include "chrono"
 
+vector<Move> move_history;
+
 /// <summary>
 /// Undo a move if there are moves in history
 /// </summary>
@@ -20,6 +22,7 @@ static bool try_undo_move(GameState& current_state, stack<GameState>& history)
 
 	current_state = history.top();
 	history.pop();
+	move_history.erase(move_history.end() - 1);
 	return true;
 }
 
@@ -88,13 +91,6 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 	else
 	{
 		cout << "Calculating...";
-		/*
-		MinimaxValue ai_input =
-			current_state.minimax(
-				MINMAX_DEPTH,
-				numeric_limits<int>::lowest(),
-				numeric_limits<int>::max(), tt);
-			*/
 		MinimaxValue ai_input = current_state.iterative_deepening( 
 				numeric_limits<int>::lowest(),
 				numeric_limits<int>::max(), tt);
@@ -180,6 +176,11 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 				break;
 			}
 
+			if (chosen == "end")
+			{
+				return player_name + " resigned";
+			}
+
 			// Validate input
 			move_index = get_valid_move_index(moves, chosen);
 			if (move_index != -1)
@@ -204,6 +205,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		if (!wasUndo)
 		{
 			history.push(current_state);
+			move_history.push_back(moves[move_index]);
 			current_state.make_move(moves[move_index]);
 			cout << player_name << " made the move: " << moves[move_index].get_move_name() << "\n";
 		}
@@ -227,7 +229,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 	}
 
 	// Otherwise there is a winner
-	return current_state.TurnPlayer == WHITE ? "Black" : "White";
+	return current_state.TurnPlayer == WHITE ? "Black wins" : "White wins";
 }
 
 /// <summary>
@@ -263,6 +265,19 @@ int main()
 	bool w = is_player_ai("White");
 	bool b = is_player_ai("Black");
 	string winner = game_loop(w, b);
-	cout << "\nAnd the winner is: " << winner;
+	cout << "\nAnd the game ends with: " << winner << "\n";
+
+	cout << "Would you like to see the game moves?\n (y/n): ";
+
+	string input;
+	cin >> input;
+	if (input == "y")
+	{
+		for (auto& m : move_history)
+		{
+			cout << m.get_move_name() << ", ";
+		}
+	}
+
 	return 0;
 }
