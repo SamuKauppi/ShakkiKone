@@ -267,7 +267,7 @@ int main()
 	string winner = game_loop(w, b);
 	cout << "\nAnd the game ends with: " << winner << "\n";
 
-	cout << "Would you like to see the game moves?\n (y/n): ";
+	cout << "Would you like to see the game moves?\n(y/n): ";
 
 	string input;
 	cin >> input;
