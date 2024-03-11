@@ -279,7 +279,7 @@ private:
 	//{NA, NA, wR, NA, NA, wR, wK, NA}
 	//};
 
-	int _wK_pos[2] = {7, 6};
+	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 
 	bool _w_long_castle = true;

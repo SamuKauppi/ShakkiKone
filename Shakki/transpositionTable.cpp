@@ -96,7 +96,7 @@ int TranspositionTable::get_hashed_evaluation(uint64_t zobristKey)
 	return _positions[key]._evaluation;
 }
 
-int TranspositionTable::hash_key(uint64_t zobristKey)
+int TranspositionTable::hash_key(uint64_t zobristKey) const
 {
 	return zobristKey % _size;
 }
