@@ -253,6 +253,16 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
+	//int _board[8][8] = {
+	//{bR, NA, NA, NA, bK, NA, NA, bR},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{wR, NA, NA, NA, wK, NA, NA, wR}
+	//};
 
 	//test board
 	/*
