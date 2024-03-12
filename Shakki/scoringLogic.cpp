@@ -62,18 +62,18 @@ int Evaluation::eval(const int board[8][8]) const
 
     // Get gamephase
     int mgPhase = gamePhase;
-    if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
-    int egPhase = 24 - mgPhase;
+    if (mgPhase > gamePhaseTotal) mgPhase = gamePhaseTotal; // If promotion happens
+    int egPhase = gamePhaseTotal - mgPhase;
 
-    int eval = (mgScore * mgPhase + egScore * egPhase) / 24;
+    int eval = (mgScore * mgPhase + egScore * egPhase) / gamePhaseTotal;
 
-    //if (abs(eval) > 50 && gamePhase >= Gamephase)
-    //{
-    //    eval -= eval / 50;
-    //}
+    if (abs(eval) > 150 && gamePhase >= Gamephase)
+    {
+        eval -= eval / 150;
+    }
 
     // Return evaluation
-    return (mgScore * mgPhase + egScore * egPhase) / 24;
+    return eval;
 }
 
 int Evaluation::flip_square(int sq) const

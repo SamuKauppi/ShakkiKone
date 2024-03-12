@@ -1,7 +1,6 @@
 #include "gameState.h"
 #include "iostream"
 #include "scoringLogic.h"
-#include "future"
 
 static const int MINMAX_DEPTH = 6;
 Evaluation eval = Evaluation();

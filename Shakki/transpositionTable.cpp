@@ -60,7 +60,7 @@ uint64_t TranspositionTable::generate_zobrist_key(GameState state) const
 	if (state.TurnPlayer == BLACK) k ^= _zobristColorValue;
 	if (state._w_long_castle) k ^= _zobristCastlingValues[0];
 	if (state._w_short_castle) k ^= _zobristCastlingValues[1];
-	if (state._b_long_castle) k ^= _zobristCastlingValues[2];
+	if (state._b_short_castle) k ^= _zobristCastlingValues[2];
 	if (state._b_long_castle) k ^= _zobristCastlingValues[3];
 	if (state._doubleStep != -1) k ^= _zobristEnPassantValues[state._doubleStep];
 	return k;
