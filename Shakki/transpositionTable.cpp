@@ -61,13 +61,12 @@ uint64_t TranspositionTable::generate_zobrist_key(GameState state)
 	if (state._w_long_castle) k ^= _zobristCastlingValues[0];
 	if (state._w_short_castle) k ^= _zobristCastlingValues[1];
 	if (state._b_long_castle) k ^= _zobristCastlingValues[2];
-	if (state._b_long_castle) k ^= _zobristCastlingValues[3];
+	if (state._b_short_castle) k ^= _zobristCastlingValues[3];
 	if (state._doubleStep != -1) k ^= _zobristEnPassantValues[state._doubleStep];
 	return k;
 }
 
-void TranspositionTable::hash_new_position(GameState state, int depth, int evaluation, Move m) {
-	uint64_t zobristKey = generate_zobrist_key(state);
+void TranspositionTable::hash_new_position(uint64_t zobristKey, int depth, int evaluation, Move m) {
 	int key = hash_key(zobristKey);
 	if (_positions[key]._zobristKey == zobristKey)
 	{

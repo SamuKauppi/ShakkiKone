@@ -101,6 +101,7 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 				numeric_limits<int>::lowest(),
 				numeric_limits<int>::max(), tt);
 		current_state.DepthReached = ai_input.Depth;
+		current_state.latestEvaluation = ai_input.Value;
 		chosen = ai_input.Best_move.get_move_name();
 	}
 
@@ -198,9 +199,9 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		cout << "Time spent: " << duration.count() << "ms\n";
 		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
 		cout << "Depth calculated: " << current_state.DepthReached << "\n";
+		cout << "Evaluation: " << current_state.latestEvaluation << "\n";
 		tt._positionCount = 0;
 		tt._positionRepeats = 0;
-
 		// If the input was not "undo", add this state to history and make the chosen move
 		// Also print what move was made
 		if (!wasUndo)

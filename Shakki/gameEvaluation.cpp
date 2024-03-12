@@ -3,6 +3,7 @@
 #include "scoringLogic.h"
 #include "future"
 
+static const int MINMAX_DEPTH = 5;
 Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
@@ -67,23 +68,22 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	// TODO: Calculate zobrist keys without test state, 
 	for (int i = 0; i < index; i++)
 	{
-		Move m = moves[i];
 		// Create copies of current state
 		GameState new_state = *this;
-		new_state.make_move(m);
+		new_state.make_move(moves[i]);
 
 		// order
 		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
 		moves[i]._key = zobristKey;
 		if (tt.is_state_hashed(zobristKey))
 		{
-			m._evaluation = tt.get_hashed_evaluation(zobristKey);
+			moves[i]._evaluation = tt.get_hashed_evaluation(zobristKey);
 		}
 	}
 	
 	bool isMax = TurnPlayer == WHITE ? true : false;
-	
-	
+
+
 	if (TurnPlayer == BLACK)
 	{
 		sort(moves, moves + index);
@@ -106,19 +106,17 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		GameState new_state = *this;
 		new_state.make_move(m);
 
-		// new method to check if king is in check. extremely fast
 		// Get king position
 		int row, column;
 		row = TurnPlayer == WHITE ? new_state._wK_pos[0] : new_state._bK_pos[0];
 		column = TurnPlayer == WHITE ? new_state._wK_pos[1] : new_state._bK_pos[1];
 		if (new_state.is_square_in_check(TurnPlayer, row, column)) continue;
 		legal_moves_made++;
-
 		// Recursive call
 		MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
-			tt.get_value(m._key) : new_state.minimax(depth - 1, startingDepth ,alpha, beta, tt, timer_start);
+			tt.get_value(m._key) : new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 		// MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
-		
+
 		if ((isMax && value.Value > best_value) ||
 			(!isMax && value.Value < best_value))
 		{
@@ -140,13 +138,11 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		// store position to TT
 		tt.hash_new_position(new_state, depth - 1, value.Value, value.Best_move);
 
-		
+
 		if (beta <= alpha)
 		{
 			break;
 		}
-		
-		
 	}
 	// tt.hash_new_position(*this, depth, best_value, best_move);
 	// no legal moves in branch, game is over

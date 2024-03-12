@@ -13,8 +13,9 @@ public:
 	// turn player
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
+	int latestEvaluation = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 5000;
+	int TimeLimit = 4500;
 
 	/// <summary>
 	/// Moves a piece
@@ -251,6 +252,7 @@ private:
 	// Game board
 	// [y][x]
 
+	
 	int _board[8][8] = {
 		{bR, bN, bB, bQ, bK, bB, bN, bR},
 		{bP, bP, bP, bP, bP, bP, bP, bP},
@@ -261,18 +263,19 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
-
+	
 	//test board
+	
 	/*
 	int _board[8][8] = {
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, bK, NA, NA, NA, bP, bP, bP},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{wP, bP, wP, NA, NA, bB, bB, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, bR, NA, NA},
-		{wK, NA, NA, NA, NA, NA, NA, NA}
+		{NA, NA, NA, bR, bK, NA, NA, bR},
+		{bP, bP, NA, NA, NA, bP, bP, bP},
+		{NA, bQ, NA, NA, bN, NA, NA, NA},
+		{NA, NA, NA, bP, NA, NA, NA, NA},
+		{NA, bB, NA, NA, NA, NA, NA, NA},
+		{NA, wP, NA, bB, wP, NA, wP, NA},
+		{wP, NA, NA, wB, NA, wP, wB, wP},
+		{NA, NA, wR, wQ, wR, NA, wK, NA}
 	};
 	*/
 	int _wK_pos[2] = {7, 4};
