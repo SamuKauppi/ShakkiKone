@@ -284,5 +284,5 @@ int GameState::score_board(int depth, int startingDepth) const
 
 int GameState::evaluate() const
 {
-	return eval.eval(_board);
+	return eval.eval(_board, TurnPlayer);
 }

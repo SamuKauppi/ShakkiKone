@@ -26,7 +26,7 @@ void Evaluation::init_tables()
     }
 }
 
-int Evaluation::eval(const int board[8][8]) const
+int Evaluation::eval(const int board[8][8], int turnplayer) const
 {
     // Initialize mg/eg values for white and black 
     int mg[2]{};
@@ -67,7 +67,8 @@ int Evaluation::eval(const int board[8][8]) const
 
     int eval = (mgScore * mgPhase + egScore * egPhase) / gamePhaseTotal;
 
-    if (abs(eval) > 150 && gamePhase >= Gamephase)
+    bool has_lead = turnplayer == WHITE ? eval > 150 : eval < -150;
+    if (has_lead && gamePhase >= Gamephase)
     {
         eval -= eval / 150;
     }

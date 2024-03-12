@@ -10,7 +10,7 @@ public:
 	/// </summary>
 	/// <param name="board"></param>
 	/// <returns></returns>
-	int eval(const int board[8][8]) const;
+	int eval(const int board[8][8], int turnplayer) const;
 
 	/// <summary>
 	/// Initializes mg and eg values
