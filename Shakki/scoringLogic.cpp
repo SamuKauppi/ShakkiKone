@@ -1,4 +1,5 @@
 #include "scoringLogic.h"
+#include "math.h"
 
 Evaluation::Evaluation()
 {
@@ -64,6 +65,13 @@ int Evaluation::eval(const int board[8][8]) const
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
 
+    int eval = (mgScore * mgPhase + egScore * egPhase) / 24;
+
+    //if (abs(eval) > 50 && gamePhase >= Gamephase)
+    //{
+    //    eval -= eval / 50;
+    //}
+
     // Return evaluation
     return (mgScore * mgPhase + egScore * egPhase) / 24;
 }
@@ -103,5 +111,21 @@ int Evaluation::get_evaluated_piece(int pc) const
         return BLACK_PAWN;
     default:
         return EMPTY;
+    }
+}
+
+void Evaluation::update_gamephase(const int board[8][8])
+{
+    Gamephase = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            int pc = board[i][j];
+            if (pc != NA)
+            {
+                Gamephase += gamephaseInc[get_evaluated_piece(pc)];
+            }
+        }
     }
 }

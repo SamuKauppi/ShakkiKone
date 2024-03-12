@@ -109,15 +109,12 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 /// <param name="is_w_ai"></param>
 /// <param name="is_b_ai"></param>
 /// <returns></returns>
-static string game_loop(bool is_w_ai, bool is_b_ai)
+static string game_loop(bool is_w_ai, bool is_b_ai, stack<GameState>& history)
 {
 	TranspositionTable tt;
 	// Generate state and print it
 	GameState current_state;
 	current_state.print_board();
-
-	// Generate history
-	stack<GameState> history;
 
 	// Undo stop flag (used when user types undo)
 	bool wasUndo = false;
@@ -145,16 +142,16 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Print every move
-		cout << "list of every move: \n";
-		for (int i = 0; i < moves.size(); i++)
-		{
-			cout << moves[i].get_move_name();
-			if (i < moves.size() - 1)
-			{
-				cout << ", ";
-			}
-		}
-		cout << "\n";
+		//cout << "list of every move: \n";
+		//for (int i = 0; i < moves.size(); i++)
+		//{
+		//	cout << moves[i].get_move_name();
+		//	if (i < moves.size() - 1)
+		//	{
+		//		cout << ", ";
+		//	}
+		//}
+		//cout << "\n";
 
 		// Generate player name string
 		string player_name = current_state.TurnPlayer == WHITE ? "White player" : "Black player";
@@ -267,18 +264,23 @@ int main()
 {
 	bool w = is_player_ai("White");
 	bool b = is_player_ai("Black");
-	string winner = game_loop(w, b);
+	// Generate history
+	stack<GameState> history;
+	string winner = game_loop(w, b, history);
 	cout << "\nAnd the game ends with: " << winner << "\n";
 
-	cout << "Would you like to see the game moves?\n(y/n): ";
+	cout << "Would you like to see the game boards?\n(y/n): ";
 
 	string input;
 	cin >> input;
 	if (input == "y")
 	{
-		for (auto& m : move_history)
+		for (int i = move_history.size() - 1; i >= 0; i--)
 		{
-			cout << m.get_move_name() << ", ";
+			string player = history.top().TurnPlayer == WHITE ? "White" : "Black";
+			cout << player << " made the move: " << move_history[i].get_move_name() << "\n";
+			history.top().print_board();
+			history.pop();
 		}
 	}
 

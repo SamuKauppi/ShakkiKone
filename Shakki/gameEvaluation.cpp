@@ -8,6 +8,7 @@ Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
 {
+	eval.update_gamephase(_board);
 	MinimaxValue best_value(TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max(), Move(), 0);
 	chrono::steady_clock::time_point timer_start = chrono::high_resolution_clock::now();

@@ -31,6 +31,10 @@ public:
 	/// <returns></returns>
 	int get_evaluated_piece(int pc) const;
 
+	void update_gamephase(const int board[8][8]);
+
+	int Gamephase;
+
 private:
 
 	enum PieceType {
