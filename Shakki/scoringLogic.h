@@ -85,7 +85,8 @@ private:
 		eg_king_table
 	};
 
-    int gamePhaseTotal = 24;
+    const int leadSensitivity = 100;
+    const int gamePhaseTotal = 24;
 	int gamephaseInc[12] = { 0,0,1,1,1,1,2,2,4,4,0,0 };
 	int mg_table[12][64];
 	int eg_table[12][64];
