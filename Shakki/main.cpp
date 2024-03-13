@@ -96,7 +96,6 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 				numeric_limits<int>::lowest(),
 				numeric_limits<int>::max(), tt);
 		current_state.DepthReached = ai_input.Depth;
-		current_state.latestEvaluation = ai_input.Value;
 		chosen = ai_input.Best_move.get_move_name();
 		minimax_value = ai_input.Value;
 	}
