@@ -45,8 +45,8 @@ bool GameState::is_diagonal_safe(int row_direction, int column_direction, int ro
 			// if only one step is taken towards opponents side diagonally and piece is pawn
 			// we are in check
 			if (steps == 1) {
-				if (piece == bP && pawn_attack_check_direction == -1) return false;
-				if (piece == wP && pawn_attack_check_direction == 1) return false;
+				if (piece == bP && pawn_attack_check_direction == 1) return false;
+				if (piece == wP && pawn_attack_check_direction == -1) return false;
 				if (piece == bK || piece == wK) return false;
 			}
 			// if piece is queen or bishop king is not safe
