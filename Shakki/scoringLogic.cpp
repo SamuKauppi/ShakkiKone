@@ -61,9 +61,24 @@ int Evaluation::eval(const int board[8][8]) const
 
     // Get gamephase
     int mgPhase = gamePhase;
+<<<<<<< Updated upstream
     if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
     int egPhase = 24 - mgPhase;
 
+=======
+    if (mgPhase > gamePhaseTotal) mgPhase = gamePhaseTotal; // If promotion happens
+    int egPhase = gamePhaseTotal - mgPhase;
+
+    int eval = (mgScore * mgPhase + egScore * egPhase) / gamePhaseTotal;
+
+    
+    bool has_lead = turnplayer == WHITE ? eval > leadSensitivity : eval < -leadSensitivity;
+    if (has_lead && gamePhase >= Gamephase)
+    {
+        eval -= eval / leadSensitivity;
+    }
+    
+>>>>>>> Stashed changes
     // Return evaluation
     return (mgScore * mgPhase + egScore * egPhase) / 24;
 }

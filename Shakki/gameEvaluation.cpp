@@ -3,7 +3,11 @@
 #include "scoringLogic.h"
 #include "future"
 
+<<<<<<< Updated upstream
 static const int MINMAX_DEPTH = 5;
+=======
+static const int MINMAX_DEPTH = 2;
+>>>>>>> Stashed changes
 Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
@@ -23,7 +27,11 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 
 		// return best move from a previous finished search if out of time
 		// time_limit is set in gamestate header
+<<<<<<< Updated upstream
 		if (duration.count() > TimeLimit && depth > 6)
+=======
+		if (duration.count() > TimeLimit + TimeExtension && depth > MINMAX_DEPTH)
+>>>>>>> Stashed changes
 		{
 			best_value.Depth = depth-1;
 			return best_value;
@@ -39,12 +47,20 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	auto stop = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
+	if (_repeated_positions->is_draw_by_repetition(current_position_zobrist))
+	{
+		return MinimaxValue(0, Move(), depth);
+	}
+
 	// Reached max depth or time is out
+<<<<<<< Updated upstream
 	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > 6)
+=======
+	if (depth <= 0 || duration.count() > TimeLimit + TimeExtension && startingDepth > MINMAX_DEPTH)
+>>>>>>> Stashed changes
 	{
 		return MinimaxValue(quiescence(alpha, beta), Move(), depth);
 	}
-
 	Move tempMoves[200];
 	int index = 0;
 	get_raw_moves(TurnPlayer, tempMoves, index);
@@ -83,7 +99,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	
 	bool isMax = TurnPlayer == WHITE ? true : false;
 
-
+	
 	if (TurnPlayer == BLACK)
 	{
 		sort(moves, moves + index);
@@ -92,7 +108,10 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	{
 		sort(moves, moves + index, greater<>());
 	}
+<<<<<<< Updated upstream
 	
+=======
+>>>>>>> Stashed changes
 	// Get the best_value for player
 	int best_value = TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max();
@@ -136,8 +155,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		
 		tt._positionCount++;
 		// store position to TT
-		tt.hash_new_position(new_state, depth - 1, value.Value, value.Best_move);
-
+		tt.hash_new_position(m._key, depth - 1, value.Value, value.Best_move);
 
 		if (beta <= alpha)
 		{
@@ -164,12 +182,18 @@ int GameState::quiescence(int alpha, int beta) const
 	bool isMax = TurnPlayer == WHITE ? true : false;
 	if (isMax)
 	{
-		if (standPat >= beta) return standPat;
+		if (standPat >= beta)
+		{
+			return standPat;
+		}
 		if (alpha < standPat) alpha = standPat;
 	}
 	else 
 	{
-		if (standPat <= alpha) return standPat;
+		if (standPat <= alpha)
+		{
+			return standPat;
+		}
 		if (beta > standPat) beta = standPat;
 	}
 

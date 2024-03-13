@@ -43,6 +43,13 @@ void GameState::make_move(const Move& m)
 
 	// switch players
 	TurnPlayer = 1 - TurnPlayer;
+
+	// if move has key update repeated positions list
+	current_position_zobrist = m._key;
+	if (m._key != 0)
+	{
+		_repeated_positions->update_position(m._key);
+	}
 }
 
 void GameState::special_pawn_moves(int start_row, int start_column, int end_row, int end_column)

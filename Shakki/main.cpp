@@ -141,7 +141,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 
 		// Generate a list of moves
 		vector<Move> moves;
-		current_state.get_moves(moves);
+		current_state.get_moves(moves, tt);
 
 		// If no moves are left, the game is over
 		if (moves.size() <= 0)
@@ -210,9 +210,25 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 			current_state.make_move(moves[move_index]);
 			cout << player_name << " made the move: " << moves[move_index].get_move_name() << "\n";
 		}
+		
+		if (current_state.is_position_repeated(current_state.current_position_zobrist))
+		{
+			current_state.ExtensionDuration = 2;
+			cout << "search extended";
+		}
+		else if (current_state.ExtensionDuration > 0) current_state.ExtensionDuration--;
+
+		if (current_state.ExtensionDuration > 0) current_state.TimeExtension = 2000;
+		else current_state.TimeExtension = 0;
 
 		// Print the new board
 		current_state.print_board();
+
+		// check for draw by repetition
+		if (current_state.is_draw_by_repetition(current_state.current_position_zobrist))
+		{
+			return "draw by repetition!";
+		}
 	}
 
 	// Check if it is a draw

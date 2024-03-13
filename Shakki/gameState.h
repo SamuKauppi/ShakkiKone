@@ -5,6 +5,9 @@
 #include "unordered_map"
 #include "transpositionTable.h"
 #include <chrono>
+#include "repeatedPositions.h"
+#include <iostream>
+using namespace std;
 class TranspositionTable;
 
 class GameState
@@ -15,7 +18,13 @@ public:
 	int DepthReached = 0;
 	int latestEvaluation = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 4500;
+	int TimeLimit = 3000;
+
+	int TimeExtension = 0;
+	int ExtensionDuration = 0;
+
+	// current positions zobrist value updated after every move in make_move
+	uint64_t current_position_zobrist = 0;
 
 	/// <summary>
 	/// Moves a piece
@@ -142,7 +151,7 @@ public:
 	/// Sets all legal moves into moves vector
 	/// </summary>
 	/// <param name="moves"></param>
-	void get_moves(vector<Move>& moves) const;
+	void get_moves(vector<Move>& moves, TranspositionTable& tt) const;
 
 	/// <summary>
 	/// Checks if square is in check
@@ -218,6 +227,10 @@ public:
 
 	int get_simple_piece_value(int piece) const;
 
+	bool is_draw_by_repetition(uint64_t key) const;
+
+	bool is_position_repeated(uint64_t key) const;
+
 	/// <summary>
 	/// Overwrites this state with chosen states values
 	/// </summary>
@@ -247,6 +260,16 @@ public:
 		_bK_pos[1] = other._bK_pos[1];
 	}
 
+	~GameState()
+	{
+		if (current_position_zobrist != 0) {
+			_repeated_positions->remove_repeat(current_position_zobrist);
+		}
+	}
+	GameState()
+	{
+		_repeated_positions = new RepeatedPositions();
+	}
 private:
 
 	// Game board
@@ -263,6 +286,7 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
+<<<<<<< Updated upstream
 	
 	//test board
 	
@@ -278,6 +302,45 @@ private:
 		{NA, NA, wR, wQ, wR, NA, wK, NA}
 	};
 	*/
+=======
+	/*int _board[8][8] = {
+	{bR, NA, NA, NA, bK, NA, NA, bR},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{NA, NA, NA, NA, NA, NA, NA, NA},
+	{wR, NA, NA, NA, wK, NA, NA, wR}
+	};*/
+
+	//test board
+	
+	/*int _board[8][8] = {
+		{NA, NA, NA, NA, bK, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, NA, NA, NA, NA},
+		{NA, NA, NA, NA, wK, NA, NA, NA}
+	};*/
+	
+
+	//int _board[8][8] = {
+	//{bR, bN, NA, NA, bK, NA, NA, bR},
+	//{NA, bP, NA, NA, NA, bP, NA, NA},
+	//{bP, NA, NA, wQ, NA, NA, NA, bP},
+	//{NA, NA, wP, NA, NA, NA, bP, NA},
+	//{NA, NA, NA, NA, wP, NA, NA, NA},
+	//{NA, NA, NA, NA, NA, NA, NA, NA},
+	//{bQ, wP, wP, NA, NA, wP, wP, wP},
+	//{NA, NA, wR, NA, NA, wR, wK, NA}
+	//};
+
+
+>>>>>>> Stashed changes
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 
@@ -286,10 +349,19 @@ private:
 	bool _b_long_castle = true;
 	bool _b_short_castle = true;
 
+<<<<<<< Updated upstream
 	bool _w_castle = false;
 	bool _b_castle = false;
+=======
+	/*bool _w_long_castle = false;
+	bool _w_short_castle = false;
+	bool _b_long_castle = false;
+	bool _b_short_castle = false;*/
+>>>>>>> Stashed changes
 
 	int _doubleStep = -1;
+
+	RepeatedPositions* _repeated_positions;
 
 	friend class TranspositionTable;
 };

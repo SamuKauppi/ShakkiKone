@@ -46,7 +46,11 @@ void TranspositionTable::init_zobrist()
 
 // Generates a hash key using the values generated above using bitwise operations. This part is very fast but,
 // function is still somewhat expensive due to having to check every tile on the board for pieces. 
+<<<<<<< Updated upstream
 uint64_t TranspositionTable::generate_zobrist_key(GameState state)
+=======
+uint64_t TranspositionTable::generate_zobrist_key(GameState& state) const
+>>>>>>> Stashed changes
 {
 	uint64_t k = 0;
 	for (int row = 0; row < 8; row++) {
@@ -70,12 +74,13 @@ void TranspositionTable::hash_new_position(uint64_t zobristKey, int depth, int e
 	int key = hash_key(zobristKey);
 	if (_positions[key]._zobristKey == zobristKey)
 	{
-		if (_positions[key]._depth > depth) 
+		if (_positions[key]._depth >= depth) 
 		{ 
 		return;
 		}
 		if (_positions[key]._depth < depth) {
 			_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);
+			return;
 		}
 	}
 	_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);

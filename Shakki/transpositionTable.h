@@ -27,8 +27,13 @@ class TranspositionTable
 public:
 	TranspositionTable();
 	void init_zobrist();
+<<<<<<< Updated upstream
 	uint64_t generate_zobrist_key(GameState state);
 	int hash_key(uint64_t zobristKey);
+=======
+	uint64_t generate_zobrist_key(GameState& state) const;
+	int hash_key(uint64_t zobristKey) const;
+>>>>>>> Stashed changes
 	void hash_new_position(uint64_t zobristKey, int depth, int evaluation, Move m);
 	uint64_t uint64_prng();
 	bool is_state_hashed(uint64_t zobristKey);
