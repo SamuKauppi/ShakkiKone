@@ -1,4 +1,5 @@
 #include "scoringLogic.h"
+#include "math.h"
 
 Evaluation::Evaluation()
 {
@@ -25,7 +26,7 @@ void Evaluation::init_tables()
     }
 }
 
-int Evaluation::eval(const int board[8][8]) const
+int Evaluation::eval(const int board[8][8], int turnplayer) const
 {
     // Initialize mg/eg values for white and black 
     int mg[2]{};
@@ -61,11 +62,6 @@ int Evaluation::eval(const int board[8][8]) const
 
     // Get gamephase
     int mgPhase = gamePhase;
-<<<<<<< Updated upstream
-    if (mgPhase > 24) mgPhase = 24; /* in case of early promotion */
-    int egPhase = 24 - mgPhase;
-
-=======
     if (mgPhase > gamePhaseTotal) mgPhase = gamePhaseTotal; // If promotion happens
     int egPhase = gamePhaseTotal - mgPhase;
 
@@ -78,9 +74,8 @@ int Evaluation::eval(const int board[8][8]) const
         eval -= eval / leadSensitivity;
     }
     
->>>>>>> Stashed changes
     // Return evaluation
-    return (mgScore * mgPhase + egScore * egPhase) / 24;
+    return eval;
 }
 
 int Evaluation::flip_square(int sq) const
@@ -118,5 +113,21 @@ int Evaluation::get_evaluated_piece(int pc) const
         return BLACK_PAWN;
     default:
         return EMPTY;
+    }
+}
+
+void Evaluation::update_gamephase(const int board[8][8])
+{
+    Gamephase = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            int pc = board[i][j];
+            if (pc != NA)
+            {
+                Gamephase += gamephaseInc[get_evaluated_piece(pc)];
+            }
+        }
     }
 }

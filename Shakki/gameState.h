@@ -16,7 +16,6 @@ public:
 	// turn player
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
-	int latestEvaluation = 0;
 	// time limit allocated for position calculations in milliseconds
 	int TimeLimit = 3000;
 
@@ -62,7 +61,7 @@ public:
 	/// <param name="moveIndex"></param>
 	/// <param name="moves"></param>
 	/// <param name="new_move"></param>
-	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture = false) const;
+	void add_move_with_index(int& moveIndex, int row, int column, int delta_row, int delta_column, int player, Move moves[], bool capture = false, int promo = NA) const;
 
 	/// <summary>
 	/// Returns all of the moves for turnplayer
@@ -178,14 +177,6 @@ public:
 	void update_castle_legality();
 
 	/// <summary>
-	/// Disables long and/or short castle from player based on column
-	/// </summary>
-	/// <param name="short_castle"></param>
-	/// <param name="long_castle"></param>
-	/// <param name="column"></param>
-	void disable_one_castle(bool& short_castle, bool& long_castle, int column);
-
-	/// <summary>
 	/// Returns false if neither player can perform any castle
 	/// </summary>
 	/// <param name="player"></param>
@@ -275,7 +266,6 @@ private:
 	// Game board
 	// [y][x]
 
-	
 	int _board[8][8] = {
 		{bR, bN, bB, bQ, bK, bB, bN, bR},
 		{bP, bP, bP, bP, bP, bP, bP, bP},
@@ -286,23 +276,6 @@ private:
 		{wP, wP, wP, wP, wP, wP, wP, wP},
 		{wR, wN, wB, wQ, wK, wB, wN, wR}
 	};
-<<<<<<< Updated upstream
-	
-	//test board
-	
-	/*
-	int _board[8][8] = {
-		{NA, NA, NA, bR, bK, NA, NA, bR},
-		{bP, bP, NA, NA, NA, bP, bP, bP},
-		{NA, bQ, NA, NA, bN, NA, NA, NA},
-		{NA, NA, NA, bP, NA, NA, NA, NA},
-		{NA, bB, NA, NA, NA, NA, NA, NA},
-		{NA, wP, NA, bB, wP, NA, wP, NA},
-		{wP, NA, NA, wB, NA, wP, wB, wP},
-		{NA, NA, wR, wQ, wR, NA, wK, NA}
-	};
-	*/
-=======
 	/*int _board[8][8] = {
 	{bR, NA, NA, NA, bK, NA, NA, bR},
 	{NA, NA, NA, NA, NA, NA, NA, NA},
@@ -340,7 +313,6 @@ private:
 	//};
 
 
->>>>>>> Stashed changes
 	int _wK_pos[2] = {7, 4};
 	int _bK_pos[2] = {0, 4};
 
@@ -349,15 +321,10 @@ private:
 	bool _b_long_castle = true;
 	bool _b_short_castle = true;
 
-<<<<<<< Updated upstream
-	bool _w_castle = false;
-	bool _b_castle = false;
-=======
 	/*bool _w_long_castle = false;
 	bool _w_short_castle = false;
 	bool _b_long_castle = false;
 	bool _b_short_castle = false;*/
->>>>>>> Stashed changes
 
 	int _doubleStep = -1;
 
