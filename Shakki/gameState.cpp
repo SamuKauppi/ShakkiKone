@@ -30,69 +30,40 @@ void GameState::update_castle_legality()
 		return;
 	}
 
-	for (int i = 0; i < 6; i++)
+	// Iterate through both players
+	for (int player = 0; player <= BLACK; player++)
 	{
-		// Get alternating row
-		int row = i % 2 == 0 ? 0 : 7;
-		// Get player index based on row
-		int player = row > 0 ? WHITE : BLACK;
-
-		// Skip if this player can't castle
+		// Check if this player can castle
 		if (!can_player_castle(player))
+			continue;
+
+		// Get player row and correct king
+		int row = player == WHITE ? 7 : 0;
+		int player_king = player == WHITE ? wK : bK;
+		
+		// Set refrenece variables to edit the original values
+		bool& short_castle = player == WHITE ? _w_short_castle : _b_short_castle;
+		bool& long_castle = player == WHITE ? _w_long_castle: _b_long_castle;
+
+		// Check if king is moved
+		if (_board[row][4] != player_king)
 		{
+			short_castle = false;
+			long_castle = false;
 			continue;
 		}
 
-		// Check if king has been moved
-		if (i < 2)
+		// Check if any of rooks have been moved
+		int player_rook = player == WHITE ? wR : bR;
+		if (_board[row][7] != player_rook)
 		{
-			// Get piece at king pos
-			int king = _board[row][4];
-
-			// disable castles if no king was found
-			if (row == 0 && king != bK)
-			{
-				_b_long_castle = false;
-				_b_short_castle = false;
-			}
-			else if (row == 7 && king != wK)
-			{
-				_w_long_castle = false;
-				_w_short_castle = false;
-			}
+			short_castle = false;
 		}
-		// Check if rook has been moved
-		else
+		if (_board[row][0] != player_rook)
 		{
-			// check first column index 0 twice and then 7 twice
-			int column = i < 4 ? 0 : 7;
-
-			// get piece at pos
-			int piece = _board[row][column];
-
-			// disable right castle if no rook was found
-			if (piece != wR && row == 7)
-			{
-				disable_one_castle(_w_short_castle, _w_long_castle, column);
-			}
-			else if (piece != bR && row == 0)
-			{
-				disable_one_castle(_b_short_castle, _b_long_castle, column);
-			}
+			long_castle = false;
 		}
 
-	}
-}
-
-void GameState::disable_one_castle(bool& short_castle, bool& long_castle, int column)
-{
-	if (column == 0 && long_castle)
-	{
-		long_castle = false;
-	}
-	else if (column == 7 && short_castle)
-	{
-		short_castle = false;
 	}
 }
 
@@ -136,20 +107,22 @@ int GameState::get_simple_piece_value(int piece) const
 	switch (piece)
 	{
 	case wP:
-		return 100;
 	case bP:
 		return 100;
 	case wN:
-		return 300;
 	case bN:
 		return 300;
 	case wB:
-		return 350;
 	case bB:
 		return 350;
+	case wR:
+	case bR:
+		return 500;
 	case wQ:
-		return 800;
 	case bQ:
 		return 800;
+
+	default:
+		return 0;
 	}
 }

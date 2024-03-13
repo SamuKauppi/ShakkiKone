@@ -120,7 +120,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		legal_moves_made++;
 
 		// Recursive call
-		//MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
+		// MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
 		//	tt.get_value(m._key) : new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 		MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 

@@ -7,7 +7,8 @@
 #include <iostream>
 #include "chrono"
 
-static const int MINMAX_DEPTH = 7;
+vector<Move> move_history;
+int minimax_value = 0;
 
 /// <summary>
 /// Undo a move if there are moves in history
@@ -22,6 +23,7 @@ static bool try_undo_move(GameState& current_state, stack<GameState>& history)
 
 	current_state = history.top();
 	history.pop();
+	move_history.erase(move_history.end() - 1);
 	return true;
 }
 
@@ -90,19 +92,13 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 	else
 	{
 		cout << "Calculating...";
-		/*
-		MinimaxValue ai_input =
-			current_state.minimax(
-				MINMAX_DEPTH,
-				numeric_limits<int>::lowest(),
-				numeric_limits<int>::max(), tt);
-			*/
 		MinimaxValue ai_input = current_state.iterative_deepening( 
 				numeric_limits<int>::lowest(),
 				numeric_limits<int>::max(), tt);
 		current_state.DepthReached = ai_input.Depth;
 		current_state.latestEvaluation = ai_input.Value;
 		chosen = ai_input.Best_move.get_move_name();
+		minimax_value = ai_input.Value;
 	}
 
 	return chosen;
@@ -114,15 +110,12 @@ static string player_input(GameState& current_state, bool& is_ai, TranspositionT
 /// <param name="is_w_ai"></param>
 /// <param name="is_b_ai"></param>
 /// <returns></returns>
-static string game_loop(bool is_w_ai, bool is_b_ai)
+static string game_loop(bool is_w_ai, bool is_b_ai, stack<GameState>& history)
 {
 	TranspositionTable tt;
 	// Generate state and print it
 	GameState current_state;
 	current_state.print_board();
-
-	// Generate history
-	stack<GameState> history;
 
 	// Undo stop flag (used when user types undo)
 	bool wasUndo = false;
@@ -150,16 +143,16 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		}
 
 		// Print every move
-		cout << "list of every move: \n";
-		for (int i = 0; i < moves.size(); i++)
-		{
-			cout << moves[i].get_move_name();
-			if (i < moves.size() - 1)
-			{
-				cout << ", ";
-			}
-		}
-		cout << "\n";
+		//cout << "list of every move: \n";
+		//for (int i = 0; i < moves.size(); i++)
+		//{
+		//	cout << moves[i].get_move_name();
+		//	if (i < moves.size() - 1)
+		//	{
+		//		cout << ", ";
+		//	}
+		//}
+		//cout << "\n";
 
 		// Generate player name string
 		string player_name = current_state.TurnPlayer == WHITE ? "White player" : "Black player";
@@ -183,6 +176,11 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 				break;
 			}
 
+			if (chosen == "end")
+			{
+				return player_name + " resigned";
+			}
+
 			// Validate input
 			move_index = get_valid_move_index(moves, chosen);
 			if (move_index != -1)
@@ -199,7 +197,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		cout << "Time spent: " << duration.count() << "ms\n";
 		cout << "positions calculated: " << tt._positionCount << "\n" << "repeat positions: " << tt._positionRepeats << "\n";
 		cout << "Depth calculated: " << current_state.DepthReached << "\n";
-		cout << "Evaluation: " << current_state.latestEvaluation << "\n";
+		cout << "Board evaluation: " << current_state.evaluate() << ", " << minimax_value << "\n";
 		tt._positionCount = 0;
 		tt._positionRepeats = 0;
 		// If the input was not "undo", add this state to history and make the chosen move
@@ -207,6 +205,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 		if (!wasUndo)
 		{
 			history.push(current_state);
+			move_history.push_back(moves[move_index]);
 			current_state.make_move(moves[move_index]);
 			cout << player_name << " made the move: " << moves[move_index].get_move_name() << "\n";
 		}
@@ -246,7 +245,7 @@ static string game_loop(bool is_w_ai, bool is_b_ai)
 	}
 
 	// Otherwise there is a winner
-	return current_state.TurnPlayer == WHITE ? "Black" : "White";
+	return current_state.TurnPlayer == WHITE ? "Black wins" : "White wins";
 }
 
 /// <summary>
@@ -281,7 +280,25 @@ int main()
 {
 	bool w = is_player_ai("White");
 	bool b = is_player_ai("Black");
-	string winner = game_loop(w, b);
-	cout << "\nAnd the winner is: " << winner;
+	// Generate history
+	stack<GameState> history;
+	string winner = game_loop(w, b, history);
+	cout << "\nAnd the game ends with: " << winner << "\n";
+
+	cout << "Would you like to see the game boards?\n(y/n): ";
+
+	string input;
+	cin >> input;
+	if (input == "y")
+	{
+		for (int i = move_history.size() - 1; i >= 0; i--)
+		{
+			string player = history.top().TurnPlayer == WHITE ? "White" : "Black";
+			cout << player << " made the move: " << move_history[i].get_move_name() << "\n";
+			history.top().print_board();
+			history.pop();
+		}
+	}
+
 	return 0;
 }
