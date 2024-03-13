@@ -136,6 +136,7 @@
     <ClCompile Include="gameState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="move.cpp" />
+    <ClCompile Include="repeatedPositions.cpp" />
     <ClCompile Include="scoringLogic.cpp" />
     <ClCompile Include="scoringLogic.h" />
     <ClCompile Include="transpositionTable.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="chess.h" />
     <ClInclude Include="minimaxValue.h" />
     <ClInclude Include="move.h" />
+    <ClInclude Include="repeatedPositions.h" />
     <ClInclude Include="transpositionTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -46,7 +46,7 @@ void TranspositionTable::init_zobrist()
 
 // Generates a hash key using the values generated above using bitwise operations. This part is very fast but,
 // function is still somewhat expensive due to having to check every tile on the board for pieces. 
-uint64_t TranspositionTable::generate_zobrist_key(GameState state) const
+uint64_t TranspositionTable::generate_zobrist_key(GameState& state) const
 {
 	uint64_t k = 0;
 	for (int row = 0; row < 8; row++) {
@@ -60,23 +60,23 @@ uint64_t TranspositionTable::generate_zobrist_key(GameState state) const
 	if (state.TurnPlayer == BLACK) k ^= _zobristColorValue;
 	if (state._w_long_castle) k ^= _zobristCastlingValues[0];
 	if (state._w_short_castle) k ^= _zobristCastlingValues[1];
-	if (state._b_short_castle) k ^= _zobristCastlingValues[2];
-	if (state._b_long_castle) k ^= _zobristCastlingValues[3];
+	if (state._b_long_castle) k ^= _zobristCastlingValues[2];
+	if (state._b_short_castle) k ^= _zobristCastlingValues[3];
 	if (state._doubleStep != -1) k ^= _zobristEnPassantValues[state._doubleStep];
 	return k;
 }
 
-void TranspositionTable::hash_new_position(GameState state, int depth, int evaluation, Move m) {
-	uint64_t zobristKey = generate_zobrist_key(state);
+void TranspositionTable::hash_new_position(uint64_t zobristKey, int depth, int evaluation, Move m) {
 	int key = hash_key(zobristKey);
 	if (_positions[key]._zobristKey == zobristKey)
 	{
-		if (_positions[key]._depth > depth) 
+		if (_positions[key]._depth >= depth) 
 		{ 
 		return;
 		}
 		if (_positions[key]._depth < depth) {
 			_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);
+			return;
 		}
 	}
 	_positions[key] = TTEntry(key, zobristKey, depth, evaluation, m);

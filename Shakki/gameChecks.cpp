@@ -141,3 +141,11 @@ bool GameState::is_square_in_check(int player, int row, int column) const {
 
 	return false;
 }
+
+bool GameState::is_draw_by_repetition(uint64_t key) const {
+	return _repeated_positions->is_draw_by_repetition(key);
+}
+
+bool GameState::is_position_repeated(uint64_t key) const {
+	return _repeated_positions->is_position_repeated(key);
+}

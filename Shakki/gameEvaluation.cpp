@@ -2,7 +2,7 @@
 #include "iostream"
 #include "scoringLogic.h"
 
-static const int MINMAX_DEPTH = 6;
+static const int MINMAX_DEPTH = 2;
 Evaluation eval = Evaluation();
 
 MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTable& tt) const
@@ -25,7 +25,7 @@ MinimaxValue GameState::iterative_deepening(int alpha, int beta, TranspositionTa
 
 		// return best move from a previous finished search if out of time
 		// time_limit is set in gamestate header
-		if (duration.count() > TimeLimit && depth > MINMAX_DEPTH)
+		if (duration.count() > TimeLimit + TimeExtension && depth > MINMAX_DEPTH)
 		{
 			best_value.Depth = depth - 1;
 			return best_value;
@@ -42,12 +42,16 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	auto stop = chrono::high_resolution_clock::now();
 	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - timer_start);
 
+	if (_repeated_positions->is_draw_by_repetition(current_position_zobrist))
+	{
+		return MinimaxValue(0, Move(), depth);
+	}
+
 	// Reached max depth or time is out
-	if (depth <= 0 || duration.count() > TimeLimit && startingDepth > MINMAX_DEPTH)
+	if (depth <= 0 || duration.count() > TimeLimit + TimeExtension && startingDepth > MINMAX_DEPTH)
 	{
 		return MinimaxValue(quiescence(alpha, beta), Move(), depth);
 	}
-
 	Move tempMoves[200];
 	int index = 0;
 	get_raw_moves(TurnPlayer, tempMoves, index);
@@ -71,23 +75,22 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	// TODO: Calculate zobrist keys without test state, 
 	for (int i = 0; i < index; i++)
 	{
-		Move m = moves[i];
 		// Create copies of current state
 		GameState new_state = *this;
-		new_state.make_move(m);
+		new_state.make_move(moves[i]);
 
 		// order
 		uint64_t zobristKey = tt.generate_zobrist_key(new_state);
 		moves[i]._key = zobristKey;
 		if (tt.is_state_hashed(zobristKey))
 		{
-			m._evaluation = tt.get_hashed_evaluation(zobristKey);
+			moves[i]._evaluation = tt.get_hashed_evaluation(zobristKey);
 		}
 	}
 
 	bool isMax = TurnPlayer == WHITE ? true : false;
 
-
+	
 	if (TurnPlayer == BLACK)
 	{
 		sort(moves, moves + index);
@@ -96,7 +99,6 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 	{
 		sort(moves, moves + index, greater<>());
 	}
-
 	// Get the best_value for player
 	int best_value = TurnPlayer == WHITE ?
 		numeric_limits<int>::lowest() : numeric_limits<int>::max();
@@ -118,7 +120,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 		legal_moves_made++;
 
 		// Recursive call
-		//MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
+		// MinimaxValue value = tt.is_state_calculated(m._key, depth - 1) == true ?
 		//	tt.get_value(m._key) : new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 		MinimaxValue value = new_state.minimax(depth - 1, startingDepth, alpha, beta, tt, timer_start);
 
@@ -141,8 +143,7 @@ MinimaxValue GameState::minimax(int depth, int startingDepth, int alpha, int bet
 
 		tt._positionCount++;
 		// store position to TT
-		tt.hash_new_position(new_state, depth - 1, value.Value, value.Best_move);
-
+		tt.hash_new_position(m._key, depth - 1, value.Value, value.Best_move);
 
 		if (beta <= alpha)
 		{
@@ -169,12 +170,18 @@ int GameState::quiescence(int alpha, int beta) const
 	bool isMax = TurnPlayer == WHITE ? true : false;
 	if (isMax)
 	{
-		if (standPat >= beta) return standPat;
+		if (standPat >= beta)
+		{
+			return standPat;
+		}
 		if (alpha < standPat) alpha = standPat;
 	}
 	else
 	{
-		if (standPat <= alpha) return standPat;
+		if (standPat <= alpha)
+		{
+			return standPat;
+		}
 		if (beta > standPat) beta = standPat;
 	}
 
@@ -211,7 +218,6 @@ int GameState::quiescence(int alpha, int beta) const
 	{
 		Move m = moves[i];
 		if (m.capture == false) continue;
-
 		// Create copies of current state
 		GameState new_state = *this;
 		new_state.make_move(m);

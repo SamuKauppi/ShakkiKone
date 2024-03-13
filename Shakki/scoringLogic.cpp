@@ -67,12 +67,13 @@ int Evaluation::eval(const int board[8][8], int turnplayer) const
 
     int eval = (mgScore * mgPhase + egScore * egPhase) / gamePhaseTotal;
 
+    
     bool has_lead = turnplayer == WHITE ? eval > leadSensitivity : eval < -leadSensitivity;
     if (has_lead && gamePhase >= Gamephase)
     {
         eval -= eval / leadSensitivity;
     }
-
+    
     // Return evaluation
     return eval;
 }

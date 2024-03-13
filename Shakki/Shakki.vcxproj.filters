@@ -51,6 +51,9 @@
     <ClCompile Include="gameGetPieceMoves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="repeatedPositions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameState.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="transpositionTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="repeatedPositions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

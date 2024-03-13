@@ -1,7 +1,7 @@
 #include "gameState.h"
 #include <iostream>
 
-void GameState::get_moves(vector<Move>& moves) const
+void GameState::get_moves(vector<Move>& moves, TranspositionTable& tt) const
 {
 	// Get the Players
 	int player = TurnPlayer;
@@ -36,8 +36,9 @@ void GameState::get_moves(vector<Move>& moves) const
 		}
 
 		// If king is not under threat, the move is legal
-		if (!testState.is_under_threat(row, column, opponent))
+		if (!testState.is_square_in_check(TurnPlayer ,row, column))
 		{
+			rawMovesTemp[i]._key = tt.generate_zobrist_key(testState);
 			moves.push_back(rawMovesTemp[i]);
 		}
 	}
