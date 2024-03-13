@@ -17,7 +17,7 @@ public:
 	int TurnPlayer = WHITE;
 	int DepthReached = 0;
 	// time limit allocated for position calculations in milliseconds
-	int TimeLimit = 3000;
+	int TimeLimit = 5000;
 
 	int TimeExtension = 0;
 	int ExtensionDuration = 0;
@@ -266,16 +266,16 @@ private:
 	// Game board
 	// [y][x]
 
-	int _board[8][8] = {
-		{bR, bN, bB, bQ, bK, bB, bN, bR},
-		{bP, bP, bP, bP, bP, bP, bP, bP},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{NA, NA, NA, NA, NA, NA, NA, NA},
-		{wP, wP, wP, wP, wP, wP, wP, wP},
-		{wR, wN, wB, wQ, wK, wB, wN, wR}
-	};
+	//int _board[8][8] = {
+	//	{bR, bN, bB, bQ, bK, bB, bN, bR},
+	//	{bP, bP, bP, bP, bP, bP, bP, bP},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{NA, NA, NA, NA, NA, NA, NA, NA},
+	//	{wP, wP, wP, wP, wP, wP, wP, wP},
+	//	{wR, wN, wB, wQ, wK, wB, wN, wR}
+	//};
 	/*int _board[8][8] = {
 	{bR, NA, NA, NA, bK, NA, NA, bR},
 	{NA, NA, NA, NA, NA, NA, NA, NA},
@@ -301,19 +301,19 @@ private:
 	};*/
 	
 
-	//int _board[8][8] = {
-	//{bR, bN, NA, NA, bK, NA, NA, bR},
-	//{NA, bP, NA, NA, NA, bP, NA, NA},
-	//{bP, NA, NA, wQ, NA, NA, NA, bP},
-	//{NA, NA, wP, NA, NA, NA, bP, NA},
-	//{NA, NA, NA, NA, wP, NA, NA, NA},
-	//{NA, NA, NA, NA, NA, NA, NA, NA},
-	//{bQ, wP, wP, NA, NA, wP, wP, wP},
-	//{NA, NA, wR, NA, NA, wR, wK, NA}
-	//};
+	int _board[8][8] = {
+	{NA, NA, NA, NA, bR, NA, bK, NA},
+	{NA, NA, NA, NA, NA, bP, NA, bP},
+	{bP, NA, NA, NA, NA, NA, bP, NA},
+	{wP, bP, bP, NA, bP, NA, wP, wP},
+	{NA, NA, NA, NA, wB, NA, bB, NA},
+	{NA, NA, wP, bR, NA, NA, NA, NA},
+	{NA, wP, NA, NA, bP, NA, NA, NA},
+	{NA, NA, wR, NA, wQ, wK, NA, NA},
+	};
 
 
-	int _wK_pos[2] = {7, 4};
+	int _wK_pos[2] = {7, 5};
 	int _bK_pos[2] = {0, 4};
 
 	bool _w_long_castle = true;
